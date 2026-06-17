@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoLink } from "@/components/brand/logo";
 import { site } from "@/lib/site";
 
 const PRODUCT_LINKS = [
@@ -51,9 +52,7 @@ export function MarketingFooter() {
       <div className="mx-auto max-w-[var(--container-content)] px-4 py-12">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Link href="/" className="font-semibold text-text">
-              {site.name}
-            </Link>
+            <LogoLink size="sm" />
             <p className="mt-3 max-w-xs text-sm text-text-muted">
               AI-powered tenant screening for UK landlords. A faster way to
               decide — not a credit check, referencing report, or legal advice.

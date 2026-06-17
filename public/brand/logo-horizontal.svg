@@ -1,0 +1,13 @@
+<svg viewBox="0 0 296 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LetLogic">
+  <g transform="translate(10 10)">
+    <rect x="0" y="0" width="80" height="80" rx="15" fill="#0F1C2E"/>
+    <rect x="10" y="8" width="12" height="50" fill="white"/>
+    <rect x="58" y="8" width="12" height="50" fill="white"/>
+    <rect x="10" y="8" width="60" height="12" fill="white"/>
+    <polygon points="24,22 24,56 56,39" fill="#00C49F"/>
+  </g>
+  <text font-family="'DM Sans', sans-serif" font-size="40" x="108" y="66" letter-spacing="-0.5">
+    <tspan fill="#0F1C2E" font-weight="300">Let</tspan>
+    <tspan fill="#0F1C2E" font-weight="700">logic</tspan>
+  </text>
+</svg>

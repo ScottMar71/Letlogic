@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoLink } from "@/components/brand/logo";
 
 type MarketingHeaderProps = {
   width?: "narrow" | "content" | "wide";
@@ -20,9 +21,7 @@ export function MarketingHeader({
       <div
         className={`mx-auto flex ${widthClass[width]} items-center justify-between px-4 py-3`}
       >
-        <Link href="/" className="font-semibold text-text">
-          LetLogic
-        </Link>
+        <LogoLink size="md" />
         <nav className="flex items-center gap-x-2 sm:gap-x-4">
           <Link href="/how-it-works" className="nav-link hidden sm:inline-flex">
             How it works

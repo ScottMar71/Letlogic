@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { LogoLink } from "@/components/brand/logo";
 import { signInWithEmail } from "@/app/actions/auth";
 
 export function LoginForm() {
@@ -36,9 +36,7 @@ export function LoginForm() {
   return (
     <div className="w-full max-w-md space-y-6 rounded-xl border border-border bg-surface p-8 shadow-sm">
       <div>
-        <Link href="/" className="text-sm text-text-subtle hover:text-text">
-          ← LetLogic
-        </Link>
+        <LogoLink size="sm" />
         <h1 className="mt-4 text-2xl font-semibold text-text">Sign in</h1>
         <p className="mt-1 text-sm text-text-muted">
           We&apos;ll email you a magic link. No password needed.

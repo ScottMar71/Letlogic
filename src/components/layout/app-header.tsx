@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoLink } from "@/components/brand/logo";
 import { CreditBalance } from "@/components/screening/credit-balance";
 import { SignOutButton } from "@/components/layout/sign-out-button";
 
@@ -22,9 +23,7 @@ export function AppHeader({
       <div
         className={`mx-auto flex ${widthClass[width]} flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3`}
       >
-        <Link href="/dashboard" className="font-semibold text-text">
-          LetLogic
-        </Link>
+        <LogoLink href="/dashboard" size="md" />
         <nav className="flex flex-wrap items-center gap-x-4 gap-y-1">
           {creditBalance != null && <CreditBalance balance={creditBalance} />}
           <Link href="/dashboard" className="nav-link">
