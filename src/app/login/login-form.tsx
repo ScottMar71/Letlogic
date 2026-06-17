@@ -34,45 +34,45 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md space-y-6 rounded-xl border border-zinc-200 bg-white p-8 shadow-sm">
+    <div className="w-full max-w-md space-y-6 rounded-xl border border-border bg-surface p-8 shadow-sm">
       <div>
-        <Link href="/" className="text-sm text-zinc-500 hover:text-zinc-800">
+        <Link href="/" className="text-sm text-text-subtle hover:text-text">
           ← LetLogic
         </Link>
-        <h1 className="mt-4 text-2xl font-semibold text-zinc-900">Sign in</h1>
-        <p className="mt-1 text-sm text-zinc-600">
+        <h1 className="mt-4 text-2xl font-semibold text-text">Sign in</h1>
+        <p className="mt-1 text-sm text-text-muted">
           We&apos;ll email you a magic link. No password needed.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block space-y-1">
-          <span className="text-sm font-medium text-zinc-800">Email</span>
+          <span className="field-label">Email</span>
           <input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-zinc-300 rounded-lg px-3 py-2.5 text-sm"
+            className="input"
             placeholder="you@example.com"
           />
         </label>
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-zinc-900 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60"
+          className="btn-primary w-full"
         >
           {loading ? "Sending…" : "Send magic link"}
         </button>
       </form>
 
       {message && (
-        <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg p-3">
+        <p className="rounded-lg border border-success-border bg-success-bg p-3 text-sm text-success">
           {message}
         </p>
       )}
       {error && (
-        <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">
+        <p className="rounded-lg border border-danger-border bg-danger-bg p-3 text-sm text-danger">
           {error}
         </p>
       )}

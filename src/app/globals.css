@@ -1,26 +1,136 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* Brand — teal */
+  --color-brand-50: #f0fdfa;
+  --color-brand-100: #ccfbf1;
+  --color-brand-200: #99f6e4;
+  --color-brand-500: #14b8a6;
+  --color-brand-600: #0d9488;
+  --color-brand-700: #0f766e;
+  --color-brand-800: #115e59;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Surfaces & borders */
+  --color-surface: #ffffff;
+  --color-surface-muted: #fafafa;
+  --color-border: #e4e4e7;
+  --color-border-strong: #d4d4d8;
+
+  /* Text roles (contrast-safe on white) */
+  --color-text: #18181b;
+  --color-text-muted: #52525b;
+  --color-text-subtle: #71717a;
+  --color-text-onbrand: #ffffff;
+
+  /* Semantic / risk */
+  --color-success: #15803d;
+  --color-success-bg: #f0fdf4;
+  --color-success-border: #bbf7d0;
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-danger: #b91c1c;
+  --color-danger-bg: #fef2f2;
+  --color-danger-border: #fecaca;
+
+  /* Focus */
+  --color-focus: #0d9488;
+
+  /* Container widths */
+  --container-narrow: 48rem;
+  --container-content: 64rem;
+  --container-wide: 72rem;
+
+  /* Fluid typography */
+  --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --text-4xl: clamp(2rem, 1.6rem + 2.4vw, 3.25rem);
+
+  /* Fonts (wired from next/font in layout.tsx) */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Visible keyboard focus everywhere (fixes removed outlines) */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+@utility btn {
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium transition-colors disabled:cursor-not-allowed;
+}
+
+@layer components {
+  .btn-primary {
+    @apply btn bg-brand-600 text-white hover:bg-brand-700 disabled:bg-brand-600/50;
+  }
+  .btn-secondary {
+    @apply btn border border-border-strong bg-surface text-text hover:border-brand-600 hover:text-brand-700 disabled:opacity-60;
+  }
+  .btn-onbrand {
+    @apply btn bg-white text-brand-700 hover:bg-brand-50 disabled:opacity-60;
+  }
+
+  .input,
+  .textarea {
+    @apply w-full rounded-lg border border-border-strong bg-surface px-3 py-2.5 text-sm text-text placeholder:text-text-subtle focus:border-brand-600 focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-brand-600;
+  }
+
+  .field-label {
+    @apply text-sm font-medium text-text-muted;
+  }
+
+  .card {
+    @apply rounded-xl border border-border bg-surface p-6;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium;
+  }
+
+  .section-label {
+    @apply text-sm font-semibold uppercase tracking-wide text-text-subtle;
+  }
+
+  .nav-link {
+    @apply inline-flex min-h-11 items-center text-sm text-text-muted transition-colors hover:text-text;
+  }
+
+  /* Long-form prose for legal & content pages */
+  .legal {
+    @apply text-text-muted;
+  }
+  .legal > * + * {
+    @apply mt-4;
+  }
+  .legal h2 {
+    @apply mt-10 text-xl font-semibold text-text;
+  }
+  .legal h3 {
+    @apply mt-6 text-base font-semibold text-text;
+  }
+  .legal p,
+  .legal li {
+    @apply text-sm leading-relaxed text-text-muted;
+  }
+  .legal ul {
+    @apply ml-5 list-disc space-y-1.5;
+  }
+  .legal ol {
+    @apply ml-5 list-decimal space-y-1.5;
+  }
+  .legal a {
+    @apply font-medium text-brand-700 underline;
+  }
+  .legal strong {
+    @apply font-semibold text-text;
+  }
 }
