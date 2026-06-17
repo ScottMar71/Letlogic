@@ -37,13 +37,12 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   const { name, email, subject, message } = parsed.data;
   const apiKey = process.env.RESEND_API_KEY;
 
-  // Graceful degradation: if email isn't configured yet, don't break the UX.
   if (!apiKey) {
-    console.warn(
-      "[contact] RESEND_API_KEY not set — enquiry not emailed. Payload:",
-      { name, email, subject },
-    );
-    return { success: true };
+    console.error("[contact] RESEND_API_KEY not set — enquiry not emailed");
+    return {
+      error:
+        "Contact form is temporarily unavailable. Please email us directly.",
+    };
   }
 
   try {

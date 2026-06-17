@@ -32,7 +32,7 @@ export default function AboutPage() {
     <div className="flex min-h-screen flex-col bg-surface-muted">
       <MarketingHeader />
 
-      <main className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-16 px-4 py-16">
+      <main id="main-content" className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-16 px-4 py-16">
         <section className="space-y-5">
           <p className="section-label">About us</p>
           <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-text">

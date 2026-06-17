@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LogoLink } from "@/components/brand/logo";
+import { MobileNav } from "@/components/layout/mobile-nav";
 
 type MarketingHeaderProps = {
   width?: "narrow" | "content" | "wide";
@@ -30,13 +31,17 @@ export function MarketingHeader({
             About
           </Link>
           {showPricing && (
-            <Link href="/pricing" className="nav-link">
+            <Link href="/pricing" className="nav-link hidden sm:inline-flex">
               Pricing
             </Link>
           )}
-          <Link href="/login" className="btn-primary px-4">
+          <Link href="/sample" className="nav-link hidden sm:inline-flex">
+            Sample
+          </Link>
+          <Link href="/login" className="btn-primary hidden px-4 sm:inline-flex">
             Sign in
           </Link>
+          <MobileNav showPricing={showPricing} />
         </nav>
       </div>
     </header>

@@ -13,6 +13,7 @@ import {
   type ScreeningInput,
 } from "@/lib/screening/schema";
 import type { AssessmentRecord } from "@/lib/screening/types";
+import { getPropertyForUser } from "@/lib/screening/queries";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -61,6 +62,17 @@ export async function analyseApplicant(
   const metrics = computeMetrics(metricsInputFrom(input));
 
   const admin = createAdminClient();
+
+  if (input.propertyId) {
+    const property = await getPropertyForUser(admin, user.id, input.propertyId);
+    if (!property) {
+      return {
+        ok: false,
+        code: "INVALID",
+        error: "That property was not found on your account.",
+      };
+    }
+  }
 
   // Debit one credit up front; bail if the balance is empty.
   const ledgerId = await spendCredit(admin, user.id);
@@ -142,6 +154,7 @@ export async function analyseApplicant(
       id: assessment.id,
       applicationId: application.id,
       applicantName: input.applicantName,
+      propertyId: input.propertyId ?? null,
       metrics,
       promptVersion: SCREENING_PROMPT_VERSION,
       model: result.model,

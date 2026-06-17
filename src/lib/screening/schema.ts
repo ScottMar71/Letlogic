@@ -24,7 +24,8 @@ const pasteInput = z.object({
   rawText: z
     .string()
     .trim()
-    .min(20, "Paste the applicant's details (at least a sentence)"),
+    .min(20, "Paste the applicant's details (at least a sentence)")
+    .max(20_000, "Applicant details are too long (max 20,000 characters)"),
 });
 
 // Structured form. Everything except the name is optional; age is intentionally

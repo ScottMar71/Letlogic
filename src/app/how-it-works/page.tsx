@@ -57,7 +57,7 @@ export default function HowItWorksPage() {
     <div className="flex min-h-screen flex-col bg-surface-muted">
       <MarketingHeader />
 
-      <main className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-16 px-4 py-16">
+      <main id="main-content" className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-16 px-4 py-16">
         <section className="space-y-5">
           <p className="section-label">Overview</p>
           <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-text">
@@ -69,11 +69,11 @@ export default function HowItWorksPage() {
             and the questions worth asking — so you can decide with confidence.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/screen" className="btn-primary px-5">
-              Screen an applicant
-            </Link>
-            <Link href="/sample" className="btn-secondary px-5">
+            <Link href="/sample" className="btn-primary px-5">
               View a sample report
+            </Link>
+            <Link href="/login?next=/screen" className="btn-secondary px-5">
+              Sign in to screen
             </Link>
           </div>
         </section>
@@ -166,13 +166,10 @@ export default function HowItWorksPage() {
             Pay per screening, or go Pro for unlimited use.
           </p>
           <div className="mt-4 flex flex-wrap justify-center gap-3">
-            <Link href="/screen" className="btn-onbrand">
-              Screen an applicant
+            <Link href="/login?next=/screen" className="btn-onbrand">
+              Sign in to screen
             </Link>
-            <Link
-              href="/pricing"
-              className="btn border border-white/40 text-white hover:bg-white/10"
-            >
+            <Link href="/pricing" className="btn-secondary border-white/40 text-white hover:bg-white/10">
               See pricing
             </Link>
           </div>

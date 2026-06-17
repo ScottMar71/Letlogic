@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Shield, Scale, Lock } from "lucide-react";
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
 
@@ -17,14 +18,32 @@ const STEPS = [
   },
 ];
 
+const TRUST_ITEMS = [
+  {
+    icon: Shield,
+    title: "UK-focused & GDPR-aware",
+    body: "Built for UK lettings with transparent data handling and minimal collection.",
+  },
+  {
+    icon: Scale,
+    title: "Equality Act aware",
+    body: "Focuses on affordability and stability — never automated decisions about people.",
+  },
+  {
+    icon: Lock,
+    title: "Not a credit check",
+    body: "An explainable screening aid. You stay in control of every letting decision.",
+  },
+];
+
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-surface-muted">
       <MarketingHeader />
 
-      <main className="mx-auto max-w-[var(--container-content)] space-y-16 px-4 py-16">
+      <main id="main-content" className="mx-auto max-w-[var(--container-content)] space-y-16 px-4 py-16">
         <section className="space-y-6">
-          <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-text">
+          <h1 className="max-w-3xl text-display font-bold tracking-tight text-text">
             Screen UK tenant applications in seconds
           </h1>
           <p className="max-w-2xl text-lg text-text-muted">
@@ -33,11 +52,11 @@ export default function Home() {
             to decide.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/screen" className="btn-primary px-5">
-              Screen an applicant
-            </Link>
-            <Link href="/sample" className="btn-secondary px-5">
+            <Link href="/sample" className="btn-primary px-5">
               View a sample report
+            </Link>
+            <Link href="/login?next=/screen" className="btn-secondary px-5">
+              Sign in to screen
             </Link>
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text-muted">
@@ -61,6 +80,19 @@ export default function Home() {
               <p className="mt-2 text-sm text-text-muted">{step.body}</p>
             </div>
           ))}
+        </section>
+
+        <section className="space-y-6">
+          <h2 className="text-h2 font-bold text-text">Built for trust</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {TRUST_ITEMS.map((item) => (
+              <div key={item.title} className="card">
+                <item.icon className="h-6 w-6 text-brand-600" aria-hidden />
+                <h3 className="mt-3 font-semibold text-text">{item.title}</h3>
+                <p className="mt-2 text-sm text-text-muted">{item.body}</p>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section className="rounded-2xl border border-border bg-surface p-8 text-center">

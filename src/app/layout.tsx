@@ -40,7 +40,12 @@ export default function RootLayout({
       lang="en"
       className={`${dmSans.variable} h-full font-sans antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

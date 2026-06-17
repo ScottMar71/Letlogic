@@ -6,7 +6,7 @@ const PRODUCT_LINKS = [
   { href: "/how-it-works", label: "How it works" },
   { href: "/sample", label: "Sample report" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/screen", label: "Screen an applicant" },
+  { href: "/login?next=/screen", label: "Screen an applicant" },
 ];
 
 const COMPANY_LINKS = [

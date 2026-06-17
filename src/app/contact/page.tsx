@@ -13,7 +13,7 @@ export default function ContactPage() {
     <div className="flex min-h-screen flex-col bg-surface-muted">
       <MarketingHeader />
 
-      <main className="mx-auto w-full max-w-[var(--container-content)] flex-1 px-4 py-16">
+      <main id="main-content" className="mx-auto w-full max-w-[var(--container-content)] flex-1 px-4 py-16">
         <div className="space-y-2">
           <p className="section-label">Contact</p>
           <h1 className="text-4xl font-bold tracking-tight text-text">

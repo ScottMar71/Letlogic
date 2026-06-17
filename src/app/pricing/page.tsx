@@ -1,25 +1,32 @@
 import Link from "next/link";
 import { MarketingHeader } from "@/components/layout/marketing-header";
+import { MarketingFooter } from "@/components/layout/marketing-footer";
+import { PricingPackCard } from "@/components/pricing/pricing-cta";
 import {
   CREDIT_PACK_LIST,
   PRO_PLAN,
   formatGbp,
-  unitPricePence,
 } from "@/lib/screening/pricing";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
   title: "Pricing",
   description: "Transparent pay-as-you-go and Pro pricing for UK tenant screening.",
 };
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
-    <div className="min-h-screen bg-surface-muted">
+    <div className="flex min-h-screen flex-col bg-surface-muted">
       <MarketingHeader showPricing={false} />
 
-      <main className="mx-auto max-w-[var(--container-content)] space-y-10 px-4 py-12">
+      <main id="main-content" className="mx-auto max-w-[var(--container-content)] flex-1 space-y-10 px-4 py-12">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-text">Simple, honest pricing</h1>
+          <h1 className="text-h1 font-bold text-text">Simple, honest pricing</h1>
           <p className="mt-2 text-text-muted">
             Pay per screening, or go Pro for unlimited use. No free checks — but
             you can{" "}
@@ -32,18 +39,11 @@ export default function PricingPage() {
 
         <section className="grid gap-4 sm:grid-cols-3">
           {CREDIT_PACK_LIST.map((pack) => (
-            <div
+            <PricingPackCard
               key={pack.slug}
-              className="rounded-2xl border border-border bg-surface p-6 text-center"
-            >
-              <p className="font-semibold text-text">{pack.name}</p>
-              <p className="mt-2 text-3xl font-bold text-text">
-                {formatGbp(pack.pricePence)}
-              </p>
-              <p className="mt-1 text-sm text-text-subtle">
-                {formatGbp(unitPricePence(pack))} per screening
-              </p>
-            </div>
+              pack={pack}
+              isAuthenticated={!!user}
+            />
           ))}
         </section>
 
@@ -62,7 +62,10 @@ export default function PricingPage() {
                 {formatGbp(PRO_PLAN.pricePence)}
                 <span className="text-base font-normal text-brand-100">/mo</span>
               </p>
-              <Link href="/dashboard" className="btn-onbrand mt-2">
+              <Link
+                href={user ? "/settings" : "/login?next=/settings"}
+                className="btn-onbrand mt-2"
+              >
                 Get started
               </Link>
             </div>
@@ -87,6 +90,8 @@ export default function PricingPage() {
           legal advice.
         </p>
       </main>
+
+      <MarketingFooter />
     </div>
   );
 }

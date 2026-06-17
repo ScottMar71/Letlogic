@@ -4,14 +4,20 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LogoLink } from "@/components/brand/logo";
 import { signInWithEmail } from "@/app/actions/auth";
+import { Alert } from "@/components/ui/alert";
 
 export function LoginForm() {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/";
+  const authError = searchParams.get("error") === "auth";
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    authError
+      ? "That sign-in link is invalid or has expired. Request a new magic link."
+      : null,
+  );
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,22 +64,15 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={loading}
+          aria-busy={loading}
           className="btn-primary w-full"
         >
           {loading ? "Sending…" : "Send magic link"}
         </button>
       </form>
 
-      {message && (
-        <p className="rounded-lg border border-success-border bg-success-bg p-3 text-sm text-success">
-          {message}
-        </p>
-      )}
-      {error && (
-        <p className="rounded-lg border border-danger-border bg-danger-bg p-3 text-sm text-danger">
-          {error}
-        </p>
-      )}
+      {message && <Alert variant="success">{message}</Alert>}
+      {error && <Alert variant="error">{error}</Alert>}
     </div>
   );
 }

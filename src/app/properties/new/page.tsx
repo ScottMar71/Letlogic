@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { AppHeader } from "@/components/layout/app-header";
 import { createProperty } from "@/app/actions/properties";
+import { PageHeader } from "@/components/ui/page-header";
+import { Alert } from "@/components/ui/alert";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = { title: "Add property" };
@@ -18,16 +20,16 @@ export default async function NewPropertyPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-surface-muted">
       <AppHeader width="narrow" />
-      <main className="mx-auto max-w-[var(--container-narrow)] px-4 py-8">
-        <h1 className="text-2xl font-bold text-text">Add a property</h1>
-        <p className="mb-6 text-sm text-text-muted">
-          Track screenings by address and compare applicants for the same let.
-        </p>
-        {error && (
-          <p className="mb-4 rounded-lg border border-danger-border bg-danger-bg p-3 text-sm text-danger">
-            {error}
-          </p>
-        )}
+      <main id="main-content" className="mx-auto max-w-[var(--container-narrow)] space-y-6 px-4 py-8">
+        <PageHeader
+          title="Add a property"
+          description="Track screenings by address and compare applicants for the same let."
+          breadcrumbs={[
+            { label: "Properties", href: "/properties" },
+            { label: "Add property" },
+          ]}
+        />
+        {error && <Alert variant="error">{error}</Alert>}
         <form action={createProperty} className="space-y-4">
           <label className="block space-y-1">
             <span className="field-label">Address line 1</span>

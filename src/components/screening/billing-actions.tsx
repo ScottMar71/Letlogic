@@ -5,6 +5,8 @@ import {
   createBillingPortal,
   createProSubscription,
 } from "@/app/actions/billing";
+import { Button } from "@/components/ui/button";
+import { Alert } from "@/components/ui/alert";
 
 export function BillingActions({ isPro }: { isPro: boolean }) {
   const [loading, setLoading] = useState<string | null>(null);
@@ -29,25 +31,24 @@ export function BillingActions({ isPro }: { isPro: boolean }) {
     <div className="space-y-2">
       <div className="flex flex-wrap gap-3">
         {!isPro && (
-          <button
-            type="button"
+          <Button
+            loading={loading === "pro"}
             disabled={loading !== null}
             onClick={() => go(createProSubscription, "pro")}
-            className="btn-primary"
           >
-            {loading === "pro" ? "…" : "Upgrade to Pro"}
-          </button>
+            Upgrade to Pro
+          </Button>
         )}
-        <button
-          type="button"
+        <Button
+          variant="secondary"
+          loading={loading === "portal"}
           disabled={loading !== null}
           onClick={() => go(createBillingPortal, "portal")}
-          className="btn-secondary"
         >
-          {loading === "portal" ? "…" : "Manage billing"}
-        </button>
+          Manage billing
+        </Button>
       </div>
-      {error && <p className="text-sm text-danger">{error}</p>}
+      {error && <Alert variant="error">{error}</Alert>}
     </div>
   );
 }

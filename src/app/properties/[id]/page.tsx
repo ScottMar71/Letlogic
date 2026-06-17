@@ -3,6 +3,8 @@ import { notFound, redirect } from "next/navigation";
 import { AppHeader } from "@/components/layout/app-header";
 import { ScreeningWorkspace } from "@/components/screening/screening-workspace";
 import { RiskChip } from "@/components/screening/risk-chip";
+import { PageHeader } from "@/components/ui/page-header";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { listAssessmentsForProperty } from "@/lib/screening/queries";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -35,26 +37,30 @@ export default async function PropertyPage({ params }: PageProps) {
     <div className="min-h-screen bg-surface-muted">
       <AppHeader width="content" />
 
-      <main className="mx-auto max-w-[var(--container-content)] space-y-8 px-4 py-8">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold text-text">
-              {property.address_line1}
-            </h1>
-            <p className="text-sm text-text-subtle">
-              {property.city}, {property.postcode}
-              {property.rent_amount ? ` · £${property.rent_amount}/mo` : ""}
-            </p>
-          </div>
-          {canCompare && (
-            <Link
-              href={`/properties/${id}/compare`}
-              className="btn-secondary"
-            >
-              Compare applicants ({applicants.length})
-            </Link>
-          )}
-        </div>
+      <main id="main-content" className="mx-auto max-w-[var(--container-content)] space-y-8 px-4 py-8">
+        <PageHeader
+          title={property.address_line1}
+          description={`${property.city}, ${property.postcode}${property.rent_amount ? ` · £${property.rent_amount}/mo` : ""}`}
+          breadcrumbs={[
+            { label: "Properties", href: "/properties" },
+            { label: property.address_line1 },
+          ]}
+          actions={
+            canCompare ? (
+              <Link
+                href={`/properties/${id}/compare`}
+                className="btn-secondary"
+              >
+                Compare applicants ({applicants.length})
+              </Link>
+            ) : (
+              <span className="flex items-center gap-2 text-sm text-text-subtle">
+                <StatusBadge variant="neutral">Compare</StatusBadge>
+                Screen another applicant to compare
+              </span>
+            )
+          }
+        />
 
         {applicants.length > 0 && (
           <section className="space-y-3">

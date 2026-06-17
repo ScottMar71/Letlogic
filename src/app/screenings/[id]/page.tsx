@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { AppHeader } from "@/components/layout/app-header";
 import { AssessmentResultPanel } from "@/components/screening/assessment-result";
+import { PrintReportButton } from "@/components/screening/print-report-button";
+import { PageHeader } from "@/components/ui/page-header";
 import { getAssessmentDetail } from "@/lib/screening/queries";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -25,23 +26,31 @@ export default async function ScreeningDetailPage({ params }: PageProps) {
     year: "numeric",
   });
 
+  const breadcrumbs = [
+    { label: "Dashboard", href: "/dashboard" },
+    ...(assessment.propertyId && assessment.propertyAddress
+      ? [
+          { label: "Properties", href: "/properties" },
+          {
+            label: assessment.propertyAddress.split(",")[0] ?? "Property",
+            href: `/properties/${assessment.propertyId}`,
+          },
+        ]
+      : []),
+    { label: assessment.applicantName },
+  ];
+
   return (
     <div className="min-h-screen bg-surface-muted">
       <AppHeader width="narrow" />
 
-      <main className="mx-auto max-w-[var(--container-narrow)] space-y-4 px-4 py-8">
-        <div>
-          <Link
-            href="/dashboard"
-            className="text-sm text-text-subtle hover:text-text"
-          >
-            ← Back
-          </Link>
-          <h1 className="mt-2 text-2xl font-bold text-text">
-            {assessment.applicantName}
-          </h1>
-          <p className="text-sm text-text-subtle">Screened {created}</p>
-        </div>
+      <main id="main-content" className="mx-auto max-w-[var(--container-narrow)] space-y-4 px-4 py-8">
+        <PageHeader
+          title={assessment.applicantName}
+          description={`Screened ${created}`}
+          breadcrumbs={breadcrumbs}
+          actions={<PrintReportButton />}
+        />
 
         <AssessmentResultPanel assessment={assessment} loading={false} error={null} />
 

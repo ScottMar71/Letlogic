@@ -36,6 +36,11 @@
   --color-danger-bg: #fef2f2;
   --color-danger-border: #fecaca;
 
+  /* Info */
+  --color-info: #1d4ed8;
+  --color-info-bg: #eff6ff;
+  --color-info-border: #bfdbfe;
+
   /* Focus */
   --color-focus: #00c49f;
 
@@ -44,9 +49,30 @@
   --container-content: 64rem;
   --container-wide: 72rem;
 
-  /* Fluid typography */
+  /* 8px spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Typography scale */
+  --text-display: clamp(2rem, 1.6rem + 2.4vw, 3.25rem);
+  --text-h1: 1.5rem;
+  --text-h2: 1.25rem;
+  --text-h3: 1rem;
+  --text-body: 0.875rem;
+  --text-caption: 0.75rem;
   --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
   --text-4xl: clamp(2rem, 1.6rem + 2.4vw, 3.25rem);
+
+  /* Info semantic */
+  --color-info: #1d4ed8;
+  --color-info-bg: #eff6ff;
+  --color-info-border: #bfdbfe;
 
   /* Fonts (DM Sans — wired from next/font in layout.tsx) */
   --font-sans: var(--font-dm-sans);
@@ -80,6 +106,25 @@ body {
   }
   .btn-onbrand {
     @apply btn bg-white font-semibold text-brand-700 hover:bg-brand-50 disabled:opacity-60;
+  }
+  .btn-ghost {
+    @apply btn text-text-muted hover:bg-surface-muted hover:text-text disabled:opacity-60;
+  }
+  .btn-destructive {
+    @apply btn border border-danger-border bg-danger-bg font-medium text-danger hover:bg-danger-bg/80 disabled:opacity-60;
+  }
+
+  .text-display {
+    font-size: var(--text-display);
+  }
+  .text-h1 {
+    font-size: var(--text-h1);
+  }
+  .text-h2 {
+    font-size: var(--text-h2);
+  }
+  .text-h3 {
+    font-size: var(--text-h3);
   }
 
   .input,
@@ -135,5 +180,33 @@ body {
   }
   .legal strong {
     @apply font-semibold text-text;
+  }
+
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-surface focus:px-4 focus:py-2 focus:shadow-lg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  header,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
   }
 }

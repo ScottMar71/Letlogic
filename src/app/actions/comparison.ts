@@ -3,7 +3,7 @@
 import OpenAI from "openai";
 import { z } from "zod";
 import { isPro } from "@/lib/screening/entitlements";
-import { listAssessmentsForProperty } from "@/lib/screening/queries";
+import { getPropertyForUser, listAssessmentsForProperty } from "@/lib/screening/queries";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -35,6 +35,15 @@ export async function compareApplicants(
       ok: false,
       code: "PRO_REQUIRED",
       error: "Comparison is a Pro feature.",
+    };
+  }
+
+  const property = await getPropertyForUser(admin, user.id, propertyId);
+  if (!property) {
+    return {
+      ok: false,
+      code: "NOT_ENOUGH",
+      error: "Property not found.",
     };
   }
 

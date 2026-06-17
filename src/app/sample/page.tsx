@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { MarketingHeader } from "@/components/layout/marketing-header";
+import { MarketingFooter } from "@/components/layout/marketing-footer";
 import { AssessmentResultPanel } from "@/components/screening/assessment-result";
+import { Alert } from "@/components/ui/alert";
 import type { AssessmentRecord } from "@/lib/screening/types";
 
 export const metadata = {
@@ -41,19 +43,26 @@ const SAMPLE: AssessmentRecord = {
 
 export default function SamplePage() {
   return (
-    <div className="min-h-screen bg-surface-muted">
+    <div className="flex min-h-screen flex-col bg-surface-muted">
       <MarketingHeader width="narrow" />
 
-      <main className="mx-auto max-w-[var(--container-narrow)] space-y-4 px-4 py-8">
-        <div className="rounded-lg border border-warning-border bg-warning-bg px-4 py-3 text-sm text-warning">
-          This is an example report. Buy a credit to screen a real applicant.
-        </div>
-        <h1 className="text-2xl font-bold text-text">Sample assessment</h1>
+      <main id="main-content" className="mx-auto w-full max-w-[var(--container-narrow)] flex-1 space-y-4 px-4 py-8">
+        <Alert variant="warning">
+          This is an example report. Sign in and buy a credit to screen a real applicant.
+        </Alert>
+        <h1 className="text-h1 font-bold text-text">Sample assessment</h1>
         <AssessmentResultPanel assessment={SAMPLE} loading={false} error={null} />
-        <Link href="/screen" className="btn-primary px-5">
-          Screen an applicant
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/login?next=/screen" className="btn-primary px-5">
+            Sign in to screen
+          </Link>
+          <Link href="/pricing" className="btn-secondary px-5">
+            See pricing
+          </Link>
+        </div>
       </main>
+
+      <MarketingFooter />
     </div>
   );
 }

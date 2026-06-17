@@ -24,6 +24,16 @@ describe("screeningInputSchema — paste mode", () => {
     });
     expect(result.success).toBe(false);
   });
+
+  it("rejects paste text that exceeds the max length", () => {
+    const result = screeningInputSchema.safeParse({
+      inputMode: "paste",
+      applicantName: "Jane Doe",
+      rentAmount: 1200,
+      rawText: "x".repeat(20_001),
+    });
+    expect(result.success).toBe(false);
+  });
 });
 
 describe("screeningInputSchema — form mode", () => {

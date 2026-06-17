@@ -12,13 +12,11 @@ export async function getCreditBalance(
   admin: SupabaseClient,
   userId: string,
 ): Promise<number> {
-  const { data, error } = await admin
-    .from("credit_ledger")
-    .select("delta")
-    .eq("user_id", userId);
-
-  if (error || !data) return 0;
-  return data.reduce((sum, row) => sum + (row.delta ?? 0), 0);
+  const { data, error } = await admin.rpc("get_credit_balance", {
+    p_user_id: userId,
+  });
+  if (error || data == null) return 0;
+  return data as number;
 }
 
 /** Atomically debit one credit. Returns the ledger row id, or null if broke. */
@@ -54,11 +52,16 @@ export async function grantCredits(
   amount: number,
   reason: Extract<CreditLedgerReason, "purchase" | "pro_grant" | "adjustment">,
   purchaseId?: string,
+  stripeInvoiceId?: string,
 ): Promise<void> {
-  await admin.from("credit_ledger").insert({
+  const { error } = await admin.from("credit_ledger").insert({
     user_id: userId,
     delta: amount,
     reason,
     purchase_id: purchaseId ?? null,
+    stripe_invoice_id: stripeInvoiceId ?? null,
   });
+  // Unique stripe_invoice_id makes Pro grants idempotent across webhook retries.
+  if (error?.code === "23505" && stripeInvoiceId) return;
+  if (error) throw error;
 }

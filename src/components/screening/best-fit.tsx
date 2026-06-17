@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { compareApplicants, type ComparisonResult } from "@/app/actions/comparison";
-import { BuyCreditsModal } from "@/components/screening/buy-credits-modal";
+import { UpgradeProModal } from "@/components/screening/upgrade-pro-modal";
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 export function BestFit({ propertyId }: { propertyId: string }) {
   const [loading, setLoading] = useState(false);
@@ -26,42 +28,39 @@ export function BestFit({ propertyId }: { propertyId: string }) {
             Let AI weigh the trade-offs across applicants. Pro feature.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={run}
-          disabled={loading}
-          className="btn-primary"
-        >
-          {loading ? "Analysing…" : "Find best fit"}
-        </button>
+        <Button loading={loading} onClick={run}>
+          Find best fit
+        </Button>
       </div>
 
       {result?.ok && (
-        <div className="mt-4 rounded-lg border border-success-border bg-success-bg p-4">
-          <p className="font-medium text-success">
-            Best fit: {result.bestApplicant}
-          </p>
-          <p className="mt-1 text-sm text-success">{result.rationale}</p>
-        </div>
+        <Alert variant="success" className="mt-4">
+          <p className="font-medium">Best fit: {result.bestApplicant}</p>
+          <p className="mt-1">{result.rationale}</p>
+        </Alert>
       )}
 
       {result && !result.ok && result.code !== "PRO_REQUIRED" && (
-        <p className="mt-4 rounded-lg border border-danger-border bg-danger-bg p-3 text-sm text-danger">
+        <Alert variant="error" className="mt-4">
           {result.error}
-        </p>
+        </Alert>
       )}
 
       {result && !result.ok && result.code === "PRO_REQUIRED" && (
-        <p className="mt-4 rounded-lg border border-warning-border bg-warning-bg p-3 text-sm text-warning">
+        <Alert variant="warning" className="mt-4">
           Comparison is a Pro feature.{" "}
-          <button onClick={() => setShowUpgrade(true)} className="underline">
+          <button
+            type="button"
+            onClick={() => setShowUpgrade(true)}
+            className="font-medium underline"
+          >
             Upgrade to Pro
           </button>
           .
-        </p>
+        </Alert>
       )}
 
-      <BuyCreditsModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
+      <UpgradeProModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
     </div>
   );
 }

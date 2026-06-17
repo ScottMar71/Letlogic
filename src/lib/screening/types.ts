@@ -13,6 +13,8 @@ export type AssessmentRecord = AssessmentOutput & {
   id: string;
   applicationId: string;
   applicantName: string;
+  propertyId?: string | null;
+  propertyAddress?: string | null;
   metrics: Metrics;
   promptVersion: string;
   model: string;

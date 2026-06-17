@@ -153,7 +153,14 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
     .update({ status: "active", current_period_end: newPeriodEnd })
     .eq("stripe_subscription_id", subId);
 
-  await grantCredits(admin, profile.id, PRO_PLAN.monthlyCredits, "pro_grant");
+  await grantCredits(
+    admin,
+    profile.id,
+    PRO_PLAN.monthlyCredits,
+    "pro_grant",
+    undefined,
+    invoice.id,
+  );
 }
 
 function subscriptionPeriodEnd(sub: Stripe.Subscription): string | null {

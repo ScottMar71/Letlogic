@@ -6,6 +6,9 @@ import {
   type AssessmentRecord,
 } from "@/lib/screening/types";
 import type { RiskLevel } from "@/lib/screening/schema";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert } from "@/components/ui/alert";
 
 type Props = {
   assessment: AssessmentRecord | null;
@@ -25,29 +28,27 @@ const riskStyles: Record<RiskLevel, string> = {
   high: "bg-danger-bg text-danger border-danger-border",
 };
 
-export function AssessmentResultPanel({ assessment, loading, error }: Props) {
-  if (loading) {
-    return (
-      <div
-        className="space-y-3 rounded-xl border border-border bg-surface p-6"
-        aria-live="polite"
-      >
-        {LOADING_STEPS.map((step) => (
-          <div key={step} className="flex items-center gap-2 text-sm text-text-subtle">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-brand-500" />
-            {step}
-          </div>
-        ))}
+function ResultSkeleton() {
+  return (
+    <div className="space-y-4 rounded-xl border border-border bg-surface p-6" aria-live="polite">
+      <Skeleton className="h-24 w-full" />
+      <Skeleton className="h-16 w-full" />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Skeleton className="h-32 w-full" />
+        <Skeleton className="h-32 w-full" />
       </div>
-    );
-  }
+      {LOADING_STEPS.map((step) => (
+        <p key={step} className="text-sm text-text-subtle">{step}</p>
+      ))}
+    </div>
+  );
+}
+
+export function AssessmentResultPanel({ assessment, loading, error }: Props) {
+  if (loading) return <ResultSkeleton />;
 
   if (error) {
-    return (
-      <div className="rounded-xl border border-danger-border bg-danger-bg p-6 text-sm text-danger">
-        {error}
-      </div>
-    );
+    return <Alert variant="error">{error}</Alert>;
   }
 
   if (!assessment) {
@@ -85,27 +86,27 @@ export function AssessmentResultPanel({ assessment, loading, error }: Props) {
         </div>
       </div>
 
-      <Card>
+      <Card padding="sm">
         <p className="text-sm text-text-muted">{assessment.summary}</p>
       </Card>
 
       <div className="grid gap-4 @md:grid-cols-2">
-        <Card title="Strengths">
+        <Card title="Strengths" padding="sm">
           <BulletList items={assessment.pros} empty="None identified." tone="pro" />
         </Card>
-        <Card title="Concerns">
+        <Card title="Concerns" padding="sm">
           <BulletList items={assessment.cons} empty="None identified." tone="con" />
         </Card>
       </div>
 
       {assessment.conditions.length > 0 && (
-        <Card title="Suggested conditions">
+        <Card title="Suggested conditions" padding="sm">
           <BulletList items={assessment.conditions} empty="" tone="neutral" />
         </Card>
       )}
 
       {assessment.suggested_questions.length > 0 && (
-        <Card title="Questions to ask / checks to run">
+        <Card title="Questions to ask / checks to run" padding="sm">
           <ol className="list-decimal space-y-1 pl-5 text-sm text-text-muted">
             {assessment.suggested_questions.map((q, i) => (
               <li key={i}>{q}</li>
@@ -115,10 +116,9 @@ export function AssessmentResultPanel({ assessment, loading, error }: Props) {
       )}
 
       {assessment.data_gaps.length > 0 && (
-        <div className="rounded-xl border border-warning-border bg-warning-bg p-4">
-          <p className="text-sm font-medium text-warning">Data gaps</p>
+        <Alert variant="warning" title="Data gaps">
           <BulletList items={assessment.data_gaps} empty="" tone="neutral" />
-        </div>
+        </Alert>
       )}
 
       <details className="rounded-xl border border-border bg-surface p-4">
@@ -146,23 +146,6 @@ export function AssessmentResultPanel({ assessment, loading, error }: Props) {
           </li>
         </ul>
       </details>
-    </div>
-  );
-}
-
-function Card({
-  title,
-  children,
-}: {
-  title?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-surface p-4">
-      {title && (
-        <p className="mb-2 text-sm font-semibold text-text">{title}</p>
-      )}
-      {children}
     </div>
   );
 }
