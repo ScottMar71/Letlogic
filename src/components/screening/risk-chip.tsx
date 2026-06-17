@@ -19,12 +19,12 @@ const labels: Record<string, string> = {
 export function RiskChip({ level, score }: { level: string; score: number }) {
   return (
     <span
-      className={`badge whitespace-nowrap ${styles[level] ?? "bg-zinc-100 text-text-muted"}`}
+      className={`badge whitespace-nowrap ${styles[level] ?? "bg-brand-50 text-text-muted"}`}
       aria-label={`Risk score ${score} out of 100, ${level} risk`}
     >
       <span
         aria-hidden
-        className={`h-1.5 w-1.5 rounded-full ${dotStyles[level] ?? "bg-zinc-400"}`}
+        className={`h-1.5 w-1.5 rounded-full ${dotStyles[level] ?? "bg-text-subtle"}`}
       />
       {labels[level] ?? level} · {score}
     </span>

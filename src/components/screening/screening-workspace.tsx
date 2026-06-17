@@ -95,7 +95,7 @@ export function ScreeningWorkspace({
               onClick={() => setMode(m)}
               className={`min-h-11 rounded-lg px-3 text-sm font-medium transition-colors ${
                 mode === m
-                  ? "bg-brand-600 text-white"
+                  ? "bg-brand-600 text-text-on-teal"
                   : "border border-border-strong text-text-muted hover:border-brand-600"
               }`}
             >

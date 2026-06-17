@@ -91,7 +91,7 @@ export function BuyCreditsModal({ open, onClose }: BuyCreditsModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/50 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-navy/50 px-4"
       onClick={onClose}
     >
       <div

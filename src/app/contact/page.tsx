@@ -37,7 +37,7 @@ export default function ContactPage() {
                   <br />
                   <a
                     href={`mailto:${site.email}`}
-                    className="font-medium text-brand-700 underline"
+                    className="font-medium text-brand-600 underline hover:text-brand-500"
                   >
                     {site.email}
                   </a>
@@ -47,7 +47,7 @@ export default function ContactPage() {
                   <br />
                   <a
                     href={`mailto:${site.supportEmail}`}
-                    className="font-medium text-brand-700 underline"
+                    className="font-medium text-brand-600 underline hover:text-brand-500"
                   >
                     {site.supportEmail}
                   </a>
@@ -57,7 +57,7 @@ export default function ContactPage() {
                   <br />
                   <a
                     href={`mailto:${site.privacyEmail}`}
-                    className="font-medium text-brand-700 underline"
+                    className="font-medium text-brand-600 underline hover:text-brand-500"
                   >
                     {site.privacyEmail}
                   </a>

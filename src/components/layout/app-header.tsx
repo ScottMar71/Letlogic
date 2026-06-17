@@ -21,9 +21,9 @@ export function AppHeader({
   return (
     <header className="border-b border-border bg-surface">
       <div
-        className={`mx-auto flex ${widthClass[width]} flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3`}
+        className={`mx-auto flex ${widthClass[width]} flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-5`}
       >
-        <LogoLink href="/dashboard" size="md" />
+        <LogoLink href="/dashboard" size="nav" />
         <nav className="flex flex-wrap items-center gap-x-4 gap-y-1">
           {creditBalance != null && <CreditBalance balance={creditBalance} />}
           <Link href="/dashboard" className="nav-link">

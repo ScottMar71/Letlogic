@@ -43,11 +43,11 @@ export default async function DashboardPage() {
           {recent.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border-strong bg-surface p-8 text-center text-sm text-text-subtle">
               No screenings yet.{" "}
-              <Link href="/screen" className="text-brand-700 underline">
+              <Link href="/screen" className="text-brand-600 underline hover:text-brand-500">
                 Screen your first applicant
               </Link>{" "}
               or{" "}
-              <Link href="/sample" className="text-brand-700 underline">
+              <Link href="/sample" className="text-brand-600 underline hover:text-brand-500">
                 view a sample report
               </Link>
               .
@@ -84,7 +84,7 @@ export default async function DashboardPage() {
             <h2 className="section-label">Properties</h2>
             <Link
               href="/properties/new"
-              className="text-sm font-medium text-brand-700 underline"
+              className="text-sm font-medium text-brand-600 underline hover:text-brand-500"
             >
               Add property
             </Link>

@@ -1,26 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand — teal */
-  --color-brand-50: #f0fdfa;
-  --color-brand-100: #ccfbf1;
-  --color-brand-200: #99f6e4;
-  --color-brand-500: #14b8a6;
-  --color-brand-600: #0d9488;
-  --color-brand-700: #0f766e;
-  --color-brand-800: #115e59;
+  /* Brand — Navy #0F1C2E + Teal #00C49F */
+  --color-navy: #0f1c2e;
+  --color-teal: #00c49f;
+  --color-brand-50: #e8fbf6;
+  --color-brand-100: #c5ede6;
+  --color-brand-200: #8fd9cc;
+  --color-brand-500: #00d4ad;
+  --color-brand-600: #00c49f;
+  --color-brand-700: #0f1c2e;
+  --color-brand-800: #0a1522;
 
   /* Surfaces & borders */
   --color-surface: #ffffff;
-  --color-surface-muted: #fafafa;
-  --color-border: #e4e4e7;
-  --color-border-strong: #d4d4d8;
+  --color-surface-muted: #f4f6f8;
+  --color-border: #e2e6eb;
+  --color-border-strong: #cdd3dc;
 
-  /* Text roles (contrast-safe on white) */
-  --color-text: #18181b;
-  --color-text-muted: #52525b;
-  --color-text-subtle: #71717a;
+  /* Text roles (navy-based, contrast-safe on white) */
+  --color-text: #0f1c2e;
+  --color-text-muted: #4a5568;
+  --color-text-subtle: #6b7280;
   --color-text-onbrand: #ffffff;
+  --color-text-on-teal: #0f1c2e;
 
   /* Semantic / risk */
   --color-success: #15803d;
@@ -34,7 +37,7 @@
   --color-danger-border: #fecaca;
 
   /* Focus */
-  --color-focus: #0d9488;
+  --color-focus: #00c49f;
 
   /* Container widths */
   --container-narrow: 48rem;
@@ -45,9 +48,9 @@
   --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
   --text-4xl: clamp(2rem, 1.6rem + 2.4vw, 3.25rem);
 
-  /* Fonts (wired from next/font in layout.tsx) */
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Fonts (DM Sans — wired from next/font in layout.tsx) */
+  --font-sans: var(--font-dm-sans);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 body {
@@ -70,13 +73,13 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply btn bg-brand-600 text-white hover:bg-brand-700 disabled:bg-brand-600/50;
+    @apply btn bg-brand-600 font-semibold text-text-on-teal hover:brightness-95 disabled:opacity-50;
   }
   .btn-secondary {
-    @apply btn border border-border-strong bg-surface text-text hover:border-brand-600 hover:text-brand-700 disabled:opacity-60;
+    @apply btn border border-border-strong bg-surface text-text hover:border-brand-600 hover:text-brand-600 disabled:opacity-60;
   }
   .btn-onbrand {
-    @apply btn bg-white text-brand-700 hover:bg-brand-50 disabled:opacity-60;
+    @apply btn bg-white font-semibold text-brand-700 hover:bg-brand-50 disabled:opacity-60;
   }
 
   .input,
@@ -101,7 +104,7 @@ body {
   }
 
   .nav-link {
-    @apply inline-flex min-h-11 items-center text-sm text-text-muted transition-colors hover:text-text;
+    @apply inline-flex min-h-11 items-center text-sm text-text-muted transition-colors hover:text-brand-600;
   }
 
   /* Long-form prose for legal & content pages */
@@ -128,7 +131,7 @@ body {
     @apply ml-5 list-decimal space-y-1.5;
   }
   .legal a {
-    @apply font-medium text-brand-700 underline;
+    @apply font-medium text-brand-600 underline hover:text-brand-500;
   }
   .legal strong {
     @apply font-semibold text-text;

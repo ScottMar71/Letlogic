@@ -16,7 +16,7 @@ export function CreditBalance({ balance }: { balance: number }) {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex min-h-9 items-center rounded-lg border border-border-strong px-3 font-medium text-text transition-colors hover:border-brand-600 hover:text-brand-700"
+          className="inline-flex min-h-9 items-center rounded-lg border border-border-strong px-3 font-medium text-text transition-colors hover:border-brand-600 hover:text-brand-600"
         >
           Buy credits
         </button>

@@ -153,7 +153,7 @@ export default function HowItWorksPage() {
             protected characteristics. It is an aid to your judgement, never an
             automated decision. You remain the data controller and the
             decision-maker for every tenancy. Read more in our{" "}
-            <Link href="/privacy" className="text-brand-700 underline">
+            <Link href="/privacy" className="text-brand-600 underline hover:text-brand-500">
               Privacy Policy
             </Link>
             .

@@ -20,13 +20,14 @@ const variants = {
 } as const;
 
 type LogoVariant = keyof typeof variants;
-type LogoSize = "xs" | "sm" | "md" | "lg";
+type LogoSize = "xs" | "sm" | "md" | "lg" | "nav";
 
 const heights: Record<LogoSize, string> = {
   xs: "h-5",
   sm: "h-6",
   md: "h-8",
   lg: "h-10",
+  nav: "h-24",
 };
 
 type LogoProps = {

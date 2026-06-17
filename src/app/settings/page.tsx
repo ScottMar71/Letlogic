@@ -44,7 +44,7 @@ export default async function SettingsPage() {
             </div>
             <span
               className={`badge ${
-                pro ? "bg-brand-600 text-white" : "bg-zinc-100 text-text-muted"
+                pro ? "bg-brand-600 text-text-on-teal" : "bg-brand-50 text-text-muted"
               }`}
             >
               {pro ? "Pro" : "Pay as you go"}

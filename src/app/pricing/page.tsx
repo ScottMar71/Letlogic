@@ -23,7 +23,7 @@ export default function PricingPage() {
           <p className="mt-2 text-text-muted">
             Pay per screening, or go Pro for unlimited use. No free checks — but
             you can{" "}
-            <Link href="/sample" className="text-brand-700 underline">
+            <Link href="/sample" className="text-brand-600 underline hover:text-brand-500">
               view a sample report
             </Link>{" "}
             first.
@@ -76,7 +76,7 @@ export default function PricingPage() {
           </p>
           <a
             href="mailto:hello@letlogic.app?subject=LetLogic%20Agency"
-            className="mt-3 inline-block text-sm font-medium text-brand-700 underline"
+            className="mt-3 inline-block text-sm font-medium text-brand-600 underline hover:text-brand-500"
           >
             Talk to us
           </a>

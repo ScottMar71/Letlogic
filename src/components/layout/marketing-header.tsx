@@ -19,9 +19,9 @@ export function MarketingHeader({
   return (
     <header className="border-b border-border bg-surface">
       <div
-        className={`mx-auto flex ${widthClass[width]} items-center justify-between px-4 py-3`}
+        className={`mx-auto flex ${widthClass[width]} items-center justify-between px-4 py-5`}
       >
-        <LogoLink size="md" />
+        <LogoLink size="nav" />
         <nav className="flex items-center gap-x-2 sm:gap-x-4">
           <Link href="/how-it-works" className="nav-link hidden sm:inline-flex">
             How it works

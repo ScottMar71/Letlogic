@@ -73,7 +73,7 @@ export default function Home() {
           </p>
           <Link
             href="/pricing"
-            className="mt-4 inline-block text-sm font-medium text-brand-700 underline"
+            className="mt-4 inline-block text-sm font-medium text-brand-600 underline hover:text-brand-500"
           >
             See pricing
           </Link>
