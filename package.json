@@ -13,6 +13,7 @@
     "provision:e2e-user": "node scripts/provision-e2e-user.mjs",
     "grant:pilot": "node scripts/grant-pilot-credits.mjs",
     "configure:magic-link-template": "node scripts/configure-magic-link-template.mjs",
+    "configure:recovery-template": "node scripts/configure-recovery-template.mjs",
     "configure:supabase-smtp": "node scripts/configure-supabase-smtp.mjs",
     "db:push": "supabase db push",
     "db:reset": "supabase db reset",

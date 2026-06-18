@@ -84,7 +84,7 @@ export async function updatePassword(formData: FormData) {
 
   if (!password) return { error: "Password is required" };
 
-  const supabase = await createClient();
+  const supabase = await createAuthClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
