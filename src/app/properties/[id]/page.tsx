@@ -6,6 +6,7 @@ import { RiskChip } from "@/components/screening/risk-chip";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { listAssessmentsForProperty } from "@/lib/screening/queries";
+import { isPro } from "@/lib/screening/entitlements";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { privatePageMetadata } from "@/lib/seo/metadata";
@@ -34,6 +35,7 @@ export default async function PropertyPage({ params }: PageProps) {
   if (!property) notFound();
 
   const applicants = await listAssessmentsForProperty(admin, user.id, id);
+  const pro = await isPro(admin, user.id);
   const canCompare = applicants.length >= 2;
 
   return (
@@ -50,12 +52,21 @@ export default async function PropertyPage({ params }: PageProps) {
           ]}
           actions={
             canCompare ? (
-              <Link
-                href={`/properties/${id}/compare`}
-                className="btn-secondary"
-              >
-                Compare applicants ({applicants.length})
-              </Link>
+              pro ? (
+                <Link
+                  href={`/properties/${id}/compare`}
+                  className="btn-secondary"
+                >
+                  Compare applicants ({applicants.length})
+                </Link>
+              ) : (
+                <Link
+                  href={`/properties/${id}/compare`}
+                  className="btn-secondary"
+                >
+                  Compare applicants (Pro)
+                </Link>
+              )
             ) : (
               <span className="flex items-center gap-2 text-sm text-text-subtle">
                 <StatusBadge variant="neutral">Compare</StatusBadge>

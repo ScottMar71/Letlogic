@@ -5,6 +5,8 @@ import { CompareCards } from "@/components/properties/compare-cards";
 import { CompareTable } from "@/components/properties/compare-table";
 import { PageHeader } from "@/components/ui/page-header";
 import { getPropertyForUser, listAssessmentsForProperty } from "@/lib/screening/queries";
+import { isPro } from "@/lib/screening/entitlements";
+import { ProCompareGatePage } from "@/components/screening/pro-compare-gate-page";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { privatePageMetadata } from "@/lib/seo/metadata";
@@ -27,6 +29,17 @@ export default async function ComparePage({ params }: PageProps) {
 
   const applicants = await listAssessmentsForProperty(admin, user.id, id);
   if (applicants.length < 2) notFound();
+
+  const pro = await isPro(admin, user.id);
+  if (!pro) {
+    return (
+      <ProCompareGatePage
+        propertyId={id}
+        propertyName={property.addressLine1}
+        applicantCount={applicants.length}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-surface-muted">

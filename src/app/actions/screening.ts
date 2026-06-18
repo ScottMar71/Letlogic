@@ -75,6 +75,22 @@ export async function analyseApplicant(
     }
   }
 
+  if (input.existingApplicationId) {
+    const { data: existing } = await admin
+      .from("applications")
+      .select("id")
+      .eq("id", input.existingApplicationId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (!existing) {
+      return {
+        ok: false,
+        code: "INVALID",
+        error: "That application was not found on your account.",
+      };
+    }
+  }
+
   // Debit one credit up front; bail if the balance is empty.
   const ledgerId = await spendCredit(admin, user.id);
   if (!ledgerId) {
@@ -102,23 +118,41 @@ export async function analyseApplicant(
     };
   }
 
-  const { data: application, error: appError } = await admin
-    .from("applications")
-    .insert({
-      user_id: user.id,
-      property_id: input.propertyId ?? null,
-      applicant_name: input.applicantName,
-      input_mode: input.inputMode,
-      raw_text: input.inputMode === "paste" ? input.rawText : null,
-      structured_data: input.inputMode === "form" ? input : null,
-      monthly_income:
-        input.inputMode === "form" ? input.monthlyIncome ?? null : null,
-      income_multiple: metrics.incomeMultiple,
-      job_stability_score: metrics.jobStabilityScore,
-      tenancy_stability_score: metrics.tenancyStabilityScore,
-    })
-    .select("id")
-    .single();
+  const { data: application, error: appError } = input.existingApplicationId
+    ? await admin
+        .from("applications")
+        .update({
+          applicant_name: input.applicantName,
+          input_mode: input.inputMode,
+          raw_text: input.inputMode === "paste" ? input.rawText : null,
+          structured_data: input.inputMode === "form" ? input : null,
+          monthly_income:
+            input.inputMode === "form" ? input.monthlyIncome ?? null : null,
+          income_multiple: metrics.incomeMultiple,
+          job_stability_score: metrics.jobStabilityScore,
+          tenancy_stability_score: metrics.tenancyStabilityScore,
+        })
+        .eq("id", input.existingApplicationId)
+        .eq("user_id", user.id)
+        .select("id")
+        .single()
+    : await admin
+        .from("applications")
+        .insert({
+          user_id: user.id,
+          property_id: input.propertyId ?? null,
+          applicant_name: input.applicantName,
+          input_mode: input.inputMode,
+          raw_text: input.inputMode === "paste" ? input.rawText : null,
+          structured_data: input.inputMode === "form" ? input : null,
+          monthly_income:
+            input.inputMode === "form" ? input.monthlyIncome ?? null : null,
+          income_multiple: metrics.incomeMultiple,
+          job_stability_score: metrics.jobStabilityScore,
+          tenancy_stability_score: metrics.tenancyStabilityScore,
+        })
+        .select("id")
+        .single();
 
   if (appError || !application) {
     await refundCredit(admin, user.id);

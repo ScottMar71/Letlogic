@@ -90,6 +90,20 @@ export async function getPropertyForUser(
   };
 }
 
+export async function listAssessmentHistoryForApplication(
+  admin: SupabaseClient,
+  userId: string,
+  applicationId: string,
+): Promise<AssessmentSummary[]> {
+  const { data } = await admin
+    .from("assessments")
+    .select(SUMMARY_SELECT)
+    .eq("user_id", userId)
+    .eq("application_id", applicationId)
+    .order("created_at", { ascending: false });
+  return (data ?? []).map((r) => toSummary(r as Record<string, unknown>));
+}
+
 export async function getAssessmentDetail(
   admin: SupabaseClient,
   userId: string,

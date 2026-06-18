@@ -11,6 +11,7 @@
     "test:e2e": "playwright test",
     "verify:production": "node scripts/verify-production.mjs",
     "provision:e2e-user": "node scripts/provision-e2e-user.mjs",
+    "grant:pilot": "node scripts/grant-pilot-credits.mjs",
     "db:push": "supabase db push",
     "db:reset": "supabase db reset",
     "db:types": "supabase gen types typescript --linked > src/lib/supabase/database.types.ts"
@@ -23,6 +24,7 @@
     "lucide-react": "^1.20.0",
     "next": "16.2.9",
     "openai": "^6.43.0",
+    "pdfjs-dist": "^6.0.227",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "stripe": "^22.2.1",

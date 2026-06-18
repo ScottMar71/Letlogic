@@ -7,7 +7,7 @@
 
 - [ ] Sign or email-confirm pilot agreement
 - [ ] Create account (magic link)
-- [ ] Grant comp credits via admin adjustment (`credit_ledger`, reason `adjustment`)
+- [ ] Grant comp credits via `PARTNER_EMAIL=… npm run grant:pilot` (default 20 credits)
 - [ ] Walkthrough: `/sample` → `/screen` → add property → compare view
 - [ ] Share support email: support@letlogic.app
 

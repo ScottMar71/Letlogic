@@ -8,6 +8,7 @@ import { BuyCreditsModal } from "@/components/screening/buy-credits-modal";
 import { AssessmentResultPanel } from "@/components/screening/assessment-result";
 import { Alert } from "@/components/ui/alert";
 import { Field } from "@/components/ui/field";
+import { PdfUploadButton } from "@/components/screening/pdf-upload-button";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import type { ApplicationSource } from "@/lib/screening/queries";
 import type { AssessmentRecord } from "@/lib/screening/types";
@@ -79,6 +80,7 @@ export function ScreeningWorkspace({
     const base = {
       applicantName,
       propertyId,
+      existingApplicationId: reanalyseFrom?.applicationId,
       rentAmount: rent,
       requiredIncomeMultiple: multiple,
     };
@@ -199,6 +201,13 @@ export function ScreeningWorkspace({
 
           {mode === "paste" ? (
             <div className="mt-4 space-y-2">
+              <PdfUploadButton
+                disabled={loading}
+                onExtracted={(text) => {
+                  setRawText(text);
+                  setMode("paste");
+                }}
+              />
               <Field
                 label="Application text"
                 hint="Paste an email, online form, or your notes."

@@ -12,6 +12,8 @@ export const RECOMMENDATIONS = [
 const baseInput = {
   applicantName: z.string().trim().min(2, "Applicant name is required"),
   propertyId: z.string().uuid().optional(),
+  /** When re-analysing, append a new assessment to this application. */
+  existingApplicationId: z.string().uuid().optional(),
   rentAmount: z.coerce
     .number()
     .positive("Set the property's monthly rent before screening"),
