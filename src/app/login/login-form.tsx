@@ -15,7 +15,7 @@ export function LoginForm() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(
     authError
-      ? "That sign-in link is invalid or has expired. Request a new magic link."
+      ? "That sign-in link is invalid or has expired. Open the link in the same browser you used to request it, then try again."
       : null,
   );
 

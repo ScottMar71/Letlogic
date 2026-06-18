@@ -1,7 +1,7 @@
 export const site = {
   name: "LetLogic",
   domain: "letlogic.app",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://letlogic.app",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.letlogic.app",
   description:
     "AI-powered tenant screening for UK landlords — turn applicant data into a clear risk score, summary, and recommendation in seconds.",
   // Contact & legal entity. TODO: replace placeholders with your registered details.

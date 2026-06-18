@@ -2,8 +2,13 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  buildAuthCallbackUrl,
+  getAuthRedirectOrigin,
+  safeNextPath,
+} from "@/lib/request-origin";
+import { createAuthClient } from "@/lib/supabase/auth-server";
 import { createClient } from "@/lib/supabase/server";
-import { getRequestOrigin, safeNextPath } from "@/lib/request-origin";
 
 export async function signInWithEmail(formData: FormData) {
   const email = formData.get("email") as string;
@@ -11,12 +16,15 @@ export async function signInWithEmail(formData: FormData) {
 
   if (!email) return { error: "Email is required" };
 
-  const origin = getRequestOrigin(await headers());
-  const supabase = await createClient();
+  const origin = getAuthRedirectOrigin(await headers());
+  const emailRedirectTo = buildAuthCallbackUrl(origin, next);
+
+  const supabase = await createAuthClient();
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+      emailRedirectTo,
+      shouldCreateUser: true,
     },
   });
 
