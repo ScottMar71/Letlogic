@@ -8,12 +8,14 @@ import {
 } from "lucide-react";
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
+import { marketingPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata = {
+export const metadata = marketingPageMetadata({
   title: "About us",
   description:
     "Why we built LetLogic — faster, fairer, explainable tenant screening for independent UK landlords.",
-};
+  path: "/about",
+});
 
 const VALUES = [
   {

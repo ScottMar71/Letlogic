@@ -12,6 +12,7 @@ import {
   unitPricePence,
   type CreditPack,
 } from "@/lib/screening/pricing";
+import { trackFunnel } from "@/lib/analytics/funnel";
 
 type BuyCreditsModalProps = {
   open: boolean;
@@ -74,6 +75,7 @@ export function BuyCreditsModal({ open, onClose }: BuyCreditsModalProps) {
       setLoading(null);
       return;
     }
+    trackFunnel("checkout_started");
     window.location.assign(result.url);
   }
 
@@ -86,6 +88,7 @@ export function BuyCreditsModal({ open, onClose }: BuyCreditsModalProps) {
       setLoading(null);
       return;
     }
+    trackFunnel("checkout_started");
     window.location.assign(result.url);
   }
 

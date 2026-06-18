@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { LegalPage } from "@/components/layout/legal-page";
+import { marketingPageMetadata } from "@/lib/seo/metadata";
 import { site } from "@/lib/site";
 
-export const metadata = {
+export const metadata = marketingPageMetadata({
   title: "Privacy Policy",
   description:
     "How LetLogic collects, uses, and protects personal data under UK GDPR and the Data Protection Act 2018.",
-};
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (

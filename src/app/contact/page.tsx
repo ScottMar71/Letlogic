@@ -1,12 +1,15 @@
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
 import { site } from "@/lib/site";
+import { marketingPageMetadata } from "@/lib/seo/metadata";
 import { ContactForm } from "./contact-form";
 
-export const metadata = {
+export const metadata = marketingPageMetadata({
   title: "Contact",
-  description: "Get in touch with the LetLogic team — questions, support, and partnership enquiries.",
-};
+  description:
+    "Get in touch with the LetLogic team — questions, support, and partnership enquiries.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

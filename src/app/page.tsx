@@ -9,6 +9,20 @@ import {
 } from "lucide-react";
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
+import {
+  JsonLd,
+  organizationJsonLd,
+  softwareApplicationJsonLd,
+  webSiteJsonLd,
+} from "@/lib/seo/json-ld";
+import { marketingPageMetadata } from "@/lib/seo/metadata";
+import { site } from "@/lib/site";
+
+export const metadata = marketingPageMetadata({
+  title: "UK tenant screening",
+  description: site.description,
+  path: "/",
+});
 
 const STEPS = [
   {
@@ -49,6 +63,9 @@ const TRUST_ITEMS = [
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-surface-muted">
+      <JsonLd
+        data={[organizationJsonLd(), webSiteJsonLd(), softwareApplicationJsonLd()]}
+      />
       <MarketingHeader />
 
       <main id="main-content" className="mx-auto max-w-[var(--container-content)] space-y-16 px-4 py-16">
@@ -106,6 +123,17 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </section>
+
+        <section className="rounded-2xl border border-border bg-surface p-8 text-center">
+          <p className="text-sm font-medium uppercase tracking-wide text-text-subtle">
+            Trusted by independent UK landlords
+          </p>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-text-muted">
+            We&apos;re onboarding our first design partners now. Early users get
+            comp credits and a direct line to the team while we refine the
+            product.
+          </p>
         </section>
 
         <section className="rounded-2xl border border-border bg-surface p-8 text-center">

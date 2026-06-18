@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { LegalPage } from "@/components/layout/legal-page";
+import { marketingPageMetadata } from "@/lib/seo/metadata";
 import { site } from "@/lib/site";
 
-export const metadata = {
+export const metadata = marketingPageMetadata({
   title: "Cookie Policy",
   description:
     "How LetLogic uses cookies and similar technologies, and the choices available to you.",
-};
+  path: "/cookies",
+});
 
 export default function CookiesPage() {
   return (

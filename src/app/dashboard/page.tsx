@@ -13,8 +13,9 @@ import {
 } from "@/lib/screening/queries";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { privatePageMetadata } from "@/lib/seo/metadata";
 
-export const metadata = { title: "Dashboard" };
+export const metadata = privatePageMetadata("Dashboard");
 
 export default async function DashboardPage() {
   const supabase = await createClient();

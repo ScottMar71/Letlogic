@@ -6,6 +6,7 @@ import { Check, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 const STORAGE_KEY = "letlogic-onboarding-dismissed";
+const SAMPLE_VIEWED_KEY = "letlogic-sample-viewed";
 
 type OnboardingChecklistProps = {
   hasScreenings: boolean;
@@ -17,16 +18,18 @@ export function OnboardingChecklist({
   hasProperties,
 }: OnboardingChecklistProps) {
   const [dismissed, setDismissed] = useState(true);
+  const [hasViewedSample, setHasViewedSample] = useState(false);
 
   useEffect(() => {
     setDismissed(localStorage.getItem(STORAGE_KEY) === "1");
+    setHasViewedSample(localStorage.getItem(SAMPLE_VIEWED_KEY) === "1");
   }, []);
 
   const steps = [
     {
       id: "sample",
       label: "View a sample report",
-      done: false,
+      done: hasViewedSample,
       href: "/sample",
     },
     {
@@ -44,7 +47,7 @@ export function OnboardingChecklist({
   ];
 
   const completed = steps.filter((s) => s.done).length;
-  const allDone = hasScreenings && hasProperties;
+  const allDone = hasScreenings && hasProperties && hasViewedSample;
 
   if (dismissed || allDone) return null;
 
@@ -97,4 +100,9 @@ export function OnboardingChecklist({
       </ul>
     </Card>
   );
+}
+
+/** Call from the sample report page to mark onboarding progress. */
+export function markSampleViewed(): void {
+  localStorage.setItem(SAMPLE_VIEWED_KEY, "1");
 }

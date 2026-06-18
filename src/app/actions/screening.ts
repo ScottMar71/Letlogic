@@ -14,6 +14,7 @@ import {
 } from "@/lib/screening/schema";
 import type { AssessmentRecord } from "@/lib/screening/types";
 import { getPropertyForUser } from "@/lib/screening/queries";
+import { captureServerError } from "@/lib/observability/sentry";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -87,7 +88,11 @@ export async function analyseApplicant(
   let result;
   try {
     result = await generateAssessment(buildScreeningPrompt(input, metrics));
-  } catch {
+  } catch (err) {
+    captureServerError(err, {
+      tags: { area: "screening", stage: "generate" },
+      extra: { userId: user.id, inputMode: input.inputMode },
+    });
     // Generation failed — refund the credit so the user isn't charged.
     await refundCredit(admin, user.id);
     return {

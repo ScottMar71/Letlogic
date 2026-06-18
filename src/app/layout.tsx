@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -12,21 +13,22 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: site.name,
+    default: `${site.name} — UK tenant screening`,
     template: `%s | ${site.name}`,
   },
   description: site.description,
   icons: {
-    icon: [
-      { url: "/brand/icon-16.png", sizes: "16x16", type: "image/png" },
-      { url: "/brand/icon-32.png", sizes: "32x32", type: "image/png" },
-    ],
-    apple: "/brand/icon-512.png",
+    icon: "/brand/icon.svg",
+    apple: "/brand/icon.svg",
   },
   openGraph: {
     siteName: site.name,
     locale: "en_GB",
     type: "website",
+    description: site.description,
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 
@@ -37,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="en-GB"
       className={`${dmSans.variable} h-full font-sans antialiased`}
     >
       <body className="flex min-h-full flex-col">
@@ -45,6 +47,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         {children}
+        <Analytics />
       </body>
     </html>
   );

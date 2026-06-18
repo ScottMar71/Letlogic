@@ -175,6 +175,63 @@ export type PropertyRow = {
   rentAmount: number | null;
 };
 
+export type ApplicationSource = {
+  applicationId: string;
+  applicantName: string;
+  propertyId: string | null;
+  inputMode: "paste" | "form";
+  rawText: string | null;
+  structuredData: Record<string, string> | null;
+  rentAmount: number | null;
+};
+
+/** Load prior application input for re-analyse (via a past assessment id). */
+export async function getApplicationSourceForAssessment(
+  admin: SupabaseClient,
+  userId: string,
+  assessmentId: string,
+): Promise<ApplicationSource | null> {
+  const { data } = await admin
+    .from("assessments")
+    .select(
+      "application_id, applications!inner(applicant_name, property_id, input_mode, raw_text, structured_data, properties(rent_amount))",
+    )
+    .eq("user_id", userId)
+    .eq("id", assessmentId)
+    .single();
+
+  if (!data) return null;
+  const row = data as Record<string, unknown>;
+  const app = (row.applications ?? {}) as {
+    applicant_name: string;
+    property_id: string | null;
+    input_mode: "paste" | "form";
+    raw_text: string | null;
+    structured_data: Record<string, unknown> | null;
+    properties?: { rent_amount: number | null } | null;
+  };
+
+  const structured = app.structured_data;
+  const formFields: Record<string, string> | null =
+    structured && typeof structured === "object"
+      ? Object.fromEntries(
+          Object.entries(structured)
+            .filter(([, v]) => v != null && typeof v !== "object")
+            .map(([k, v]) => [k, String(v)]),
+        )
+      : null;
+
+  return {
+    applicationId: row.application_id as string,
+    applicantName: app.applicant_name,
+    propertyId: app.property_id,
+    inputMode: app.input_mode,
+    rawText: app.raw_text,
+    structuredData: formFields,
+    rentAmount: app.properties?.rent_amount ?? null,
+  };
+}
+
 export async function listProperties(
   admin: SupabaseClient,
   userId: string,

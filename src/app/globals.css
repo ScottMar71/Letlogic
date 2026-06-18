@@ -205,11 +205,20 @@ body {
   .no-print {
     display: none !important;
   }
+  .print-only {
+    display: block !important;
+  }
   body {
     background: white;
+    color: #111;
   }
   main {
     max-width: none !important;
-    padding: 0 !important;
+    padding: 1rem !important;
+  }
+  .card {
+    border: 1px solid #ddd;
+    box-shadow: none;
+    break-inside: avoid;
   }
 }

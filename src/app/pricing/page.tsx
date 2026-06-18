@@ -2,6 +2,8 @@ import Link from "next/link";
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
 import { PricingPackCard } from "@/components/pricing/pricing-cta";
+import { FunnelTracker } from "@/components/analytics/funnel-tracker";
+import { marketingPageMetadata } from "@/lib/seo/metadata";
 import {
   CREDIT_PACK_LIST,
   PRO_PLAN,
@@ -9,10 +11,12 @@ import {
 } from "@/lib/screening/pricing";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata = {
+export const metadata = marketingPageMetadata({
   title: "Pricing",
-  description: "Transparent pay-as-you-go and Pro pricing for UK tenant screening.",
-};
+  description:
+    "Transparent pay-as-you-go and Pro pricing for UK tenant screening.",
+  path: "/pricing",
+});
 
 export default async function PricingPage() {
   const supabase = await createClient();
@@ -25,6 +29,7 @@ export default async function PricingPage() {
       <MarketingHeader showPricing={false} />
 
       <main id="main-content" className="mx-auto max-w-[var(--container-content)] flex-1 space-y-10 px-4 py-12">
+        <FunnelTracker event="pricing_viewed" />
         <div className="text-center">
           <h1 className="text-h1 font-bold text-text">Simple, honest pricing</h1>
           <p className="mt-2 text-text-muted">

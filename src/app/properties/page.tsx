@@ -6,8 +6,9 @@ import { PageHeader } from "@/components/ui/page-header";
 import { listProperties } from "@/lib/screening/queries";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { privatePageMetadata } from "@/lib/seo/metadata";
 
-export const metadata = { title: "Properties" };
+export const metadata = privatePageMetadata("Properties");
 
 export default async function PropertiesPage() {
   const supabase = await createClient();

@@ -6,12 +6,14 @@ import {
 } from "lucide-react";
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
+import { marketingPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata = {
+export const metadata = marketingPageMetadata({
   title: "How it works",
   description:
     "How LetLogic turns a tenant application into an explainable risk score, summary, and recommendation in seconds.",
-};
+  path: "/how-it-works",
+});
 
 const STEPS = [
   {

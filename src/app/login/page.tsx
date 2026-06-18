@@ -2,7 +2,10 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { LoginForm } from "./login-form";
 import { site } from "@/lib/site";
+import { privatePageMetadata } from "@/lib/seo/metadata";
 import { Shield, Scale } from "lucide-react";
+
+export const metadata = privatePageMetadata("Sign in");
 
 export default function LoginPage() {
   return (

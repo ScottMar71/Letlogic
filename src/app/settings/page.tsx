@@ -10,8 +10,9 @@ import { getCreditBalance } from "@/lib/screening/credits";
 import { isPro } from "@/lib/screening/entitlements";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { privatePageMetadata } from "@/lib/seo/metadata";
 
-export const metadata = { title: "Settings" };
+export const metadata = privatePageMetadata("Settings");
 
 export default async function SettingsPage() {
   const supabase = await createClient();

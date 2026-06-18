@@ -3,12 +3,17 @@ import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
 import { AssessmentResultPanel } from "@/components/screening/assessment-result";
 import { Alert } from "@/components/ui/alert";
+import { SampleViewTracker } from "@/components/onboarding/sample-view-tracker";
+import { FunnelTracker } from "@/components/analytics/funnel-tracker";
+import { marketingPageMetadata } from "@/lib/seo/metadata";
 import type { AssessmentRecord } from "@/lib/screening/types";
 
-export const metadata = {
+export const metadata = marketingPageMetadata({
   title: "Sample report",
-  description: "An example LetLogic tenant screening assessment.",
-};
+  description:
+    "An example LetLogic tenant screening assessment — see the risk score, summary, and recommendation before you sign up.",
+  path: "/sample",
+});
 
 const SAMPLE: AssessmentRecord = {
   id: "sample",
@@ -44,6 +49,8 @@ const SAMPLE: AssessmentRecord = {
 export default function SamplePage() {
   return (
     <div className="flex min-h-screen flex-col bg-surface-muted">
+      <SampleViewTracker />
+      <FunnelTracker event="sample_viewed" />
       <MarketingHeader width="narrow" />
 
       <main id="main-content" className="mx-auto w-full max-w-[var(--container-narrow)] flex-1 space-y-4 px-4 py-8">

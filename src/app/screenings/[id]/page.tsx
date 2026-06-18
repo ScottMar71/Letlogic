@@ -1,11 +1,17 @@
 import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
 import { AppHeader } from "@/components/layout/app-header";
 import { AssessmentResultPanel } from "@/components/screening/assessment-result";
 import { PrintReportButton } from "@/components/screening/print-report-button";
+import { PrintReportHeader } from "@/components/screening/print-report-header";
 import { PageHeader } from "@/components/ui/page-header";
 import { getAssessmentDetail } from "@/lib/screening/queries";
+import { isPro } from "@/lib/screening/entitlements";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { privatePageMetadata } from "@/lib/seo/metadata";
+
+export const metadata = privatePageMetadata("Screening report");
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -19,6 +25,8 @@ export default async function ScreeningDetailPage({ params }: PageProps) {
 
   const assessment = await getAssessmentDetail(createAdminClient(), user.id, id);
   if (!assessment) notFound();
+
+  const pro = await isPro(createAdminClient(), user.id);
 
   const created = new Date(assessment.createdAt).toLocaleDateString("en-GB", {
     day: "numeric",
@@ -49,7 +57,20 @@ export default async function ScreeningDetailPage({ params }: PageProps) {
           title={assessment.applicantName}
           description={`Screened ${created}`}
           breadcrumbs={breadcrumbs}
-          actions={<PrintReportButton />}
+          actions={
+            <div className="flex flex-wrap gap-2">
+              <Link href={`/screen?from=${id}`} className="btn-secondary">
+                Re-analyse
+              </Link>
+              <PrintReportButton isPro={pro} />
+            </div>
+          }
+        />
+
+        <PrintReportHeader
+          applicantName={assessment.applicantName}
+          screenedAt={created}
+          showBranding={pro}
         />
 
         <AssessmentResultPanel assessment={assessment} loading={false} error={null} />

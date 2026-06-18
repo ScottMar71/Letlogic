@@ -9,12 +9,14 @@ import { AssessmentResultPanel } from "@/components/screening/assessment-result"
 import { Alert } from "@/components/ui/alert";
 import { Field } from "@/components/ui/field";
 import { SegmentedControl } from "@/components/ui/segmented-control";
+import type { ApplicationSource } from "@/lib/screening/queries";
 import type { AssessmentRecord } from "@/lib/screening/types";
 
 type WorkspaceProps = {
   propertyId?: string;
   defaultRent?: number;
   defaultIncomeMultiple?: number;
+  reanalyseFrom?: ApplicationSource;
 };
 
 type Mode = "paste" | "form";
@@ -30,15 +32,37 @@ export function ScreeningWorkspace({
   propertyId,
   defaultRent,
   defaultIncomeMultiple = 2.5,
+  reanalyseFrom,
 }: WorkspaceProps) {
   const router = useRouter();
   const resultsRef = useRef<HTMLElement>(null);
-  const [mode, setMode] = useState<Mode>("paste");
-  const [applicantName, setApplicantName] = useState("");
-  const [rent, setRent] = useState(defaultRent ? String(defaultRent) : "");
+  const [mode, setMode] = useState<Mode>(reanalyseFrom?.inputMode ?? "paste");
+  const [applicantName, setApplicantName] = useState(
+    reanalyseFrom?.applicantName ?? "",
+  );
+  const [rent, setRent] = useState(
+    reanalyseFrom?.rentAmount != null
+      ? String(reanalyseFrom.rentAmount)
+      : defaultRent
+        ? String(defaultRent)
+        : "",
+  );
   const [multiple, setMultiple] = useState(String(defaultIncomeMultiple));
-  const [rawText, setRawText] = useState("");
-  const [form, setForm] = useState<Record<string, string>>({});
+  const [rawText, setRawText] = useState(reanalyseFrom?.rawText ?? "");
+  const [form, setForm] = useState<Record<string, string>>(
+    reanalyseFrom?.structuredData ?? {},
+  );
+
+  useEffect(() => {
+    if (!reanalyseFrom) return;
+    setMode(reanalyseFrom.inputMode);
+    setApplicantName(reanalyseFrom.applicantName);
+    if (reanalyseFrom.rentAmount != null) {
+      setRent(String(reanalyseFrom.rentAmount));
+    }
+    setRawText(reanalyseFrom.rawText ?? "");
+    setForm(reanalyseFrom.structuredData ?? {});
+  }, [reanalyseFrom]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

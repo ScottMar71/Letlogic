@@ -8,6 +8,9 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { listAssessmentsForProperty } from "@/lib/screening/queries";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { privatePageMetadata } from "@/lib/seo/metadata";
+
+export const metadata = privatePageMetadata("Property");
 
 type PageProps = { params: Promise<{ id: string }> };
 

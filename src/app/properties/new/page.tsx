@@ -4,8 +4,9 @@ import { createProperty } from "@/app/actions/properties";
 import { PageHeader } from "@/components/ui/page-header";
 import { Alert } from "@/components/ui/alert";
 import { createClient } from "@/lib/supabase/server";
+import { privatePageMetadata } from "@/lib/seo/metadata";
 
-export const metadata = { title: "Add property" };
+export const metadata = privatePageMetadata("Add property");
 
 type PageProps = { searchParams: Promise<{ error?: string }> };
 

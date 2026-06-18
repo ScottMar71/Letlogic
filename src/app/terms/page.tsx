@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { LegalPage } from "@/components/layout/legal-page";
+import { marketingPageMetadata } from "@/lib/seo/metadata";
 import { site } from "@/lib/site";
 
-export const metadata = {
+export const metadata = marketingPageMetadata({
   title: "Terms of Service",
   description:
     "The terms governing your use of the LetLogic tenant-screening service.",
-};
+  path: "/terms",
+});
 
 export default function TermsPage() {
   return (

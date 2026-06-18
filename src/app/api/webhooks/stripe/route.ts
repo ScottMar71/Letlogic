@@ -5,6 +5,7 @@ import { getStripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { grantCredits } from "@/lib/screening/credits";
 import { PRO_PLAN } from "@/lib/screening/pricing";
+import { captureServerError } from "@/lib/observability/sentry";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export async function POST(request: Request) {
@@ -29,9 +30,23 @@ export async function POST(request: Request) {
   }
 
   if (event.type === "checkout.session.completed") {
-    await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+    try {
+      await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+    } catch (err) {
+      captureServerError(err, {
+        tags: { area: "stripe", event: "checkout.session.completed" },
+      });
+      return NextResponse.json({ error: "Handler failed" }, { status: 500 });
+    }
   } else if (event.type === "invoice.paid") {
-    await handleInvoicePaid(event.data.object as Stripe.Invoice);
+    try {
+      await handleInvoicePaid(event.data.object as Stripe.Invoice);
+    } catch (err) {
+      captureServerError(err, {
+        tags: { area: "stripe", event: "invoice.paid" },
+      });
+      return NextResponse.json({ error: "Handler failed" }, { status: 500 });
+    }
   }
 
   return NextResponse.json({ received: true });
