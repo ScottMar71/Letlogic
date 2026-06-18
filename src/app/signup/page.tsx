@@ -1,15 +1,15 @@
 import { Suspense } from "react";
 import { AuthPageShell } from "@/components/auth/auth-page-shell";
-import { LoginForm } from "./login-form";
+import { SignupForm } from "./signup-form";
 import { privatePageMetadata } from "@/lib/seo/metadata";
 
-export const metadata = privatePageMetadata("Sign in");
+export const metadata = privatePageMetadata("Create account");
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <AuthPageShell>
       <Suspense>
-        <LoginForm />
+        <SignupForm />
       </Suspense>
     </AuthPageShell>
   );

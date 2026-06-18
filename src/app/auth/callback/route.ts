@@ -3,7 +3,7 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 import { safeNextPath } from "@/lib/request-origin";
 
-/** signInWithOtp magic links verify with type `email`, not `magiclink`. */
+/** Email OTP links (e.g. password recovery) may use type `email` or legacy `magiclink`. */
 function resolveEmailOtpType(type: EmailOtpType | null): EmailOtpType | null {
   if (!type) return null;
   if (type === "magiclink") return "email";

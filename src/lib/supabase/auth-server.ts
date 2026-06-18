@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 /**
  * Supabase client for auth server actions and route handlers.
  * Unlike the general server client, this never swallows cookie writes —
- * PKCE verifiers must be stored when sending magic links.
+ * PKCE verifiers must be stored when initiating auth email flows.
  */
 export async function createAuthClient() {
   const cookieStore = await cookies();

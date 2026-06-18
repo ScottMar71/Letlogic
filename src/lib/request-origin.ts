@@ -15,7 +15,7 @@ function isLocalHost(host: string): boolean {
 }
 
 /**
- * Canonical origin for magic-link redirects.
+ * Canonical origin for auth email redirects (password reset, etc.).
  * Production always uses NEXT_PUBLIC_SITE_URL so emails never point at preview URLs.
  * Local dev uses the request host (localhost).
  */
@@ -48,7 +48,7 @@ export function getRequestOrigin(headersList: RequestHeaders): string {
   return getAuthRedirectOrigin(headersList);
 }
 
-/** Build the Supabase email redirect URL for magic-link sign-in. */
+/** Build the Supabase email redirect URL for auth callbacks. */
 export function buildAuthCallbackUrl(origin: string, next: string): string {
   return `${normalizeOrigin(origin)}/auth/callback?next=${encodeURIComponent(next)}`;
 }

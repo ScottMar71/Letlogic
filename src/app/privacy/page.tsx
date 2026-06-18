@@ -48,7 +48,8 @@ export default function PrivacyPage() {
       <ul>
         <li>
           <strong>Account data:</strong> email address and authentication
-          details (we use magic-link sign-in, so we do not store passwords).
+          credentials (passwords are stored securely by our auth provider; we
+          do not store them in plain text).
         </li>
         <li>
           <strong>Billing data:</strong> purchase and subscription records.
