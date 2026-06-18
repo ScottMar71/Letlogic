@@ -15,9 +15,13 @@ const LINKS = [
 
 type MobileNavProps = {
   showPricing?: boolean;
+  isAuthenticated?: boolean;
 };
 
-export function MobileNav({ showPricing = true }: MobileNavProps) {
+export function MobileNav({
+  showPricing = true,
+  isAuthenticated = false,
+}: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 
@@ -53,9 +57,15 @@ export function MobileNav({ showPricing = true }: MobileNavProps) {
             {link.label}
           </Link>
         ))}
-        <Link href="/login" className="btn-primary mt-4" onClick={close}>
-          Sign in
-        </Link>
+        {isAuthenticated ? (
+          <Link href="/dashboard" className="btn-primary mt-4" onClick={close}>
+            Dashboard
+          </Link>
+        ) : (
+          <Link href="/login" className="btn-primary mt-4" onClick={close}>
+            Sign in
+          </Link>
+        )}
       </MobileNavDrawer>
     </>
   );

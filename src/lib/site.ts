@@ -19,7 +19,7 @@ export const site = {
   domain: "letlogic.app",
   url: env("NEXT_PUBLIC_SITE_URL", "https://www.letlogic.app"),
   description:
-    "AI-powered tenant screening for UK landlords — turn applicant data into a clear risk score, summary, and recommendation in seconds.",
+    "Paste an applicant's details and get an explainable risk score, summary, and recommendation — not a credit check, just a faster way to decide.",
   email: env("NEXT_PUBLIC_CONTACT_EMAIL", "hello@letlogic.app"),
   supportEmail: env("NEXT_PUBLIC_SUPPORT_EMAIL", "support@letlogic.app"),
   privacyEmail: env("NEXT_PUBLIC_PRIVACY_EMAIL", "privacy@letlogic.app"),

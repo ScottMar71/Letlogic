@@ -17,7 +17,7 @@ import { marketingPageMetadata } from "@/lib/seo/metadata";
 import { site } from "@/lib/site";
 
 export const metadata = marketingPageMetadata({
-  title: "AI tenant screening for UK landlords",
+  title: "Rent smarter. Trust faster.",
   description: site.description,
   path: "/",
 });
@@ -68,7 +68,7 @@ export default function Home() {
       <main id="main-content" className="mx-auto max-w-[var(--container-content)] flex-1 space-y-16 px-4 py-16">
         <section className="space-y-6">
           <h1 className="max-w-3xl text-display font-bold tracking-tight text-text">
-            Screen UK tenant applications in seconds
+            Rent smarter. Trust faster.
           </h1>
           <p className="max-w-2xl text-lg text-text-muted">
             Paste an applicant&apos;s details and get an explainable risk score,

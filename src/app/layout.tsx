@@ -14,7 +14,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — UK tenant screening`,
+    default: `${site.name} — Rent smarter. Trust faster.`,
     template: `%s | ${site.name}`,
   },
   description: site.description,

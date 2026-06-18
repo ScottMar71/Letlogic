@@ -14,7 +14,7 @@ import { createClient } from "@/lib/supabase/server";
 export async function signInWithPassword(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const next = safeNextPath((formData.get("next") as string) || "/");
+  const next = safeNextPath((formData.get("next") as string) || "/dashboard");
 
   if (!email) return { error: "Email is required" };
   if (!password) return { error: "Password is required" };

@@ -2,10 +2,19 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Building2, ChevronRight, MapPin, Plus, Search } from "lucide-react";
+import {
+  Building2,
+  ChevronRight,
+  GitCompare,
+  MapPin,
+  Plus,
+  Search,
+} from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Card } from "@/components/ui/card";
+import { RecommendationChip } from "@/components/screening/recommendation-chip";
 import { RiskChip } from "@/components/screening/risk-chip";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import type {
   AssessmentSummary,
@@ -18,6 +27,8 @@ type DashboardListsProps = {
   properties: PropertyRow[];
   propertyActivity: Record<string, PropertyScreeningActivity>;
   propertyLabels: Record<string, string>;
+  initialRiskFilter?: string;
+  initialRecommendationFilter?: string;
 };
 
 function applicantInitials(name: string): string {
@@ -33,26 +44,41 @@ function propertyActivityLabel(activity: PropertyScreeningActivity | undefined):
   return `${count} · Last ${formatRelativeTime(activity.lastScreenedAt)}`;
 }
 
+function truncateSummary(text: string, maxLength = 120): string {
+  const trimmed = text.trim();
+  if (trimmed.length <= maxLength) return trimmed;
+  return `${trimmed.slice(0, maxLength).trimEnd()}…`;
+}
+
 export function DashboardLists({
   screenings,
   properties,
   propertyActivity,
   propertyLabels,
+  initialRiskFilter = "all",
+  initialRecommendationFilter = "all",
 }: DashboardListsProps) {
   const [screeningQuery, setScreeningQuery] = useState("");
   const [propertyQuery, setPropertyQuery] = useState("");
-  const [riskFilter, setRiskFilter] = useState<string>("all");
+  const [riskFilter, setRiskFilter] = useState(initialRiskFilter);
+  const [recommendationFilter, setRecommendationFilter] = useState(
+    initialRecommendationFilter,
+  );
 
   const filteredScreenings = useMemo(() => {
     return screenings.filter((a) => {
-      const matchesQuery = a.applicantName
-        .toLowerCase()
-        .includes(screeningQuery.toLowerCase());
+      const query = screeningQuery.toLowerCase();
+      const matchesQuery =
+        a.applicantName.toLowerCase().includes(query) ||
+        (a.summary?.toLowerCase().includes(query) ?? false);
       const matchesRisk =
         riskFilter === "all" || a.riskLevel === riskFilter;
-      return matchesQuery && matchesRisk;
+      const matchesRecommendation =
+        recommendationFilter === "all" ||
+        a.recommendation === recommendationFilter;
+      return matchesQuery && matchesRisk && matchesRecommendation;
     });
-  }, [screenings, screeningQuery, riskFilter]);
+  }, [screenings, screeningQuery, riskFilter, recommendationFilter]);
 
   const filteredProperties = useMemo(() => {
     return properties.filter((p) => {
@@ -96,6 +122,17 @@ export function DashboardLists({
               <option value="medium">Medium</option>
               <option value="high">High</option>
             </select>
+            <select
+              value={recommendationFilter}
+              onChange={(e) => setRecommendationFilter(e.target.value)}
+              className="input min-h-9 w-auto py-1.5"
+              aria-label="Filter by recommendation"
+            >
+              <option value="all">All decisions</option>
+              <option value="proceed">Proceed</option>
+              <option value="proceed_with_conditions">With conditions</option>
+              <option value="do_not_proceed">Do not proceed</option>
+            </select>
           </div>
         </div>
 
@@ -123,36 +160,50 @@ export function DashboardLists({
                 <li key={a.id}>
                   <Link
                     href={`/screenings/${a.id}`}
-                    className="group flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-surface-muted"
+                    className="group flex items-start gap-3 px-4 py-3.5 transition-colors hover:bg-surface-muted"
                   >
                     <span
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-semibold text-brand-700"
+                      className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-semibold text-brand-700"
                       aria-hidden
                     >
                       {applicantInitials(a.applicantName)}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-medium text-text group-hover:text-brand-700">
-                        {a.applicantName}
-                      </p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate font-medium text-text group-hover:text-brand-700">
+                          {a.applicantName}
+                        </p>
+                        <RecommendationChip recommendation={a.recommendation} />
+                      </div>
                       <p className="text-xs text-text-subtle">
                         {a.incomeMultiple != null
                           ? `${a.incomeMultiple}x income · `
                           : ""}
                         {formatRelativeTime(a.createdAt)}
                       </p>
+                      {a.summary ? (
+                        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-text-muted">
+                          {truncateSummary(a.summary)}
+                        </p>
+                      ) : null}
                       {propertyLabel ? (
-                        <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-text-muted">
+                        <p className="mt-1 flex items-center gap-1 truncate text-xs text-text-muted">
                           <MapPin className="h-3 w-3 shrink-0" aria-hidden />
                           {propertyLabel}
                         </p>
-                      ) : null}
+                      ) : (
+                        <p className="mt-1 text-xs italic text-text-subtle">
+                          Not linked to a property
+                        </p>
+                      )}
                     </div>
-                    <RiskChip level={a.riskLevel} score={a.riskScore} />
-                    <ChevronRight
-                      className="h-4 w-4 shrink-0 text-text-subtle opacity-0 transition-opacity group-hover:opacity-100"
-                      aria-hidden
-                    />
+                    <div className="flex shrink-0 flex-col items-end gap-2">
+                      <RiskChip level={a.riskLevel} score={a.riskScore} />
+                      <ChevronRight
+                        className="h-4 w-4 text-text-subtle opacity-0 transition-opacity group-hover:opacity-100"
+                        aria-hidden
+                      />
+                    </div>
                   </Link>
                 </li>
               );
@@ -204,6 +255,7 @@ export function DashboardLists({
           <ul className="space-y-3">
             {filteredProperties.map((p) => {
               const activity = propertyActivity[p.id];
+              const canCompare = (activity?.screeningCount ?? 0) >= 2;
 
               return (
                 <li key={p.id}>
@@ -218,9 +270,17 @@ export function DashboardLists({
                       <Building2 className="h-4 w-4" />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-text group-hover:text-brand-700">
-                        {p.addressLine1}
-                      </p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="font-medium text-text group-hover:text-brand-700">
+                          {p.addressLine1}
+                        </p>
+                        {canCompare ? (
+                          <StatusBadge variant="pro">
+                            <GitCompare className="mr-1 inline h-3 w-3" aria-hidden />
+                            Compare
+                          </StatusBadge>
+                        ) : null}
+                      </div>
                       <p className="text-sm text-text-subtle">
                         {p.city}, {p.postcode}
                       </p>
@@ -243,6 +303,11 @@ export function DashboardLists({
                           {propertyActivityLabel(activity)}
                         </span>
                       </div>
+                      {canCompare ? (
+                        <p className="mt-1.5 text-xs text-brand-700">
+                          {activity!.screeningCount} applicants ready to compare
+                        </p>
+                      ) : null}
                     </div>
                     <ChevronRight
                       className="mt-0.5 h-4 w-4 shrink-0 text-text-subtle opacity-0 transition-opacity group-hover:opacity-100"
@@ -258,3 +323,4 @@ export function DashboardLists({
     </div>
   );
 }
+

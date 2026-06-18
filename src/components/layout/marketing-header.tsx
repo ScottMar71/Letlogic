@@ -5,6 +5,7 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 export type MarketingHeaderProps = {
   width?: "narrow" | "content" | "wide";
   showPricing?: boolean;
+  isAuthenticated?: boolean;
 };
 
 const widthClass = {
@@ -16,6 +17,7 @@ const widthClass = {
 export function MarketingHeader({
   width = "content",
   showPricing = true,
+  isAuthenticated = false,
 }: MarketingHeaderProps) {
   return (
     <header className="border-b border-border bg-surface">
@@ -38,10 +40,19 @@ export function MarketingHeader({
           <Link href="/sample" className="nav-link hidden sm:inline-flex">
             Sample
           </Link>
-          <Link href="/login" className="btn-primary hidden px-4 sm:inline-flex">
-            Sign in
-          </Link>
-          <MobileNav showPricing={showPricing} />
+          {isAuthenticated ? (
+            <Link
+              href="/dashboard"
+              className="btn-primary hidden px-4 sm:inline-flex"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <Link href="/login" className="btn-primary hidden px-4 sm:inline-flex">
+              Sign in
+            </Link>
+          )}
+          <MobileNav showPricing={showPricing} isAuthenticated={isAuthenticated} />
         </nav>
       </div>
     </header>

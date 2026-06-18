@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { AuthenticatedPage } from "@/components/layout/authenticated-page";
 import { CreditAlertBanner } from "@/components/dashboard/credit-alert-banner";
 import { DashboardLists } from "@/components/dashboard/dashboard-lists";
-import { DashboardRiskSummary } from "@/components/dashboard/dashboard-risk-summary";
+import { DashboardPortfolioSummary } from "@/components/dashboard/dashboard-portfolio-summary";
 import { DashboardStats } from "@/components/dashboard/dashboard-stats";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { OnboardingChecklist } from "@/components/onboarding/checklist";
@@ -21,9 +21,15 @@ import { privatePageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = privatePageMetadata("Dashboard");
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ risk?: string; recommendation?: string }>;
+}) {
   const user = await getAuthenticatedUser();
   if (!user) redirect("/login?next=/dashboard");
+
+  const { risk, recommendation } = await searchParams;
 
   const admin = createAdminClient();
   const [balance, recent, properties, counts, propertyActivity] = await Promise.all([
@@ -83,7 +89,12 @@ export default async function DashboardPage() {
       <QuickActions balance={balance} hasScreenings={counts.total > 0} />
 
       {counts.total > 0 ? (
-        <DashboardRiskSummary screenings={recent} />
+        <DashboardPortfolioSummary
+          screenings={recent}
+          properties={properties}
+          propertyActivity={propertyActivity}
+          totalScreenings={counts.total}
+        />
       ) : null}
 
       <OnboardingChecklist
@@ -96,6 +107,8 @@ export default async function DashboardPage() {
         properties={properties}
         propertyActivity={propertyActivity}
         propertyLabels={propertyLabels}
+        initialRiskFilter={risk ?? "all"}
+        initialRecommendationFilter={recommendation ?? "all"}
       />
     </AuthenticatedPage>
   );

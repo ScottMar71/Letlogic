@@ -9,7 +9,10 @@ export type AssessmentSummary = {
   riskScore: number;
   riskLevel: string;
   recommendation: string;
+  summary: string | null;
   incomeMultiple: number | null;
+  jobStabilityScore: number | null;
+  tenancyStabilityScore: number | null;
   createdAt: string;
 };
 
@@ -22,7 +25,7 @@ type ApplicationJoin = {
 };
 
 const SUMMARY_SELECT =
-  "id, risk_score, risk_level, recommendation, created_at, applications!inner(applicant_name, property_id, income_multiple)";
+  "id, risk_score, risk_level, recommendation, summary, created_at, applications!inner(applicant_name, property_id, income_multiple, job_stability_score, tenancy_stability_score)";
 
 function toSummary(row: Record<string, unknown>): AssessmentSummary {
   const app = (row.applications ?? {}) as Partial<ApplicationJoin>;
@@ -33,7 +36,10 @@ function toSummary(row: Record<string, unknown>): AssessmentSummary {
     riskScore: row.risk_score as number,
     riskLevel: row.risk_level as string,
     recommendation: row.recommendation as string,
+    summary: (row.summary as string | null) ?? null,
     incomeMultiple: app.income_multiple ?? null,
+    jobStabilityScore: app.job_stability_score ?? null,
+    tenancyStabilityScore: app.tenancy_stability_score ?? null,
     createdAt: row.created_at as string,
   };
 }

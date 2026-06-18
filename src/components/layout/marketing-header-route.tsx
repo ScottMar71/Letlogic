@@ -12,8 +12,14 @@ const ROUTE_HEADER: Record<string, Partial<MarketingHeaderProps>> = {
   "/sample": { width: "narrow" },
 };
 
-export function MarketingHeaderRoute() {
+type MarketingHeaderRouteProps = {
+  isAuthenticated?: boolean;
+};
+
+export function MarketingHeaderRoute({
+  isAuthenticated = false,
+}: MarketingHeaderRouteProps) {
   const pathname = usePathname();
   const overrides = ROUTE_HEADER[pathname] ?? {};
-  return <MarketingHeader {...overrides} />;
+  return <MarketingHeader {...overrides} isAuthenticated={isAuthenticated} />;
 }
