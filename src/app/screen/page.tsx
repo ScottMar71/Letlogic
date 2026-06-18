@@ -59,6 +59,7 @@ export default async function ScreenPage({ searchParams }: PageProps) {
         </Alert>
 
         <ScreeningWorkspace
+          key={reanalyseFrom?.applicationId ?? "new"}
           propertyId={reanalyseFrom?.propertyId ?? undefined}
           defaultRent={reanalyseFrom?.rentAmount ?? undefined}
           reanalyseFrom={reanalyseFrom ?? undefined}

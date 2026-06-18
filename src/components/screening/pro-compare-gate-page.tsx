@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { AppHeader } from "@/components/layout/app-header";
 import { PageHeader } from "@/components/ui/page-header";
 import { ProCompareGate } from "@/components/screening/pro-compare-gate";

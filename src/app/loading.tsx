@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function RootLoading() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface-muted">

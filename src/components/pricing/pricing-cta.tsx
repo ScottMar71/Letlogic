@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createCreditCheckout } from "@/app/actions/billing";
-import { CREDIT_PACK_LIST, formatGbp, unitPricePence, type CreditPack } from "@/lib/screening/pricing";
+import { formatGbp, unitPricePence, type CreditPack } from "@/lib/screening/pricing";
 import { Button } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 

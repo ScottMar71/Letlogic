@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ClipboardPaste, ListChecks } from "lucide-react";
 import { analyseApplicant, type AnalyseResult } from "@/app/actions/screening";
 import { BuyCreditsModal } from "@/components/screening/buy-credits-modal";
 import { AssessmentResultPanel } from "@/components/screening/assessment-result";
@@ -55,20 +56,6 @@ export function ScreeningWorkspace({
   const [form, setForm] = useState<Record<string, string>>(
     reanalyseFrom?.structuredData ?? {},
   );
-
-  useEffect(() => {
-    if (!reanalyseFrom) return;
-    setMode(reanalyseFrom.inputMode);
-    setApplicantName(reanalyseFrom.applicantName);
-    if (reanalyseFrom.rentAmount != null) {
-      setRent(String(reanalyseFrom.rentAmount));
-    }
-    if (reanalyseFrom.monthlyIncome != null) {
-      setIncome(String(reanalyseFrom.monthlyIncome));
-    }
-    setRawText(reanalyseFrom.rawText ?? "");
-    setForm(reanalyseFrom.structuredData ?? {});
-  }, [reanalyseFrom]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -162,8 +149,18 @@ export function ScreeningWorkspace({
           <SegmentedControl
             aria-label="Input mode"
             options={[
-              { value: "paste", label: "Paste application" },
-              { value: "form", label: "Structured form" },
+              {
+                value: "paste",
+                label: "Paste application",
+                icon: ClipboardPaste,
+                description: "Email, PDF text, or notes",
+              },
+              {
+                value: "form",
+                label: "Structured form",
+                icon: ListChecks,
+                description: "Fill in fields step by step",
+              },
             ]}
             value={mode}
             onChange={setMode}

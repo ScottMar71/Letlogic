@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { LogoLink } from "@/components/brand/logo";
 import { CreditBalance } from "@/components/screening/credit-balance";
 import { SignOutButton } from "@/components/layout/sign-out-button";

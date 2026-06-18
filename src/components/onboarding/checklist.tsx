@@ -1,12 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Check, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 const STORAGE_KEY = "letlogic-onboarding-dismissed";
 const SAMPLE_VIEWED_KEY = "letlogic-sample-viewed";
+
+const storageListeners = new Set<() => void>();
+
+function subscribeLocalStorage(callback: () => void) {
+  storageListeners.add(callback);
+  const onStorage = () => callback();
+  window.addEventListener("storage", onStorage);
+  return () => {
+    storageListeners.delete(callback);
+    window.removeEventListener("storage", onStorage);
+  };
+}
+
+function notifyLocalStorage() {
+  storageListeners.forEach((callback) => callback());
+}
+
+function readStorageFlag(key: string): boolean {
+  return localStorage.getItem(key) === "1";
+}
 
 type OnboardingChecklistProps = {
   hasScreenings: boolean;
@@ -17,13 +37,16 @@ export function OnboardingChecklist({
   hasScreenings,
   hasProperties,
 }: OnboardingChecklistProps) {
-  const [dismissed, setDismissed] = useState(true);
-  const [hasViewedSample, setHasViewedSample] = useState(false);
-
-  useEffect(() => {
-    setDismissed(localStorage.getItem(STORAGE_KEY) === "1");
-    setHasViewedSample(localStorage.getItem(SAMPLE_VIEWED_KEY) === "1");
-  }, []);
+  const dismissed = useSyncExternalStore(
+    subscribeLocalStorage,
+    () => readStorageFlag(STORAGE_KEY),
+    () => true,
+  );
+  const hasViewedSample = useSyncExternalStore(
+    subscribeLocalStorage,
+    () => readStorageFlag(SAMPLE_VIEWED_KEY),
+    () => false,
+  );
 
   const steps = [
     {
@@ -53,7 +76,7 @@ export function OnboardingChecklist({
 
   function dismiss() {
     localStorage.setItem(STORAGE_KEY, "1");
-    setDismissed(true);
+    notifyLocalStorage();
   }
 
   const progress = Math.round((completed / steps.length) * 100);
@@ -120,4 +143,5 @@ export function OnboardingChecklist({
 /** Call from the sample report page to mark onboarding progress. */
 export function markSampleViewed(): void {
   localStorage.setItem(SAMPLE_VIEWED_KEY, "1");
+  notifyLocalStorage();
 }
