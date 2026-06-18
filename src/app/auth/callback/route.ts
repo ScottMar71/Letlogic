@@ -3,6 +3,13 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 import { safeNextPath } from "@/lib/request-origin";
 
+/** signInWithOtp magic links verify with type `email`, not `magiclink`. */
+function resolveEmailOtpType(type: EmailOtpType | null): EmailOtpType | null {
+  if (!type) return null;
+  if (type === "magiclink") return "email";
+  return type;
+}
+
 function resolveOrigin(request: NextRequest): string {
   const forwardedHost = request.headers.get("x-forwarded-host");
   const forwardedProto = request.headers.get("x-forwarded-proto") ?? "https";
@@ -16,7 +23,9 @@ export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const tokenHash = requestUrl.searchParams.get("token_hash");
-  const type = requestUrl.searchParams.get("type") as EmailOtpType | null;
+  const type = resolveEmailOtpType(
+    requestUrl.searchParams.get("type") as EmailOtpType | null,
+  );
   const next = safeNextPath(requestUrl.searchParams.get("next"));
   const origin = resolveOrigin(request);
 

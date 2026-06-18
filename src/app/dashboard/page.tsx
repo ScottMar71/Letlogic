@@ -32,18 +32,34 @@ export default async function DashboardPage() {
     countAssessments(admin, user.id),
   ]);
 
+  const displayName =
+    user.user_metadata?.full_name?.split(" ")[0] ??
+    user.email?.split("@")[0] ??
+    "there";
+
   return (
     <div className="min-h-screen bg-surface-muted">
       <AppHeader creditBalance={balance} width="content" />
 
       <main id="main-content" className="mx-auto max-w-[var(--container-content)] space-y-8 px-4 py-8">
         <PageHeader
-          title="Dashboard"
-          description="Overview of your screenings and properties."
+          title={`Welcome back, ${displayName}`}
+          description={
+            balance === 0
+              ? "You’re out of credits — top up in Settings to run your next screening."
+              : counts.total === 0
+                ? "Get started by screening an applicant or viewing a sample report."
+                : "Here’s what’s happening with your screenings and properties."
+          }
           actions={
-            <Link href="/screen" className="btn-primary">
-              New screening
-            </Link>
+            <div className="flex flex-wrap gap-2">
+              <Link href="/sample" className="btn-secondary">
+                View sample
+              </Link>
+              <Link href="/screen" className="btn-primary">
+                New screening
+              </Link>
+            </div>
           }
         />
 

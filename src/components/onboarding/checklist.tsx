@@ -56,14 +56,29 @@ export function OnboardingChecklist({
     setDismissed(true);
   }
 
+  const progress = Math.round((completed / steps.length) * 100);
+
   return (
     <Card className="border-brand-200 bg-brand-50">
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0 flex-1">
           <p className="font-semibold text-text">Get started with LetLogic</p>
           <p className="mt-1 text-sm text-text-muted">
             {completed} of {steps.length} steps complete
           </p>
+          <div
+            className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface"
+            role="progressbar"
+            aria-valuenow={progress}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Onboarding progress"
+          >
+            <div
+              className="h-full rounded-full bg-brand-600 transition-all"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
         <button
           type="button"
