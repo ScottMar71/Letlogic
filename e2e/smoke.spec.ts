@@ -4,7 +4,7 @@ test.describe("marketing smoke", () => {
   test("homepage loads with primary CTAs", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: /screen uk tenant applications/i }),
+      page.getByRole("heading", { name: /rent smarter\. trust faster\./i }),
     ).toBeVisible();
     await expect(page.getByRole("link", { name: /view a sample report/i })).toBeVisible();
     await expect(page.getByRole("link", { name: /sign in to screen/i })).toBeVisible();

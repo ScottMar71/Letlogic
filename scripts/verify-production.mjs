@@ -76,7 +76,7 @@ async function main() {
 
   // Public pages
   for (const [path, needle] of [
-    ["/", "Screen UK tenant applications"],
+    ["/", "Rent smarter. Trust faster."],
     ["/pricing", "Simple, honest pricing"],
     ["/how-it-works", "How it works"],
     ["/sample", "Sample report"],
