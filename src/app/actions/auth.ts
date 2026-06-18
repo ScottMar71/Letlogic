@@ -7,6 +7,7 @@ import {
   getAuthRedirectOrigin,
   safeNextPath,
 } from "@/lib/request-origin";
+import { friendlyAuthError } from "@/lib/auth/errors";
 import { createAuthClient } from "@/lib/supabase/auth-server";
 import { createClient } from "@/lib/supabase/server";
 
@@ -28,7 +29,7 @@ export async function signInWithEmail(formData: FormData) {
     },
   });
 
-  if (error) return { error: error.message };
+  if (error) return { error: friendlyAuthError(error.message) };
   return { success: true };
 }
 
