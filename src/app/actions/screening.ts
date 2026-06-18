@@ -26,17 +26,23 @@ export type AnalyseResult =
       error: string;
     };
 
+function resolveMonthlyIncome(input: ScreeningInput): number | null {
+  if (input.applicantMonthlyIncome != null) return input.applicantMonthlyIncome;
+  if (input.inputMode === "form") return input.monthlyIncome ?? null;
+  return null;
+}
+
 function metricsInputFrom(input: ScreeningInput) {
+  const monthlyIncome = resolveMonthlyIncome(input);
   if (input.inputMode === "form") {
     return {
-      monthlyIncome: input.monthlyIncome ?? null,
+      monthlyIncome,
       rentAmount: input.rentAmount,
       monthsInJob: input.monthsInJob ?? null,
       monthsAtAddresses: input.monthsAtCurrentAddress ?? null,
     };
   }
-  // Paste mode: no reliable structured numbers, so only rent is known.
-  return { rentAmount: input.rentAmount };
+  return { monthlyIncome, rentAmount: input.rentAmount };
 }
 
 export async function analyseApplicant(
@@ -126,8 +132,7 @@ export async function analyseApplicant(
           input_mode: input.inputMode,
           raw_text: input.inputMode === "paste" ? input.rawText : null,
           structured_data: input.inputMode === "form" ? input : null,
-          monthly_income:
-            input.inputMode === "form" ? input.monthlyIncome ?? null : null,
+          monthly_income: resolveMonthlyIncome(input),
           income_multiple: metrics.incomeMultiple,
           job_stability_score: metrics.jobStabilityScore,
           tenancy_stability_score: metrics.tenancyStabilityScore,
@@ -145,8 +150,7 @@ export async function analyseApplicant(
           input_mode: input.inputMode,
           raw_text: input.inputMode === "paste" ? input.rawText : null,
           structured_data: input.inputMode === "form" ? input : null,
-          monthly_income:
-            input.inputMode === "form" ? input.monthlyIncome ?? null : null,
+          monthly_income: resolveMonthlyIncome(input),
           income_multiple: metrics.incomeMultiple,
           job_stability_score: metrics.jobStabilityScore,
           tenancy_stability_score: metrics.tenancyStabilityScore,

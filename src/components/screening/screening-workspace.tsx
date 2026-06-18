@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { analyseApplicant, type AnalyseResult } from "@/app/actions/screening";
@@ -16,7 +16,6 @@ import type { AssessmentRecord } from "@/lib/screening/types";
 type WorkspaceProps = {
   propertyId?: string;
   defaultRent?: number;
-  defaultIncomeMultiple?: number;
   reanalyseFrom?: ApplicationSource;
 };
 
@@ -32,7 +31,6 @@ const PASTE_HINTS = [
 export function ScreeningWorkspace({
   propertyId,
   defaultRent,
-  defaultIncomeMultiple = 2.5,
   reanalyseFrom,
 }: WorkspaceProps) {
   const router = useRouter();
@@ -48,7 +46,11 @@ export function ScreeningWorkspace({
         ? String(defaultRent)
         : "",
   );
-  const [multiple, setMultiple] = useState(String(defaultIncomeMultiple));
+  const [income, setIncome] = useState(
+    reanalyseFrom?.monthlyIncome != null
+      ? String(reanalyseFrom.monthlyIncome)
+      : "",
+  );
   const [rawText, setRawText] = useState(reanalyseFrom?.rawText ?? "");
   const [form, setForm] = useState<Record<string, string>>(
     reanalyseFrom?.structuredData ?? {},
@@ -60,6 +62,9 @@ export function ScreeningWorkspace({
     setApplicantName(reanalyseFrom.applicantName);
     if (reanalyseFrom.rentAmount != null) {
       setRent(String(reanalyseFrom.rentAmount));
+    }
+    if (reanalyseFrom.monthlyIncome != null) {
+      setIncome(String(reanalyseFrom.monthlyIncome));
     }
     setRawText(reanalyseFrom.rawText ?? "");
     setForm(reanalyseFrom.structuredData ?? {});
@@ -76,13 +81,22 @@ export function ScreeningWorkspace({
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
+  const incomeMultiple = useMemo(() => {
+    const rentAmount = Number(rent);
+    const monthlyIncome = Number(income);
+    if (rentAmount > 0 && monthlyIncome > 0) {
+      return Math.round((monthlyIncome / rentAmount) * 100) / 100;
+    }
+    return null;
+  }, [rent, income]);
+
   function buildInput() {
     const base = {
       applicantName,
       propertyId,
       existingApplicationId: reanalyseFrom?.applicationId,
       rentAmount: rent,
-      requiredIncomeMultiple: multiple,
+      applicantMonthlyIncome: income || undefined,
     };
     if (mode === "paste") return { ...base, inputMode: "paste" as const, rawText };
     return {
@@ -92,7 +106,6 @@ export function ScreeningWorkspace({
       employmentStatus: form.employmentStatus || undefined,
       jobTitle: form.jobTitle || undefined,
       employer: form.employer || undefined,
-      monthlyIncome: form.monthlyIncome || undefined,
       monthsInJob: form.monthsInJob || undefined,
       declaredDebts: form.declaredDebts || undefined,
       adverseCredit: form.adverseCredit || undefined,
@@ -158,44 +171,64 @@ export function ScreeningWorkspace({
 
           <div className="mt-4 space-y-3">
             <p className="section-label">Property context</p>
-            <div className="grid grid-cols-1 gap-3 rounded-xl border border-border bg-surface-muted p-3 sm:grid-cols-2">
-              <Field label="Applicant name" htmlFor="applicant-name">
-                <input
-                  id="applicant-name"
-                  value={applicantName}
-                  onChange={(e) => setApplicantName(e.target.value)}
-                  className="input"
-                  placeholder="Jane Doe"
-                />
-              </Field>
-              <Field
-                label="Monthly rent (£)"
-                htmlFor="monthly-rent"
-                hint="The rent for this tenancy."
-              >
-                <input
-                  id="monthly-rent"
-                  type="number"
-                  value={rent}
-                  onChange={(e) => setRent(e.target.value)}
-                  className="input"
-                  placeholder="1200"
-                />
-              </Field>
-              <Field
-                label="Required income multiple"
-                htmlFor="income-multiple"
-                hint="Typically 2.5–3× monthly rent. Higher = stricter affordability."
-              >
-                <input
-                  id="income-multiple"
-                  type="number"
-                  step="0.1"
-                  value={multiple}
-                  onChange={(e) => setMultiple(e.target.value)}
-                  className="input"
-                />
-              </Field>
+            <div className="rounded-xl border border-border bg-surface-muted p-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <Field
+                  label="Applicant name"
+                  htmlFor="applicant-name"
+                  hint="Who you're screening."
+                >
+                  <input
+                    id="applicant-name"
+                    value={applicantName}
+                    onChange={(e) => setApplicantName(e.target.value)}
+                    className="input"
+                    placeholder="Jane Doe"
+                  />
+                </Field>
+                <Field
+                  label="Monthly rent (£)"
+                  htmlFor="monthly-rent"
+                  hint="The rent for this tenancy."
+                >
+                  <input
+                    id="monthly-rent"
+                    type="number"
+                    min="0"
+                    value={rent}
+                    onChange={(e) => setRent(e.target.value)}
+                    className="input"
+                    placeholder="1200"
+                  />
+                </Field>
+                <Field
+                  label="Applicant monthly income (£)"
+                  htmlFor="applicant-income"
+                  hint="Net take-home pay per month."
+                >
+                  <input
+                    id="applicant-income"
+                    type="number"
+                    min="0"
+                    value={income}
+                    onChange={(e) => setIncome(e.target.value)}
+                    className="input"
+                    placeholder="3600"
+                  />
+                </Field>
+              </div>
+              {incomeMultiple != null && (
+                <p className="mt-3 border-t border-border pt-3 text-sm text-text-muted">
+                  Income multiple:{" "}
+                  <span className="font-medium text-text">
+                    {incomeMultiple}×
+                  </span>
+                  <span className="text-text-subtle">
+                    {" "}
+                    — income is {incomeMultiple}× the monthly rent
+                  </span>
+                </p>
+              )}
             </div>
           </div>
 
@@ -242,7 +275,6 @@ export function ScreeningWorkspace({
                 <FormInput label="Employment status" k="employmentStatus" form={form} set={setField} />
                 <FormInput label="Job title" k="jobTitle" form={form} set={setField} />
                 <FormInput label="Employer" k="employer" form={form} set={setField} />
-                <FormInput label="Net monthly income (£)" k="monthlyIncome" form={form} set={setField} type="number" />
                 <FormInput label="Months in current job" k="monthsInJob" form={form} set={setField} type="number" />
                 <FormInput label="Household size" k="householdSize" form={form} set={setField} type="number" />
                 <FormInput label="Declared debts (£)" k="declaredDebts" form={form} set={setField} type="number" />

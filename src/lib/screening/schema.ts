@@ -8,7 +8,7 @@ export const RECOMMENDATIONS = [
 ] as const;
 
 // Fields shared by both input modes. The screening is anchored to a property's
-// rent and the landlord's required income multiple (default 2.5x).
+// rent and optional applicant income (used to pre-compute the income multiple).
 const baseInput = {
   applicantName: z.string().trim().min(2, "Applicant name is required"),
   propertyId: z.string().uuid().optional(),
@@ -17,6 +17,9 @@ const baseInput = {
   rentAmount: z.coerce
     .number()
     .positive("Set the property's monthly rent before screening"),
+  /** Net monthly income entered in property context (optional). */
+  applicantMonthlyIncome: z.coerce.number().nonnegative().optional(),
+  /** Affordability threshold for the LLM; fixed at 2.5× UK standard. */
   requiredIncomeMultiple: z.coerce.number().positive().default(2.5),
 };
 

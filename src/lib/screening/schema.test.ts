@@ -2,15 +2,17 @@ import { describe, expect, it } from "vitest";
 import { assessmentOutputSchema, screeningInputSchema } from "./schema";
 
 describe("screeningInputSchema — paste mode", () => {
-  it("accepts valid paste input and applies the default income multiple", () => {
+  it("accepts applicant monthly income in property context", () => {
     const result = screeningInputSchema.safeParse({
       inputMode: "paste",
       applicantName: "Jane Doe",
       rentAmount: 1200,
+      applicantMonthlyIncome: 3600,
       rawText: "Jane works full time, earns £3,600/month, 4 years in role.",
     });
     expect(result.success).toBe(true);
-    if (result.success && result.data.inputMode === "paste") {
+    if (result.success) {
+      expect(result.data.applicantMonthlyIncome).toBe(3600);
       expect(result.data.requiredIncomeMultiple).toBe(2.5);
     }
   });

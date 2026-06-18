@@ -82,7 +82,8 @@ export function buildScreeningPrompt(
 
 Property context:
 - Monthly rent: £${input.rentAmount.toFixed(2)}
-- Required income multiple: ${input.requiredIncomeMultiple}x
+- Affordability threshold: ${input.requiredIncomeMultiple}× monthly rent (UK standard)
+${input.applicantMonthlyIncome != null ? `- Applicant monthly income (landlord-provided): £${input.applicantMonthlyIncome.toFixed(2)}` : ""}
 
 Pre-computed metrics (authoritative — use these, do not recompute):
 ${formatMetrics(metrics)}

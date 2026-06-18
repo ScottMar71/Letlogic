@@ -230,6 +230,7 @@ export type ApplicationSource = {
   rawText: string | null;
   structuredData: Record<string, string> | null;
   rentAmount: number | null;
+  monthlyIncome: number | null;
 };
 
 /** Load prior application input for re-analyse (via a past assessment id). */
@@ -241,7 +242,7 @@ export async function getApplicationSourceForAssessment(
   const { data } = await admin
     .from("assessments")
     .select(
-      "application_id, applications!inner(applicant_name, property_id, input_mode, raw_text, structured_data, properties(rent_amount))",
+      "application_id, applications!inner(applicant_name, property_id, input_mode, raw_text, structured_data, monthly_income, properties(rent_amount))",
     )
     .eq("user_id", userId)
     .eq("id", assessmentId)
@@ -255,6 +256,7 @@ export async function getApplicationSourceForAssessment(
     input_mode: "paste" | "form";
     raw_text: string | null;
     structured_data: Record<string, unknown> | null;
+    monthly_income: number | null;
     properties?: { rent_amount: number | null } | null;
   };
 
@@ -276,6 +278,7 @@ export async function getApplicationSourceForAssessment(
     rawText: app.raw_text,
     structuredData: formFields,
     rentAmount: app.properties?.rent_amount ?? null,
+    monthlyIncome: app.monthly_income,
   };
 }
 
