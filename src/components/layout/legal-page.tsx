@@ -21,7 +21,10 @@ export function LegalPage({
     <div className="flex min-h-screen flex-col bg-surface-muted">
       <MarketingHeader />
 
-      <main className="mx-auto w-full max-w-[var(--container-narrow)] flex-1 px-4 py-12">
+      <main
+        id="main-content"
+        className="mx-auto w-full max-w-[var(--container-narrow)] flex-1 px-4 py-12"
+      >
         <header className="border-b border-border pb-6">
           <h1 className="text-2xl font-bold tracking-tight text-text">
             {title}

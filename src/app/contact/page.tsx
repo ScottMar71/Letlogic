@@ -1,19 +1,21 @@
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
 import { site } from "@/lib/site";
+import { JsonLd, breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { marketingPageMetadata } from "@/lib/seo/metadata";
 import { ContactForm } from "./contact-form";
 
 export const metadata = marketingPageMetadata({
-  title: "Contact",
+  title: "Contact the LetLogic team",
   description:
-    "Get in touch with the LetLogic team — questions, support, and partnership enquiries.",
+    "Get in touch with LetLogic for questions about tenant screening, your account, billing, or letting-agent partnerships. We reply within two working days.",
   path: "/contact",
 });
 
 export default function ContactPage() {
   return (
     <div className="flex min-h-screen flex-col bg-surface-muted">
+      <JsonLd data={breadcrumbJsonLd([{ name: "Contact", path: "/contact" }])} />
       <MarketingHeader />
 
       <main id="main-content" className="mx-auto w-full max-w-[var(--container-content)] flex-1 px-4 py-16">

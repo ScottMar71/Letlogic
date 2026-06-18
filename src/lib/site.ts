@@ -3,6 +3,14 @@ function env(key: string, fallback: string): string {
   return value && value.length > 0 ? value : fallback;
 }
 
+/** Parse a comma-separated env var into a trimmed, non-empty string list. */
+function envList(key: string): string[] {
+  return (process.env[key] ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0);
+}
+
 const PLACEHOLDER_COMPANY_NUMBER = "00000000";
 const PLACEHOLDER_ADDRESS = "[Registered office address]";
 
@@ -28,6 +36,8 @@ export const site = {
     address: env("NEXT_PUBLIC_COMPANY_ADDRESS", PLACEHOLDER_ADDRESS),
   },
   legalUpdated: env("NEXT_PUBLIC_LEGAL_UPDATED", "17 June 2026"),
+  /** Public social/profile URLs used for Organization `sameAs`. Optional. */
+  socialUrls: envList("NEXT_PUBLIC_SOCIAL_URLS"),
 } as const;
 
 /** True when real registered company details are configured (not placeholders). */

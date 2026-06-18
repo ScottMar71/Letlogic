@@ -6,14 +6,44 @@ import {
 } from "lucide-react";
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
+import { FaqSection } from "@/components/marketing/faq-section";
+import { JsonLd, breadcrumbJsonLd, serviceJsonLd } from "@/lib/seo/json-ld";
 import { marketingPageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = marketingPageMetadata({
-  title: "How it works",
+  title: "How tenant screening works",
   description:
-    "How LetLogic turns a tenant application into an explainable risk score, summary, and recommendation in seconds.",
+    "See how LetLogic turns a UK tenant application into an explainable risk score, summary, and recommendation in seconds — paste, analyse, and decide.",
   path: "/how-it-works",
 });
+
+const FAQS = [
+  {
+    question: "Is LetLogic a credit check?",
+    answer:
+      "No. LetLogic is an explainable screening aid, not a credit check or credit-reference agency service. It assesses affordability and stability from the application you provide and never searches credit data or makes the decision for you.",
+  },
+  {
+    question: "What information do I need to screen a tenant?",
+    answer:
+      "Whatever you already have — an email, an application form, or your own notes covering income, employment, and the rent. The more detail you paste in, the more complete the assessment, and LetLogic flags anything important that's missing.",
+  },
+  {
+    question: "How long does a screening take?",
+    answer:
+      "Seconds. Paste the applicant's details and LetLogic returns a risk score, plain-English summary, the reasons behind it, and suggested follow-up questions almost immediately.",
+  },
+  {
+    question: "Does LetLogic make the letting decision for me?",
+    answer:
+      "Never. LetLogic is designed to be Equality Act aware and focuses on affordability and stability rather than protected characteristics. You remain the data controller and the decision-maker for every tenancy.",
+  },
+  {
+    question: "Does it replace formal tenant referencing?",
+    answer:
+      "No. LetLogic complements, but does not replace, formal referencing, Right to Rent checks, or legal advice. Use it to triage applicants quickly and decide what to verify next.",
+  },
+];
 
 const STEPS = [
   {
@@ -65,6 +95,12 @@ const DOES_NOT = [
 export default function HowItWorksPage() {
   return (
     <div className="flex min-h-screen flex-col bg-surface-muted">
+      <JsonLd
+        data={[
+          serviceJsonLd(),
+          breadcrumbJsonLd([{ name: "How it works", path: "/how-it-works" }]),
+        ]}
+      />
       <MarketingHeader />
 
       <main id="main-content" className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-16 px-4 py-16">
@@ -172,6 +208,11 @@ export default function HowItWorksPage() {
             .
           </p>
         </section>
+
+        <FaqSection
+          items={FAQS}
+          intro="Common questions about how LetLogic screens UK tenant applications."
+        />
 
         <section className="rounded-2xl border border-brand-700 bg-brand-700 p-8 text-center text-white">
           <h2 className="text-xl font-semibold">Try it on your next applicant</h2>

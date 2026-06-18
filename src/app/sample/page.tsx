@@ -7,13 +7,14 @@ import { Alert } from "@/components/ui/alert";
 import { PageHeader } from "@/components/ui/page-header";
 import { SampleViewTracker } from "@/components/onboarding/sample-view-tracker";
 import { FunnelTracker } from "@/components/analytics/funnel-tracker";
+import { JsonLd, breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { marketingPageMetadata } from "@/lib/seo/metadata";
 import type { AssessmentRecord } from "@/lib/screening/types";
 
 export const metadata = marketingPageMetadata({
-  title: "Sample report",
+  title: "Sample tenant screening report",
   description:
-    "An example LetLogic tenant screening assessment — see the risk score, summary, and recommendation before you sign up.",
+    "See an example LetLogic tenant screening report — the risk score, plain-English summary, pros and cons, and recommendation — before you sign up to screen.",
   path: "/sample",
 });
 
@@ -57,6 +58,9 @@ const SAMPLE: AssessmentRecord = {
 export default function SamplePage() {
   return (
     <div className="flex min-h-screen flex-col bg-surface-muted">
+      <JsonLd
+        data={breadcrumbJsonLd([{ name: "Sample report", path: "/sample" }])}
+      />
       <SampleViewTracker />
       <FunnelTracker event="sample_viewed" />
       <MarketingHeader width="narrow" />

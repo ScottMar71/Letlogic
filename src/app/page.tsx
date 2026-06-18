@@ -19,7 +19,7 @@ import { marketingPageMetadata } from "@/lib/seo/metadata";
 import { site } from "@/lib/site";
 
 export const metadata = marketingPageMetadata({
-  title: "UK tenant screening",
+  title: "AI tenant screening for UK landlords",
   description: site.description,
   path: "/",
 });

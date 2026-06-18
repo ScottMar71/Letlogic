@@ -8,12 +8,13 @@ import {
 } from "lucide-react";
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
+import { JsonLd, breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { marketingPageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = marketingPageMetadata({
-  title: "About us",
+  title: "About LetLogic — fairer tenant screening",
   description:
-    "Why we built LetLogic — faster, fairer, explainable tenant screening for independent UK landlords.",
+    "Why we built LetLogic: faster, fairer, explainable tenant screening for independent UK landlords who do their own lettings and want better decisions.",
   path: "/about",
 });
 
@@ -43,6 +44,7 @@ const VALUES = [
 export default function AboutPage() {
   return (
     <div className="flex min-h-screen flex-col bg-surface-muted">
+      <JsonLd data={breadcrumbJsonLd([{ name: "About", path: "/about" }])} />
       <MarketingHeader />
 
       <main
