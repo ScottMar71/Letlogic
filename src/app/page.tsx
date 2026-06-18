@@ -1,18 +1,28 @@
 import Link from "next/link";
-import { Shield, Scale, Lock } from "lucide-react";
+import {
+  BadgeCheck,
+  ClipboardPaste,
+  Lock,
+  Scale,
+  ScanSearch,
+  Shield,
+} from "lucide-react";
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
 
 const STEPS = [
   {
+    icon: ClipboardPaste,
     title: "Paste the application",
     body: "Drop in the tenant's details — an email, a form, or notes. No setup.",
   },
   {
+    icon: ScanSearch,
     title: "Analyse in seconds",
     body: "We compute the income multiple and stability, then explain the risk.",
   },
   {
+    icon: BadgeCheck,
     title: "Decide with confidence",
     body: "Get a score, recommendation, and the questions to ask next.",
   },
@@ -71,12 +81,15 @@ export default function Home() {
         </section>
 
         <section className="grid gap-4 sm:grid-cols-3">
-          {STEPS.map((step, i) => (
+          {STEPS.map((step) => (
             <div key={step.title} className="card">
-              <span className="text-sm font-semibold text-brand-600">
-                {i + 1}
-              </span>
-              <h2 className="mt-1 font-semibold text-text">{step.title}</h2>
+              <div
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
+                aria-hidden
+              >
+                <step.icon className="h-5 w-5 text-brand-600" />
+              </div>
+              <h2 className="mt-3 font-semibold text-text">{step.title}</h2>
               <p className="mt-2 text-sm text-text-muted">{step.body}</p>
             </div>
           ))}

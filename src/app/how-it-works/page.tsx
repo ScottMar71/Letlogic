@@ -1,4 +1,9 @@
 import Link from "next/link";
+import {
+  ClipboardPaste,
+  FileText,
+  ScanSearch,
+} from "lucide-react";
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
 
@@ -10,14 +15,17 @@ export const metadata = {
 
 const STEPS = [
   {
+    icon: ClipboardPaste,
     title: "Paste the application",
     body: "Drop in the applicant's details — an email, an online form, or your own notes. There's no setup, integration, or template to learn.",
   },
   {
+    icon: ScanSearch,
     title: "We analyse the signals",
     body: "LetLogic reads the income, employment stability, and affordability against the rent, then weighs the things landlords actually worry about.",
   },
   {
+    icon: FileText,
     title: "Read an explainable result",
     body: "You get a clear risk score, a plain-English summary, the reasons behind it, and the smart follow-up questions to ask before you decide.",
   },
@@ -81,12 +89,15 @@ export default function HowItWorksPage() {
         <section className="space-y-6">
           <h2 className="text-2xl font-bold text-text">Three simple steps</h2>
           <div className="grid gap-4 sm:grid-cols-3">
-            {STEPS.map((step, i) => (
+            {STEPS.map((step) => (
               <div key={step.title} className="card">
-                <span className="text-sm font-semibold text-brand-600">
-                  Step {i + 1}
-                </span>
-                <h3 className="mt-1 font-semibold text-text">{step.title}</h3>
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
+                  aria-hidden
+                >
+                  <step.icon className="h-5 w-5 text-brand-600" />
+                </div>
+                <h3 className="mt-3 font-semibold text-text">{step.title}</h3>
                 <p className="mt-2 text-sm text-text-muted">{step.body}</p>
               </div>
             ))}
