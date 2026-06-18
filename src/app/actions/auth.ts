@@ -35,9 +35,17 @@ export async function signUpWithPassword(formData: FormData) {
   if (!password) return { error: "Password is required" };
 
   const supabase = await createAuthClient();
-  const { error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await supabase.auth.signUp({ email, password });
 
   if (error) return { error: friendlyAuthError(error.message) };
+
+  if (!data.session) {
+    return {
+      error:
+        "An account with this email already exists. Sign in instead — or use Forgot password if you signed up before passwords were added.",
+    };
+  }
+
   redirect(next);
 }
 

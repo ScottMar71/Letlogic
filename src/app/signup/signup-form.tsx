@@ -114,7 +114,22 @@ export function SignupForm() {
         </Link>
       </p>
 
-      {error && <Alert variant="error">{error}</Alert>}
+      {error && (
+        <Alert variant="error">
+          <p>{error}</p>
+          {(error.includes("already exists") || error.includes("Forgot password")) && (
+            <p className="mt-2 text-sm">
+              <Link href="/login" className="font-medium underline">
+                Sign in
+              </Link>
+              {" · "}
+              <Link href="/forgot-password" className="font-medium underline">
+                Forgot password
+              </Link>
+            </p>
+          )}
+        </Alert>
+      )}
     </div>
   );
 }

@@ -62,7 +62,7 @@ const statConfig = [
     getHint: (p: DashboardStatsProps) =>
       p.screeningsThisMonth === 0
         ? "No screenings yet this month"
-        : "Screenings in the last 30 days",
+        : "Screenings this calendar month",
     getHref: () => "/screen",
   },
 ] as const;

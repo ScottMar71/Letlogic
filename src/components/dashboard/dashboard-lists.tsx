@@ -2,15 +2,22 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Building2, ChevronRight, Plus, Search } from "lucide-react";
+import { Building2, ChevronRight, MapPin, Plus, Search } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Card } from "@/components/ui/card";
 import { RiskChip } from "@/components/screening/risk-chip";
-import type { AssessmentSummary, PropertyRow } from "@/lib/screening/queries";
+import { formatRelativeTime } from "@/lib/format-relative-time";
+import type {
+  AssessmentSummary,
+  PropertyRow,
+  PropertyScreeningActivity,
+} from "@/lib/screening/queries";
 
 type DashboardListsProps = {
   screenings: AssessmentSummary[];
   properties: PropertyRow[];
+  propertyActivity: Record<string, PropertyScreeningActivity>;
+  propertyLabels: Record<string, string>;
 };
 
 function applicantInitials(name: string): string {
@@ -20,7 +27,18 @@ function applicantInitials(name: string): string {
   return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
 }
 
-export function DashboardLists({ screenings, properties }: DashboardListsProps) {
+function propertyActivityLabel(activity: PropertyScreeningActivity | undefined): string {
+  if (!activity) return "No screenings yet";
+  const count = `${activity.screeningCount} screening${activity.screeningCount === 1 ? "" : "s"}`;
+  return `${count} · Last ${formatRelativeTime(activity.lastScreenedAt)}`;
+}
+
+export function DashboardLists({
+  screenings,
+  properties,
+  propertyActivity,
+  propertyLabels,
+}: DashboardListsProps) {
   const [screeningQuery, setScreeningQuery] = useState("");
   const [propertyQuery, setPropertyQuery] = useState("");
   const [riskFilter, setRiskFilter] = useState<string>("all");
@@ -50,7 +68,9 @@ export function DashboardLists({ screenings, properties }: DashboardListsProps) 
           <div>
             <h2 className="text-h3 font-semibold text-text">Recent screenings</h2>
             <p className="mt-0.5 text-sm text-text-muted">
-              Your latest applicant assessments
+              {screenings.length > 0
+                ? `Showing ${filteredScreenings.length} of ${screenings.length}`
+                : "Your latest applicant assessments"}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -94,41 +114,49 @@ export function DashboardLists({ screenings, properties }: DashboardListsProps) 
           </Card>
         ) : (
           <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface">
-            {filteredScreenings.map((a) => (
-              <li key={a.id}>
-                <Link
-                  href={`/screenings/${a.id}`}
-                  className="group flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-surface-muted"
-                >
-                  <span
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-semibold text-brand-700"
-                    aria-hidden
+            {filteredScreenings.map((a) => {
+              const propertyLabel = a.propertyId
+                ? propertyLabels[a.propertyId]
+                : null;
+
+              return (
+                <li key={a.id}>
+                  <Link
+                    href={`/screenings/${a.id}`}
+                    className="group flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-surface-muted"
                   >
-                    {applicantInitials(a.applicantName)}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-text group-hover:text-brand-700">
-                      {a.applicantName}
-                    </p>
-                    <p className="text-xs text-text-subtle">
-                      {a.incomeMultiple != null
-                        ? `${a.incomeMultiple}x income · `
-                        : ""}
-                      {new Date(a.createdAt).toLocaleDateString("en-GB", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </p>
-                  </div>
-                  <RiskChip level={a.riskLevel} score={a.riskScore} />
-                  <ChevronRight
-                    className="h-4 w-4 shrink-0 text-text-subtle opacity-0 transition-opacity group-hover:opacity-100"
-                    aria-hidden
-                  />
-                </Link>
-              </li>
-            ))}
+                    <span
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-semibold text-brand-700"
+                      aria-hidden
+                    >
+                      {applicantInitials(a.applicantName)}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-text group-hover:text-brand-700">
+                        {a.applicantName}
+                      </p>
+                      <p className="text-xs text-text-subtle">
+                        {a.incomeMultiple != null
+                          ? `${a.incomeMultiple}x income · `
+                          : ""}
+                        {formatRelativeTime(a.createdAt)}
+                      </p>
+                      {propertyLabel ? (
+                        <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-text-muted">
+                          <MapPin className="h-3 w-3 shrink-0" aria-hidden />
+                          {propertyLabel}
+                        </p>
+                      ) : null}
+                    </div>
+                    <RiskChip level={a.riskLevel} score={a.riskScore} />
+                    <ChevronRight
+                      className="h-4 w-4 shrink-0 text-text-subtle opacity-0 transition-opacity group-hover:opacity-100"
+                      aria-hidden
+                    />
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>
@@ -174,38 +202,56 @@ export function DashboardLists({ screenings, properties }: DashboardListsProps) 
           </Card>
         ) : (
           <ul className="space-y-3">
-            {filteredProperties.map((p) => (
-              <li key={p.id}>
-                <Link
-                  href={`/properties/${p.id}`}
-                  className="group flex items-start gap-3 rounded-xl border border-border bg-surface p-4 transition-all hover:border-brand-600 hover:bg-brand-50/30"
-                >
-                  <span
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-muted text-text-muted transition-colors group-hover:bg-brand-50 group-hover:text-brand-600"
-                    aria-hidden
+            {filteredProperties.map((p) => {
+              const activity = propertyActivity[p.id];
+
+              return (
+                <li key={p.id}>
+                  <Link
+                    href={`/properties/${p.id}`}
+                    className="group flex items-start gap-3 rounded-xl border border-border bg-surface p-4 transition-all hover:border-brand-600 hover:bg-brand-50/30"
                   >
-                    <Building2 className="h-4 w-4" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-medium text-text group-hover:text-brand-700">
-                      {p.addressLine1}
-                    </p>
-                    <p className="text-sm text-text-subtle">
-                      {p.city}, {p.postcode}
-                    </p>
-                    {p.rentAmount ? (
-                      <p className="mt-1 text-xs font-medium text-text-muted">
-                        £{p.rentAmount.toLocaleString("en-GB")}/mo
+                    <span
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-muted text-text-muted transition-colors group-hover:bg-brand-50 group-hover:text-brand-600"
+                      aria-hidden
+                    >
+                      <Building2 className="h-4 w-4" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-text group-hover:text-brand-700">
+                        {p.addressLine1}
                       </p>
-                    ) : null}
-                  </div>
-                  <ChevronRight
-                    className="mt-0.5 h-4 w-4 shrink-0 text-text-subtle opacity-0 transition-opacity group-hover:opacity-100"
-                    aria-hidden
-                  />
-                </Link>
-              </li>
-            ))}
+                      <p className="text-sm text-text-subtle">
+                        {p.city}, {p.postcode}
+                      </p>
+                      <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
+                        {p.rentAmount ? (
+                          <span className="font-medium text-text-muted">
+                            £{p.rentAmount.toLocaleString("en-GB")}/mo
+                          </span>
+                        ) : null}
+                        {p.rentAmount ? (
+                          <span className="text-text-subtle" aria-hidden>
+                            ·
+                          </span>
+                        ) : null}
+                        <span
+                          className={
+                            activity ? "text-text-muted" : "text-text-subtle italic"
+                          }
+                        >
+                          {propertyActivityLabel(activity)}
+                        </span>
+                      </div>
+                    </div>
+                    <ChevronRight
+                      className="mt-0.5 h-4 w-4 shrink-0 text-text-subtle opacity-0 transition-opacity group-hover:opacity-100"
+                      aria-hidden
+                    />
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>

@@ -2,8 +2,15 @@
 export function friendlyAuthError(message: string): string {
   const lower = message.toLowerCase();
 
+  if (lower.includes("confirmation email")) {
+    return "We couldn't send a confirmation email. Try again in a few minutes, or contact support if the problem persists.";
+  }
+
   if (lower.includes("rate limit") || lower.includes("rate_limit")) {
-    return "Too many attempts recently. Wait a few minutes, then try again.";
+    if (lower.includes("email")) {
+      return "Our email provider limit was reached (from earlier sign-in tests). Wait up to an hour, then try again — or use Sign in if you already have an account.";
+    }
+    return "Too many sign-in or sign-up attempts from your network. Wait about 5 minutes, then try again.";
   }
 
   if (

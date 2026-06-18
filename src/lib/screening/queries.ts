@@ -189,6 +189,39 @@ export type PropertyRow = {
   rentAmount: number | null;
 };
 
+export type PropertyScreeningActivity = {
+  screeningCount: number;
+  lastScreenedAt: string;
+};
+
+export async function listPropertyScreeningActivity(
+  admin: SupabaseClient,
+  userId: string,
+): Promise<Record<string, PropertyScreeningActivity>> {
+  const { data } = await admin
+    .from("assessments")
+    .select("created_at, applications!inner(property_id)")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  const result: Record<string, PropertyScreeningActivity> = {};
+  for (const row of data ?? []) {
+    const raw = row as Record<string, unknown>;
+    const app = (raw.applications ?? {}) as { property_id: string | null };
+    const propertyId = app.property_id;
+    if (!propertyId) continue;
+
+    const createdAt = row.created_at as string;
+    const existing = result[propertyId];
+    if (!existing) {
+      result[propertyId] = { screeningCount: 1, lastScreenedAt: createdAt };
+    } else {
+      existing.screeningCount++;
+    }
+  }
+  return result;
+}
+
 export type ApplicationSource = {
   applicationId: string;
   applicantName: string;
