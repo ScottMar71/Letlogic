@@ -107,6 +107,9 @@ body {
   .btn-onbrand {
     @apply btn bg-white font-semibold text-brand-700 hover:bg-brand-50 disabled:opacity-60;
   }
+  .btn-onbrand-secondary {
+    @apply btn border border-white/40 bg-transparent font-medium text-white hover:bg-white/10 disabled:opacity-60;
+  }
   .btn-ghost {
     @apply btn text-text-muted hover:bg-surface-muted hover:text-text disabled:opacity-60;
   }

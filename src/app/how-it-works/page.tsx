@@ -180,7 +180,7 @@ export default function HowItWorksPage() {
             <Link href="/login?next=/screen" className="btn-onbrand">
               Sign in to screen
             </Link>
-            <Link href="/pricing" className="btn-secondary border-white/40 text-white hover:bg-white/10">
+            <Link href="/pricing" className="btn-onbrand-secondary px-5">
               See pricing
             </Link>
           </div>

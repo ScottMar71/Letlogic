@@ -154,10 +154,7 @@ export default function AboutPage() {
             <Link href="/contact" className="btn-onbrand px-5">
               Get in touch
             </Link>
-            <Link
-              href="/how-it-works"
-              className="btn-secondary border-white/40 text-white hover:bg-white/10"
-            >
+            <Link href="/how-it-works" className="btn-onbrand-secondary px-5">
               How it works
             </Link>
           </div>
