@@ -6,6 +6,7 @@ import {
   type AssessmentRecord,
 } from "@/lib/screening/types";
 import type { RiskLevel } from "@/lib/screening/schema";
+import { AssessmentMetrics } from "@/components/screening/assessment-metrics";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert } from "@/components/ui/alert";
@@ -33,6 +34,11 @@ function ResultSkeleton() {
     <div className="space-y-4 rounded-xl border border-border bg-surface p-6" aria-live="polite">
       <Skeleton className="h-24 w-full" />
       <Skeleton className="h-16 w-full" />
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Skeleton className="h-28 w-full" />
+        <Skeleton className="h-28 w-full" />
+        <Skeleton className="h-28 w-full" />
+      </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Skeleton className="h-32 w-full" />
         <Skeleton className="h-32 w-full" />
@@ -90,6 +96,12 @@ export function AssessmentResultPanel({ assessment, loading, error }: Props) {
         <p className="text-sm text-text-muted">{assessment.summary}</p>
       </Card>
 
+      <AssessmentMetrics
+        incomeMultiple={assessment.metrics.incomeMultiple}
+        jobStabilityScore={assessment.metrics.jobStabilityScore}
+        tenancyStabilityScore={assessment.metrics.tenancyStabilityScore}
+      />
+
       <div className="grid gap-4 @md:grid-cols-2">
         <Card title="Strengths" padding="sm">
           <BulletList items={assessment.pros} empty="None identified." tone="pro" />
@@ -121,31 +133,6 @@ export function AssessmentResultPanel({ assessment, loading, error }: Props) {
         </Alert>
       )}
 
-      <details className="rounded-xl border border-border bg-surface p-4">
-        <summary className="cursor-pointer text-sm font-medium text-text">
-          How we calculated this
-        </summary>
-        <ul className="mt-2 space-y-1 text-sm text-text-muted">
-          <li>
-            Income multiple:{" "}
-            {assessment.metrics.incomeMultiple != null
-              ? `${assessment.metrics.incomeMultiple}x`
-              : "not computable"}
-          </li>
-          <li>
-            Job stability score:{" "}
-            {assessment.metrics.jobStabilityScore != null
-              ? `${assessment.metrics.jobStabilityScore}/10`
-              : "unknown"}
-          </li>
-          <li>
-            Tenancy stability score:{" "}
-            {assessment.metrics.tenancyStabilityScore != null
-              ? `${assessment.metrics.tenancyStabilityScore}/10`
-              : "unknown"}
-          </li>
-        </ul>
-      </details>
     </div>
   );
 }

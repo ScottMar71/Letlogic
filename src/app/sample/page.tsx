@@ -2,7 +2,9 @@ import Link from "next/link";
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
 import { AssessmentResultPanel } from "@/components/screening/assessment-result";
+import { PrintReportHeader } from "@/components/screening/print-report-header";
 import { Alert } from "@/components/ui/alert";
+import { PageHeader } from "@/components/ui/page-header";
 import { SampleViewTracker } from "@/components/onboarding/sample-view-tracker";
 import { FunnelTracker } from "@/components/analytics/funnel-tracker";
 import { marketingPageMetadata } from "@/lib/seo/metadata";
@@ -15,10 +17,16 @@ export const metadata = marketingPageMetadata({
   path: "/sample",
 });
 
+const SAMPLE_SCREENED = new Date().toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
 const SAMPLE: AssessmentRecord = {
   id: "sample",
   applicationId: "sample",
-  applicantName: "Sample Applicant",
+  applicantName: "Alex Morgan",
   risk_score: 28,
   risk_level: "low",
   recommendation: "proceed",
@@ -53,20 +61,40 @@ export default function SamplePage() {
       <FunnelTracker event="sample_viewed" />
       <MarketingHeader width="narrow" />
 
-      <main id="main-content" className="mx-auto w-full max-w-[var(--container-narrow)] flex-1 space-y-4 px-4 py-8">
+      <main
+        id="main-content"
+        className="mx-auto w-full max-w-[var(--container-narrow)] flex-1 space-y-8 px-4 py-8"
+      >
+        <PageHeader
+          title={SAMPLE.applicantName}
+          description={`Sample report · Screened ${SAMPLE_SCREENED} · 14 High Street, Bristol`}
+          actions={
+            <div className="flex flex-wrap gap-2">
+              <Link href="/pricing" className="btn-secondary">
+                See pricing
+              </Link>
+              <Link href="/login?next=/screen" className="btn-primary">
+                Sign in to screen
+              </Link>
+            </div>
+          }
+        />
+
         <Alert variant="warning">
-          This is an example report. Sign in and buy a credit to screen a real applicant.
+          This is an example report. Sign in and buy a credit to screen a real
+          applicant.
         </Alert>
-        <h1 className="text-h1 font-bold text-text">Sample assessment</h1>
+
+        <PrintReportHeader
+          applicantName={SAMPLE.applicantName}
+          screenedAt={SAMPLE_SCREENED}
+        />
+
         <AssessmentResultPanel assessment={SAMPLE} loading={false} error={null} />
-        <div className="flex flex-wrap gap-3">
-          <Link href="/login?next=/screen" className="btn-primary px-5">
-            Sign in to screen
-          </Link>
-          <Link href="/pricing" className="btn-secondary px-5">
-            See pricing
-          </Link>
-        </div>
+
+        <p className="text-xs text-text-subtle">
+          AI-generated assessment — not a credit check or legal advice.
+        </p>
       </main>
 
       <MarketingFooter />

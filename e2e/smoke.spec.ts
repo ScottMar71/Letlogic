@@ -19,7 +19,7 @@ test.describe("marketing smoke", () => {
 
   test("sample report shows assessment output", async ({ page }) => {
     await page.goto("/sample");
-    await expect(page.getByRole("heading", { name: /sample assessment/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /alex morgan/i })).toBeVisible();
     await expect(page.getByText(/recommendation|risk/i).first()).toBeVisible();
   });
 
