@@ -15,6 +15,7 @@ export function SignupForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmationSent, setConfirmationSent] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -37,6 +38,11 @@ export function SignupForm() {
 
     if ("error" in result && result.error) {
       setError(result.error);
+      return;
+    }
+
+    if ("needsEmailConfirmation" in result && result.needsEmailConfirmation) {
+      setConfirmationSent(true);
     }
   }
 
@@ -113,6 +119,21 @@ export function SignupForm() {
           Sign in
         </Link>
       </p>
+
+      {confirmationSent && (
+        <Alert variant="success">
+          <p>
+            Account created. We sent a confirmation link to{" "}
+            <span className="font-medium text-text">{email}</span>. Open it to
+            finish signing in, then return here to sign in with your password.
+          </p>
+          <p className="mt-2 text-sm">
+            <Link href={loginHref} className="font-medium underline">
+              Go to sign in
+            </Link>
+          </p>
+        </Alert>
+      )}
 
       {error && (
         <Alert variant="error">

@@ -14,6 +14,10 @@ describe("friendlyAuthError", () => {
     );
   });
 
+  it("maps email not confirmed", () => {
+    expect(friendlyAuthError("Email not confirmed")).toMatch(/Confirm your email/);
+  });
+
   it("maps invalid credentials", () => {
     expect(friendlyAuthError("Invalid login credentials")).toBe(
       "Email or password is incorrect.",

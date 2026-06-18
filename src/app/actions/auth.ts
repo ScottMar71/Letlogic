@@ -29,21 +29,33 @@ export async function signInWithPassword(formData: FormData) {
 export async function signUpWithPassword(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const next = safeNextPath((formData.get("next") as string) || "/");
+  const next = safeNextPath((formData.get("next") as string) || "/dashboard");
 
   if (!email) return { error: "Email is required" };
   if (!password) return { error: "Password is required" };
 
+  const origin = getAuthRedirectOrigin(await headers());
+  const emailRedirectTo = buildAuthCallbackUrl(origin, next);
+
   const supabase = await createAuthClient();
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo },
+  });
 
   if (error) return { error: friendlyAuthError(error.message) };
 
   if (!data.session) {
-    return {
-      error:
-        "An account with this email already exists. Sign in instead — or use Forgot password if you signed up before passwords were added.",
-    };
+    // Supabase returns an empty identities array when the email is already registered.
+    if (!data.user?.identities?.length) {
+      return {
+        error:
+          "An account with this email already exists. Sign in instead — or use Forgot password if you signed up before passwords were added.",
+      };
+    }
+
+    return { needsEmailConfirmation: true as const };
   }
 
   redirect(next);

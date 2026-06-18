@@ -13,6 +13,10 @@ export function friendlyAuthError(message: string): string {
     return "Too many sign-in or sign-up attempts from your network. Wait about 5 minutes, then try again.";
   }
 
+  if (lower.includes("email not confirmed")) {
+    return "Confirm your email first — check your inbox for a link from LetLogic, then try signing in again.";
+  }
+
   if (
     lower.includes("invalid login credentials") ||
     lower.includes("invalid credentials")
