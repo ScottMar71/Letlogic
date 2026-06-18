@@ -205,12 +205,3 @@ export async function analyseApplicant(
     },
   };
 }
-
-export async function getCreditBalanceForCurrentUser(): Promise<number> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return 0;
-  return getCreditBalance(createAdminClient(), user.id);
-}

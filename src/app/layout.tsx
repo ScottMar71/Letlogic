@@ -22,6 +22,9 @@ export const metadata: Metadata = {
     icon: "/brand/icon.svg",
     apple: "/brand/icon.svg",
   },
+  verification: {
+    google: "-HiKPbZwclgkPLofewKr_5HqsBVUXyG3yVVQ4KBrOLg",
+  },
   openGraph: {
     siteName: site.name,
     locale: "en_GB",

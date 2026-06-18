@@ -40,9 +40,23 @@ export function AuthPageShell({ children }: { children: React.ReactNode }) {
           </p>
         </div>
 
-        <div className="flex items-center justify-center px-4 py-12">
+        <main
+          id="main-content"
+          className="flex flex-col items-center justify-center px-4 py-12"
+        >
           {children}
-        </div>
+          <p className="mt-8 max-w-md text-center text-xs text-text-subtle lg:hidden">
+            By signing in you agree to our{" "}
+            <Link href="/terms" className="font-medium text-brand-600 hover:underline">
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="font-medium text-brand-600 hover:underline">
+              Privacy Policy
+            </Link>
+            .
+          </p>
+        </main>
       </div>
     </div>
   );

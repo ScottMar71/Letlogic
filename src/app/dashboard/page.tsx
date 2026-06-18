@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { AppHeader } from "@/components/layout/app-header";
+import { AuthenticatedPage } from "@/components/layout/authenticated-page";
 import { CreditAlertBanner } from "@/components/dashboard/credit-alert-banner";
 import { DashboardLists } from "@/components/dashboard/dashboard-lists";
 import { DashboardRiskSummary } from "@/components/dashboard/dashboard-risk-summary";
@@ -15,17 +15,14 @@ import {
   listPropertyScreeningActivity,
   listRecentAssessments,
 } from "@/lib/screening/queries";
+import { getAuthenticatedUser } from "@/lib/screening/session";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 import { privatePageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = privatePageMetadata("Dashboard");
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) redirect("/login?next=/dashboard");
 
   const admin = createAdminClient();
@@ -47,63 +44,59 @@ export default async function DashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-surface-muted">
-      <AppHeader creditBalance={balance} width="content" />
+    <AuthenticatedPage creditBalance={balance} width="content">
+      <PageHeader
+        title={`Welcome back, ${displayName}`}
+        description={
+          balance === 0
+            ? "Top up credits below to run your next screening."
+            : counts.total === 0
+              ? "Get started by screening an applicant or viewing a sample report."
+              : "Here’s what’s happening with your screenings and properties."
+        }
+        actions={
+          <div className="flex flex-wrap gap-2">
+            <Link href="/sample" className="btn-secondary">
+              View sample
+            </Link>
+            <Link
+              href="/screen"
+              className={`btn-primary ${balance === 0 ? "pointer-events-none opacity-50" : ""}`}
+              aria-disabled={balance === 0}
+              tabIndex={balance === 0 ? -1 : undefined}
+            >
+              New screening
+            </Link>
+          </div>
+        }
+      />
 
-      <main id="main-content" className="mx-auto max-w-[var(--container-content)] space-y-8 px-4 py-8">
-        <PageHeader
-          title={`Welcome back, ${displayName}`}
-          description={
-            balance === 0
-              ? "Top up credits below to run your next screening."
-              : counts.total === 0
-                ? "Get started by screening an applicant or viewing a sample report."
-                : "Here’s what’s happening with your screenings and properties."
-          }
-          actions={
-            <div className="flex flex-wrap gap-2">
-              <Link href="/sample" className="btn-secondary">
-                View sample
-              </Link>
-              <Link
-                href="/screen"
-                className={`btn-primary ${balance === 0 ? "pointer-events-none opacity-50" : ""}`}
-                aria-disabled={balance === 0}
-                tabIndex={balance === 0 ? -1 : undefined}
-              >
-                New screening
-              </Link>
-            </div>
-          }
-        />
+      <CreditAlertBanner balance={balance} />
 
-        <CreditAlertBanner balance={balance} />
+      <DashboardStats
+        balance={balance}
+        propertyCount={properties.length}
+        screeningCount={counts.total}
+        screeningsThisMonth={counts.thisMonth}
+      />
 
-        <DashboardStats
-          balance={balance}
-          propertyCount={properties.length}
-          screeningCount={counts.total}
-          screeningsThisMonth={counts.thisMonth}
-        />
+      <QuickActions balance={balance} hasScreenings={counts.total > 0} />
 
-        <QuickActions balance={balance} hasScreenings={counts.total > 0} />
+      {counts.total > 0 ? (
+        <DashboardRiskSummary screenings={recent} />
+      ) : null}
 
-        {counts.total > 0 ? (
-          <DashboardRiskSummary screenings={recent} />
-        ) : null}
+      <OnboardingChecklist
+        hasScreenings={counts.total > 0}
+        hasProperties={properties.length > 0}
+      />
 
-        <OnboardingChecklist
-          hasScreenings={counts.total > 0}
-          hasProperties={properties.length > 0}
-        />
-
-        <DashboardLists
-          screenings={recent}
-          properties={properties}
-          propertyActivity={propertyActivity}
-          propertyLabels={propertyLabels}
-        />
-      </main>
-    </div>
+      <DashboardLists
+        screenings={recent}
+        properties={properties}
+        propertyActivity={propertyActivity}
+        propertyLabels={propertyLabels}
+      />
+    </AuthenticatedPage>
   );
 }

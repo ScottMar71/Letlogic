@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LogoLink } from "@/components/brand/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 
-type MarketingHeaderProps = {
+export type MarketingHeaderProps = {
   width?: "narrow" | "content" | "wide";
   showPricing?: boolean;
 };

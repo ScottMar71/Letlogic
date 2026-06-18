@@ -1,5 +1,6 @@
 import { EmptyState } from "@/components/ui/empty-state";
 import { StatusBadge, PURCHASE_STATUS_LABELS } from "@/components/ui/status-badge";
+import { formatDate } from "@/lib/format-date";
 import { formatGbp } from "@/lib/screening/pricing";
 
 type Purchase = {
@@ -38,7 +39,7 @@ export function PurchaseHistory({ purchases }: { purchases: Purchase[] }) {
                 {p.credits_total} credit{p.credits_total === 1 ? "" : "s"}
               </p>
               <p className="mt-0.5 flex items-center gap-2 text-xs text-text-subtle">
-                {new Date(p.created_at).toLocaleDateString("en-GB")}
+                {formatDate(p.created_at)}
                 <StatusBadge variant={statusInfo.variant}>
                   {statusInfo.label}
                 </StatusBadge>

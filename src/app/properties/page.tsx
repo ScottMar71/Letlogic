@@ -1,65 +1,77 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { AppHeader } from "@/components/layout/app-header";
+import { Building2, ChevronRight } from "lucide-react";
+import { AuthenticatedPage } from "@/components/layout/authenticated-page";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { listProperties } from "@/lib/screening/queries";
+import { getAuthenticatedUser } from "@/lib/screening/session";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 import { privatePageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = privatePageMetadata("Properties");
 
 export default async function PropertiesPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) redirect("/login?next=/properties");
 
   const properties = await listProperties(createAdminClient(), user.id);
 
   return (
-    <div className="min-h-screen bg-surface-muted">
-      <AppHeader width="content" />
+    <AuthenticatedPage width="content">
+      <PageHeader
+        title="Properties"
+        description="Track screenings by address and compare applicants."
+        actions={
+          <Link href="/properties/new" className="btn-primary">
+            Add property
+          </Link>
+        }
+      />
 
-      <main id="main-content" className="mx-auto max-w-[var(--container-content)] space-y-8 px-4 py-8">
-        <PageHeader
-          title="Properties"
-          description="Track screenings by address and compare applicants."
-          actions={
-            <Link href="/properties/new" className="btn-primary">
-              Add property
-            </Link>
-          }
+      {properties.length === 0 ? (
+        <EmptyState
+          title="No properties yet"
+          description="Add a property to organise screenings by address."
+          actionLabel="Add property"
+          actionHref="/properties/new"
         />
-
-        {properties.length === 0 ? (
-          <EmptyState
-            title="No properties yet"
-            description="Add a property to organise screenings by address."
-            actionLabel="Add property"
-            actionHref="/properties/new"
-          />
-        ) : (
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((p) => (
-              <li key={p.id}>
-                <Link
-                  href={`/properties/${p.id}`}
-                  className="block rounded-xl border border-border bg-surface p-4 transition-colors hover:border-brand-600"
+      ) : (
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {properties.map((p) => (
+            <li key={p.id}>
+              <Link
+                href={`/properties/${p.id}`}
+                className="group flex items-start gap-3 rounded-xl border border-border bg-surface p-4 transition-all hover:border-brand-600 hover:bg-brand-50/30"
+              >
+                <span
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-muted text-text-muted transition-colors group-hover:bg-brand-50 group-hover:text-brand-600"
+                  aria-hidden
                 >
-                  <p className="font-medium text-text">{p.addressLine1}</p>
+                  <Building2 className="h-4 w-4" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-text group-hover:text-brand-700">
+                    {p.addressLine1}
+                  </p>
                   <p className="text-sm text-text-subtle">
                     {p.city}, {p.postcode}
-                    {p.rentAmount ? ` · £${p.rentAmount}/mo` : ""}
                   </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </main>
-    </div>
+                  {p.rentAmount ? (
+                    <p className="mt-1 text-xs font-medium text-text-muted">
+                      £{p.rentAmount.toLocaleString("en-GB")}/mo
+                    </p>
+                  ) : null}
+                </div>
+                <ChevronRight
+                  className="mt-0.5 h-4 w-4 shrink-0 text-text-subtle opacity-0 transition-opacity group-hover:opacity-100"
+                  aria-hidden
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </AuthenticatedPage>
   );
 }

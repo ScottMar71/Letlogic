@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { AppHeader } from "@/components/layout/app-header";
+import { AuthenticatedPage } from "@/components/layout/authenticated-page";
 import { ScreeningWorkspace } from "@/components/screening/screening-workspace";
 import { RiskChip } from "@/components/screening/risk-chip";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { listAssessmentsForProperty } from "@/lib/screening/queries";
 import { isPro } from "@/lib/screening/entitlements";
+import { getAuthenticatedUser } from "@/lib/screening/session";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 import { privatePageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = privatePageMetadata("Property");
@@ -17,10 +17,7 @@ type PageProps = { params: Promise<{ id: string }> };
 
 export default async function PropertyPage({ params }: PageProps) {
   const { id } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
   if (!user) redirect(`/login?next=/properties/${id}`);
 
   const admin = createAdminClient();
@@ -39,11 +36,8 @@ export default async function PropertyPage({ params }: PageProps) {
   const canCompare = applicants.length >= 2;
 
   return (
-    <div className="min-h-screen bg-surface-muted">
-      <AppHeader width="content" />
-
-      <main id="main-content" className="mx-auto max-w-[var(--container-content)] space-y-8 px-4 py-8">
-        <PageHeader
+    <AuthenticatedPage width="content">
+      <PageHeader
           title={property.address_line1}
           description={`${property.city}, ${property.postcode}${property.rent_amount ? ` · £${property.rent_amount}/mo` : ""}`}
           breadcrumbs={[
@@ -104,7 +98,6 @@ export default async function PropertyPage({ params }: PageProps) {
             defaultRent={property.rent_amount ?? undefined}
           />
         </section>
-      </main>
-    </div>
+    </AuthenticatedPage>
   );
 }

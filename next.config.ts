@@ -19,6 +19,11 @@ const nextConfig: NextConfig = {
         destination: "https://www.letlogic.app/:path*",
         permanent: true,
       },
+      {
+        source: "/documents/section-21",
+        destination: "/screen",
+        permanent: true,
+      },
     ];
   },
   async headers() {

@@ -9,7 +9,10 @@ export default function RootError({
   reset: () => void;
 }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface-muted px-4">
+    <main
+      id="main-content"
+      className="flex min-h-screen items-center justify-center bg-surface-muted px-4"
+    >
       <div className="max-w-md space-y-4 rounded-xl border border-border bg-surface p-8 text-center">
         <h1 className="text-h1 font-bold text-text">Something went wrong</h1>
         <p className="text-sm text-text-muted">
@@ -24,6 +27,6 @@ export default function RootError({
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

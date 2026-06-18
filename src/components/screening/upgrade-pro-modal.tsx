@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { X } from "lucide-react";
 import { createProSubscription } from "@/app/actions/billing";
 import { PRO_PLAN, formatGbp } from "@/lib/screening/pricing";
 import { Button } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
+import { useDialogFocus } from "@/hooks/use-dialog-focus";
 
 const PRO_FEATURES = [
   `${PRO_PLAN.monthlyCredits} screenings per month`,
@@ -23,32 +24,7 @@ export function UpgradeProModal({ open, onClose }: UpgradeProModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const previouslyFocused = document.activeElement as HTMLElement | null;
-    const { overflow } = document.body.style;
-    document.body.style.overflow = "hidden";
-
-    const node = dialogRef.current;
-    const focusables = node?.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-    );
-    focusables?.[0]?.focus();
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onClose();
-      }
-    }
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = overflow;
-      previouslyFocused?.focus();
-    };
-  }, [open, onClose]);
+  useDialogFocus(open, onClose, dialogRef);
 
   if (!open) return null;
 

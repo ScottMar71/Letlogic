@@ -1,5 +1,3 @@
-"use client";
-
 import { track } from "@vercel/analytics";
 
 type FunnelEvent =

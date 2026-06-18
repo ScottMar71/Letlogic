@@ -1,4 +1,4 @@
-import { AppHeader } from "@/components/layout/app-header";
+import { AuthenticatedPage } from "@/components/layout/authenticated-page";
 import { PageHeader } from "@/components/ui/page-header";
 import { ProCompareGate } from "@/components/screening/pro-compare-gate";
 
@@ -14,23 +14,17 @@ export function ProCompareGatePage({
   applicantCount,
 }: ProCompareGatePageProps) {
   return (
-    <div className="min-h-screen bg-surface-muted">
-      <AppHeader width="wide" />
-      <main
-        id="main-content"
-        className="mx-auto max-w-[var(--container-content)] space-y-6 px-4 py-8"
-      >
-        <PageHeader
-          title="Compare applicants"
-          description={`${applicantCount} screenings for ${propertyName}`}
-          breadcrumbs={[
-            { label: "Properties", href: "/properties" },
-            { label: propertyName, href: `/properties/${propertyId}` },
-            { label: "Compare" },
-          ]}
-        />
-        <ProCompareGate />
-      </main>
-    </div>
+    <AuthenticatedPage width="wide" mainClassName="space-y-6">
+      <PageHeader
+        title="Compare applicants"
+        description={`${applicantCount} screenings for ${propertyName}`}
+        breadcrumbs={[
+          { label: "Properties", href: "/properties" },
+          { label: propertyName, href: `/properties/${propertyId}` },
+          { label: "Compare" },
+        ]}
+      />
+      <ProCompareGate />
+    </AuthenticatedPage>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Upload } from "lucide-react";
-import { extractTextFromPdf, PDF_UPLOAD_MAX_MB } from "@/lib/pdf/extract-text";
+import { extractTextFromPdf, isSafari, PDF_UPLOAD_MAX_MB } from "@/lib/pdf/extract-text";
 
 type PdfUploadButtonProps = {
   onExtracted: (text: string) => void;
@@ -51,8 +51,9 @@ export function PdfUploadButton({ onExtracted, disabled }: PdfUploadButtonProps)
         {loading ? "Reading PDF…" : "Upload PDF application"}
       </button>
       <p className="text-xs text-text-subtle">
-        Text is extracted in your browser only (max {PDF_UPLOAD_MAX_MB} MB). Nothing
-        is uploaded to our servers until you analyse.
+        {isSafari()
+          ? "Safari sends the PDF once to extract text (not stored). Other browsers process it locally."
+          : `Text is extracted in your browser only (max ${PDF_UPLOAD_MAX_MB} MB). Nothing is uploaded to our servers until you analyse.`}
       </p>
       {error && <p className="text-xs text-danger">{error}</p>}
     </div>

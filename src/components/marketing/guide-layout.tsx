@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { MarketingHeader } from "@/components/layout/marketing-header";
-import { MarketingFooter } from "@/components/layout/marketing-footer";
 import { FaqSection } from "@/components/marketing/faq-section";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { formatDateLong } from "@/lib/format-date";
 import {
   JsonLd,
   articleJsonLd,
@@ -22,12 +22,6 @@ type GuideLayoutProps = {
   faqs?: FaqItem[];
 };
 
-const READABLE_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-};
-
 export function GuideLayout({
   slug,
   title,
@@ -38,13 +32,10 @@ export function GuideLayout({
   faqs,
 }: GuideLayoutProps) {
   const path = guidePath(slug);
-  const published = new Date(datePublished).toLocaleDateString(
-    "en-GB",
-    READABLE_DATE_OPTIONS,
-  );
+  const published = formatDateLong(datePublished);
 
   return (
-    <div className="flex min-h-screen flex-col bg-surface-muted">
+    <>
       <JsonLd
         data={[
           articleJsonLd({ title, description, path, datePublished }),
@@ -54,19 +45,17 @@ export function GuideLayout({
           ]),
         ]}
       />
-      <MarketingHeader />
 
       <main
         id="main-content"
         className="mx-auto w-full max-w-[var(--container-narrow)] flex-1 px-4 py-12"
       >
-        <nav aria-label="Breadcrumb" className="text-sm text-text-subtle">
-          <Link href="/guides" className="hover:text-text">
-            Guides
-          </Link>
-          <span aria-hidden> / </span>
-          <span className="text-text-muted">{title}</span>
-        </nav>
+        <Breadcrumbs
+          items={[
+            { label: "Guides", href: "/guides" },
+            { label: title },
+          ]}
+        />
 
         <header className="mt-4 border-b border-border pb-6">
           <h1 className="text-2xl font-bold tracking-tight text-text">
@@ -99,8 +88,6 @@ export function GuideLayout({
           </div>
         </section>
       </main>
-
-      <MarketingFooter />
-    </div>
+    </>
   );
 }

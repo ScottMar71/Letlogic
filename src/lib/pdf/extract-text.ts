@@ -1,41 +1,53 @@
-const MAX_BYTES = 5 * 1024 * 1024;
+import { extractTextFromPdfBuffer, PDF_MAX_BYTES } from "@/lib/pdf/extract-from-buffer";
+import { isSafari } from "@/lib/pdf/is-safari";
 
-/** Extract plain text from a PDF file in the browser. Not stored server-side. */
+function isPdfFile(file: File): boolean {
+  return (
+    file.type === "application/pdf" ||
+    file.name.toLowerCase().endsWith(".pdf")
+  );
+}
+
+async function extractViaServer(file: File): Promise<string> {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await fetch("/api/pdf/extract-text", { method: "POST", body: form });
+  const body = (await res.json()) as { text?: string; error?: string };
+  if (!res.ok) {
+    throw new Error(body.error ?? "Could not read PDF");
+  }
+  if (!body.text?.trim()) {
+    throw new Error("No readable text found in this PDF.");
+  }
+  return body.text;
+}
+
+async function extractInBrowser(file: File): Promise<string> {
+  const data = new Uint8Array(await file.arrayBuffer());
+  return extractTextFromPdfBuffer(data);
+}
+
+/** Extract plain text from a PDF file. Safari uses a one-off server request; not stored. */
 export async function extractTextFromPdf(file: File): Promise<string> {
-  if (file.size > MAX_BYTES) {
+  if (file.size > PDF_MAX_BYTES) {
     throw new Error("PDF must be 5 MB or smaller.");
   }
-  if (file.type !== "application/pdf") {
+  if (!isPdfFile(file)) {
     throw new Error("Please upload a PDF file.");
   }
 
-  const pdfjs = await import("pdfjs-dist");
-  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url,
-  ).toString();
-
-  const data = new Uint8Array(await file.arrayBuffer());
-  const doc = await pdfjs.getDocument({ data }).promise;
-  const chunks: string[] = [];
-
-  for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
-    const page = await doc.getPage(pageNum);
-    const content = await page.getTextContent();
-    const pageText = content.items
-      .map((item) => ("str" in item ? item.str : ""))
-      .join(" ")
-      .trim();
-    if (pageText) chunks.push(pageText);
+  if (isSafari()) {
+    return extractViaServer(file);
   }
 
-  const text = chunks.join("\n\n").trim();
-  if (!text) {
-    throw new Error(
-      "No readable text found. Try a text-based PDF or paste the application manually.",
-    );
+  try {
+    return await extractInBrowser(file);
+  } catch {
+    // Non-Safari fallback if client-side PDF.js fails (e.g. bundler quirks).
+    return extractViaServer(file);
   }
-  return text;
 }
 
-export const PDF_UPLOAD_MAX_MB = MAX_BYTES / (1024 * 1024);
+export const PDF_UPLOAD_MAX_MB = PDF_MAX_BYTES / (1024 * 1024);
+
+export { isSafari } from "@/lib/pdf/is-safari";

@@ -54,9 +54,10 @@ export function LoginForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="block space-y-1">
+        <label htmlFor="login-email" className="block space-y-1">
           <span className="field-label">Email</span>
           <input
+            id="login-email"
             type="email"
             name="email"
             required

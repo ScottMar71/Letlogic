@@ -17,6 +17,19 @@
   --color-surface-muted: #f4f6f8;
   --color-border: #e2e6eb;
   --color-border-strong: #cdd3dc;
+  --background-grid:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-navy) 7%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-navy) 7%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(180deg, #eaf7f8 0%, #f5fbfb 48%, #f9fcfc 100%);
+  --background-grid-size: 6rem 6rem, 6rem 6rem, 100% 100%;
 
   /* Text roles (navy-based, contrast-safe on white) */
   --color-text: #0f1c2e;
@@ -69,18 +82,16 @@
   --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
   --text-4xl: clamp(2rem, 1.6rem + 2.4vw, 3.25rem);
 
-  /* Info semantic */
-  --color-info: #1d4ed8;
-  --color-info-bg: #eff6ff;
-  --color-info-border: #bfdbfe;
-
   /* Fonts (DM Sans — wired from next/font in layout.tsx) */
   --font-sans: var(--font-dm-sans);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 body {
-  background: var(--color-surface-muted);
+  background: var(--background-grid);
+  background-attachment: fixed;
+  background-position: top center;
+  background-size: var(--background-grid-size);
   color: var(--color-text);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -141,6 +152,12 @@ body {
 
   .card {
     @apply rounded-xl border border-border bg-surface p-6;
+  }
+
+  .min-h-screen.bg-surface-muted {
+    background: var(--background-grid);
+    background-position: top center;
+    background-size: var(--background-grid-size);
   }
 
   .badge {
@@ -210,6 +227,7 @@ body {
   }
   body {
     background: white;
+    background-image: none;
     color: #111;
   }
   main {
