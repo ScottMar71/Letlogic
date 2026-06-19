@@ -131,13 +131,10 @@ async function handleSubscriptionStart(
   // Belt-and-suspenders: grant opening credits when checkout completes even if
   // invoice.paid was missed or arrived before we could read the subscription id.
   const stripe = getStripe();
-  const { data: invoices } = await stripe.invoices.list({
-    subscription: subscriptionId,
-    status: "paid",
-    limit: 1,
-  });
-  const invoice = invoices.data[0];
-  if (invoice) {
+  const invoiceId =
+    typeof session.invoice === "string" ? session.invoice : session.invoice?.id;
+  if (invoiceId) {
+    const invoice = await stripe.invoices.retrieve(invoiceId);
     await handleInvoicePaid(invoice);
   }
 }

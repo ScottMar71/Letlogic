@@ -1,22 +1,28 @@
 import type Stripe from "stripe";
 
+function stripeExpandableId(
+  value: string | { id: string } | null | undefined,
+): string | null {
+  if (!value) return null;
+  return typeof value === "string" ? value : value.id;
+}
+
 /** Subscription id on an invoice (Basil+ moved off `invoice.subscription`). */
 export function invoiceSubscriptionId(invoice: Stripe.Invoice): string | null {
   const parent = invoice.parent;
   if (parent?.type === "subscription_details") {
-    const sub = parent.subscription_details?.subscription;
-    if (sub) return typeof sub === "string" ? sub : sub.id;
+    const sub = stripeExpandableId(parent.subscription_details?.subscription);
+    if (sub) return sub;
   }
 
   const legacy = (invoice as { subscription?: string | { id: string } | null })
     .subscription;
-  if (legacy) return typeof legacy === "string" ? legacy : legacy.id;
+  const legacySub = stripeExpandableId(legacy);
+  if (legacySub) return legacySub;
 
   const lineSub =
     invoice.lines?.data?.[0]?.parent?.subscription_item_details?.subscription;
-  if (lineSub) return typeof lineSub === "string" ? lineSub : lineSub.id;
-
-  return null;
+  return stripeExpandableId(lineSub as string | { id: string } | null | undefined);
 }
 
 /** Billing period end for idempotency (Basil+ uses subscription item periods). */
