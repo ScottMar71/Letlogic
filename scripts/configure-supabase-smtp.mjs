@@ -43,7 +43,7 @@ const projectRef =
 const smtpAdminEmail =
   process.env.SMTP_ADMIN_EMAIL?.trim() ??
   localEnv.SMTP_ADMIN_EMAIL?.trim() ??
-  "noreply@letlogic.app";
+  "support@letlogic.app";
 const smtpSenderName =
   process.env.SMTP_SENDER_NAME?.trim() ??
   localEnv.SMTP_SENDER_NAME?.trim() ??

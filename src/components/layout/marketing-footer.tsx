@@ -18,6 +18,7 @@ const SOLUTIONS_LINKS = [
 
 const RESOURCES_LINKS = [
   { href: "/guides", label: "Guides" },
+  { href: "/guides/tenant-vetting", label: "Tenant vetting" },
   { href: "/glossary", label: "Glossary" },
   { href: "/faq", label: "FAQ" },
   { href: "/tenant-screening-vs-credit-check", label: "vs credit check" },

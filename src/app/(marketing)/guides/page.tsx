@@ -7,7 +7,7 @@ import { GUIDES, guidePath } from "@/lib/guides";
 export const metadata = marketingPageMetadata({
   title: "Tenant screening guides for landlords",
   description:
-    "Practical guides for UK landlords on tenant screening — affordability, Right to Rent, and reading applications, with clear, jargon-free explanations you can act on.",
+    "Practical guides for UK landlords on tenant screening and vetting — affordability, Right to Rent, legal compliance, and reading applications, with clear, jargon-free explanations you can act on.",
   path: "/guides",
 });
 
@@ -26,8 +26,9 @@ export default function GuidesPage() {
             Guides for UK landlords
           </h1>
           <p className="max-w-2xl text-lg text-text-muted">
-            Clear, practical guidance on assessing tenants — from affordability
-            and Right to Rent to reading an application well. No jargon, no fluff.
+            Clear, practical guidance on assessing tenants — from vetting and
+            affordability to Right to Rent and reading an application well. No
+            jargon, no fluff.
           </p>
         </section>
 

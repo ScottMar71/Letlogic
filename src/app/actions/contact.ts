@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { getContactInboxEmail } from "@/lib/contact/inbox";
 import { site } from "@/lib/site";
 
 const contactSchema = z.object({
@@ -54,7 +55,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
       },
       body: JSON.stringify({
         from: `${site.name} Contact <noreply@${site.domain}>`,
-        to: [site.email],
+        to: [getContactInboxEmail()],
         reply_to: email,
         subject: subject
           ? `[Contact] ${subject}`

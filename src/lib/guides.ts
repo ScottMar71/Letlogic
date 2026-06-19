@@ -38,6 +38,15 @@ export const GUIDES: Guide[] = [
       "The signals that matter, common red flags, and the follow-up questions worth asking.",
     datePublished: "2026-06-18",
   },
+  {
+    slug: "tenant-vetting",
+    title: "Tenant vetting in the UK",
+    description:
+      "A complete guide to tenant vetting and referencing for UK landlords — identity checks, Right to Rent, affordability, credit checks, legal constraints, and where AI screening fits.",
+    summary:
+      "What vetting covers, the law you must follow, and how screening tools like LetLogic fit into a compliant process.",
+    datePublished: "2026-06-19",
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {

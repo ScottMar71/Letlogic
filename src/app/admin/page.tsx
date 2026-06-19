@@ -11,7 +11,9 @@ import {
   TableHead,
   TableHeaderCell,
 } from "@/components/ui/table";
+import { AdminUserActions } from "@/components/admin/admin-user-actions";
 import { isAdminEmail } from "@/lib/admin/auth";
+import { canDeleteAdminUser } from "@/lib/admin/permissions";
 import { getAdminOverview } from "@/lib/admin/queries";
 import { privatePageMetadata } from "@/lib/seo/metadata";
 import { formatDate } from "@/lib/format-date";
@@ -116,9 +118,17 @@ export default async function AdminPage() {
                 <TableHeaderCell className="text-right">Credits</TableHeaderCell>
                 <TableHeaderCell className="text-right">Screenings</TableHeaderCell>
                 <TableHeaderCell>Joined</TableHeaderCell>
+                <TableHeaderCell className="text-right">Actions</TableHeaderCell>
               </TableHead>
               <TableBody>
-                {overview.users.map((adminUser) => (
+                {overview.users.map((adminUser) => {
+                  const deleteGuard = canDeleteAdminUser({
+                    actorId: user.id,
+                    targetId: adminUser.id,
+                    targetEmail: adminUser.email,
+                  });
+
+                  return (
                   <tr key={adminUser.id}>
                     <TableCell>
                       <div className="min-w-48">
@@ -163,8 +173,18 @@ export default async function AdminPage() {
                       {adminUser.screeningCount.toLocaleString("en-GB")}
                     </TableCell>
                     <TableCell>{formatDate(adminUser.createdAt)}</TableCell>
+                    <TableCell className="text-right">
+                      <AdminUserActions
+                        userId={adminUser.id}
+                        userEmail={adminUser.email}
+                        userName={adminUser.fullName}
+                        canDelete={deleteGuard.allowed}
+                        deleteDisabledReason={deleteGuard.reason}
+                      />
+                    </TableCell>
                   </tr>
-                ))}
+                  );
+                })}
               </TableBody>
             </Table>
           )}

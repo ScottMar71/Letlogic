@@ -6,6 +6,7 @@ import {
   Scale,
   ScanSearch,
   Shield,
+  Users,
 } from "lucide-react";
 import {
   JsonLd,
@@ -58,6 +59,22 @@ const TRUST_ITEMS = [
   },
 ];
 
+const CASE_STUDY = {
+  context: "Independent landlord · 2-bed flat · Bristol",
+  headline: "Fourteen applicants in 48 hours — without paying for fourteen references",
+  problem:
+    "A listing went live on a Thursday. By Saturday there were fourteen enquiries — emails, Rightmove messages, and a letting agent forwarding CV-style applications. Full tenant referencing runs £25–£40 per applicant. Running everyone through would have cost hundreds before anyone even viewed the flat.",
+  approach:
+    "Instead of referencing the whole pile, the landlord pasted each application into LetLogic. In a few minutes per applicant they had an explainable risk score, income multiple, and a plain-English summary — enough to spot weak affordability and unstable employment history early.",
+  outcome: [
+    { label: "Applicants screened", value: "14" },
+    { label: "Shortlisted for viewings", value: "3" },
+    { label: "Full credit checks run", value: "3" },
+  ],
+  result:
+    "LetLogic acted as a first filter — not a credit check, not a substitute for referencing — but a fast way to decide who was worth the time and cost of a full check. The landlord picked a tenant from the shortlist the following week.",
+};
+
 export default function Home() {
   return (
     <>
@@ -71,6 +88,7 @@ export default function Home() {
             Rent smarter. Trust faster.
           </h1>
           <p className="max-w-2xl text-lg text-text-muted">
+            LetLogic helps UK landlords make sense of a tenant application fast.
             Paste an applicant&apos;s details and get an explainable risk score,
             summary, and recommendation — not a credit check, just a faster way
             to decide.
@@ -122,15 +140,72 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-8 text-center">
-          <p className="text-sm font-medium uppercase tracking-wide text-text-subtle">
-            Trusted by independent UK landlords
-          </p>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-text-muted">
-            We&apos;re onboarding our first design partners now. Early users get
-            comp credits and a direct line to the team while we refine the
-            product.
-          </p>
+        <section className="space-y-6">
+          <div>
+            <p className="section-label">Case study</p>
+            <h2 className="mt-2 max-w-2xl text-h2 font-bold text-text">
+              {CASE_STUDY.headline}
+            </h2>
+            <p className="mt-2 text-sm text-text-subtle">{CASE_STUDY.context}</p>
+          </div>
+
+          <article className="overflow-hidden rounded-2xl border border-border bg-surface">
+            <div className="border-b border-border bg-surface-muted px-6 py-4">
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50"
+                  aria-hidden
+                >
+                  <Users className="h-5 w-5 text-brand-600" />
+                </div>
+                <p className="text-sm font-medium text-text">
+                  The problem: too many applicants, too little time
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-6 px-6 py-6">
+              <p className="max-w-3xl text-sm leading-relaxed text-text-muted">
+                {CASE_STUDY.problem}
+              </p>
+
+              <div>
+                <h3 className="text-sm font-semibold text-text">
+                  The approach: screen first, reference later
+                </h3>
+                <p className="mt-2 max-w-3xl text-sm leading-relaxed text-text-muted">
+                  {CASE_STUDY.approach}
+                </p>
+              </div>
+
+              <dl className="grid gap-4 sm:grid-cols-3">
+                {CASE_STUDY.outcome.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-xl border border-border bg-surface-muted px-4 py-3"
+                  >
+                    <dt className="text-xs font-medium uppercase tracking-wide text-text-subtle">
+                      {stat.label}
+                    </dt>
+                    <dd className="mt-1 text-2xl font-bold tabular-nums text-text">
+                      {stat.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+
+              <p className="max-w-3xl text-sm leading-relaxed text-text-muted">
+                {CASE_STUDY.result}
+              </p>
+
+              <Link
+                href="/sample"
+                className="inline-block text-sm font-medium text-brand-600 underline hover:text-brand-500"
+              >
+                See what a screening report looks like
+              </Link>
+            </div>
+          </article>
         </section>
 
         <section className="rounded-2xl border border-border bg-surface p-8 text-center">
