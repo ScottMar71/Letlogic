@@ -59,7 +59,8 @@ export function UpgradeProModal({ open, onClose }: UpgradeProModalProps) {
               Upgrade to {PRO_PLAN.name}
             </h2>
             <p className="text-sm text-text-muted">
-              Unlock comparison tools and unlimited monthly screenings.
+              Unlock comparison tools and {PRO_PLAN.monthlyCredits} screenings
+              per month.
             </p>
           </div>
           <button

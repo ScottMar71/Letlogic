@@ -58,8 +58,8 @@ export async function grantCredits(
     user_id: userId,
     delta: amount,
     reason,
-    purchase_id: purchaseId ?? null,
-    stripe_invoice_id: stripeInvoiceId ?? null,
+    ...(purchaseId ? { purchase_id: purchaseId } : {}),
+    ...(stripeInvoiceId ? { stripe_invoice_id: stripeInvoiceId } : {}),
   });
   // Unique stripe_invoice_id makes Pro grants idempotent across webhook retries.
   if (error?.code === "23505" && stripeInvoiceId) return;

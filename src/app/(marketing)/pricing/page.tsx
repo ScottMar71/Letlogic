@@ -14,7 +14,7 @@ import { createClient } from "@/lib/supabase/server";
 export const metadata = marketingPageMetadata({
   title: "Pricing — pay-as-you-go & Pro plans",
   description:
-    "Transparent LetLogic pricing for UK tenant screening: pay per screening from £4.99 or go Pro for unlimited screenings, applicant comparison, and PDF export.",
+    `Transparent LetLogic pricing for UK tenant screening: pay per screening from £4.99 or go Pro for ${PRO_PLAN.monthlyCredits} screenings/month, applicant comparison, and PDF export.`,
   path: "/pricing",
 });
 
@@ -22,7 +22,7 @@ const FAQS = [
   {
     question: "How much does a tenant screening cost?",
     answer:
-      "Screenings start from £4.99 on pay-as-you-go credit packs, with the per-screening price dropping as you buy larger packs. Pro includes a monthly allowance of screenings plus a reduced rate beyond it.",
+      `Screenings start from £4.99 on pay-as-you-go credit packs, with the per-screening price dropping as you buy larger packs. Pro includes ${PRO_PLAN.monthlyCredits} screenings each month; buy extra credit packs when your allowance runs out.`,
   },
   {
     question: "Is there a free trial or free screening?",
@@ -32,7 +32,7 @@ const FAQS = [
   {
     question: "What's included in the Pro plan?",
     answer:
-      "Pro gives you a monthly screening allowance, the side-by-side applicant comparison view, and PDF export, with a reduced per-screening rate once you use your allowance. It's best for landlords screening applicants regularly.",
+      `Pro includes ${PRO_PLAN.monthlyCredits} screenings per month, the side-by-side applicant comparison view, and PDF export. When you've used your monthly allowance, buy additional credit packs at pay-as-you-go rates. Best for landlords screening applicants regularly.`,
   },
   {
     question: "Do credits expire?",
@@ -42,7 +42,7 @@ const FAQS = [
   {
     question: "Do you offer pricing for letting agents?",
     answer:
-      "Yes. Our Agency option adds team seats, API access, and white-label reports for letting agents. Get in touch and we'll tailor it to your volume.",
+      "An Agency plan with team seats, API access, and white-label reports is coming soon. For now, letting agents can use Pro or pay-as-you-go credits — register interest at hello@letlogic.app.",
   },
 ];
 
@@ -66,7 +66,8 @@ export default async function PricingPage() {
         <div className="text-center">
           <h1 className="text-h1 font-bold text-text">Simple, honest pricing</h1>
           <p className="mt-2 text-text-muted">
-            Pay per screening, or go Pro for unlimited use. No free checks — but
+            Pay per screening, or go Pro for {PRO_PLAN.monthlyCredits} screenings
+            a month. No free checks — but
             you can{" "}
             <Link href="/sample" className="text-brand-600 underline hover:text-brand-500">
               view a sample report
@@ -91,8 +92,7 @@ export default async function PricingPage() {
               <p className="text-lg font-semibold">{PRO_PLAN.name}</p>
               <p className="text-brand-100">
                 {PRO_PLAN.monthlyCredits} screenings/month · comparison view · PDF
-                export · {formatGbp(PRO_PLAN.overagePencePerCredit)}/screening
-                after that
+                export · buy extra credit packs when your allowance runs out
               </p>
             </div>
             <div className="text-right">
@@ -111,15 +111,21 @@ export default async function PricingPage() {
         </section>
 
         <section className="rounded-2xl border border-border bg-surface p-6 text-center">
-          <p className="font-semibold text-text">Agency</p>
+          <p className="inline-flex items-center gap-2 font-semibold text-text">
+            Agency
+            <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-text-muted">
+              Coming soon
+            </span>
+          </p>
           <p className="mt-1 text-sm text-text-muted">
             Team seats, API access, and white-label reports for letting agents.
+            Use Pro or pay-as-you-go credits in the meantime.
           </p>
           <a
-            href="mailto:hello@letlogic.app?subject=LetLogic%20Agency"
+            href="mailto:hello@letlogic.app?subject=LetLogic%20Agency%20interest"
             className="mt-3 inline-block text-sm font-medium text-brand-600 underline hover:text-brand-500"
           >
-            Talk to us
+            Register interest
           </a>
         </section>
 

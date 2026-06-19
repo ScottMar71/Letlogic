@@ -6,6 +6,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { grantCredits } from "@/lib/screening/credits";
 import { PRO_PLAN } from "@/lib/screening/pricing";
 import { captureServerError } from "@/lib/observability/sentry";
+import {
+  invoiceSubscriptionId,
+  subscriptionPeriodEnd,
+} from "@/lib/stripe/subscription-billing";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export async function POST(request: Request) {
@@ -123,6 +127,19 @@ async function handleSubscriptionStart(
     },
     { onConflict: "stripe_subscription_id" },
   );
+
+  // Belt-and-suspenders: grant opening credits when checkout completes even if
+  // invoice.paid was missed or arrived before we could read the subscription id.
+  const stripe = getStripe();
+  const { data: invoices } = await stripe.invoices.list({
+    subscription: subscriptionId,
+    status: "paid",
+    limit: 1,
+  });
+  const invoice = invoices.data[0];
+  if (invoice) {
+    await handleInvoicePaid(invoice);
+  }
 }
 
 async function handleInvoicePaid(invoice: Stripe.Invoice) {
@@ -178,15 +195,3 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
   );
 }
 
-function subscriptionPeriodEnd(sub: Stripe.Subscription): string | null {
-  const end = (sub as unknown as { current_period_end?: number })
-    .current_period_end;
-  return typeof end === "number" ? new Date(end * 1000).toISOString() : null;
-}
-
-function invoiceSubscriptionId(invoice: Stripe.Invoice): string | null {
-  const sub = (invoice as unknown as { subscription?: string | { id: string } })
-    .subscription;
-  if (!sub) return null;
-  return typeof sub === "string" ? sub : sub.id;
-}

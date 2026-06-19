@@ -127,10 +127,15 @@ async function main() {
   const legalOk = legalVars.every((name) => Boolean(process.env[name]?.trim()));
   if (legalOk) {
     pass("legal:company-details", "configured");
+  } else if (process.env.ALLOW_PRE_INCORPORATION === "1") {
+    pass(
+      "legal:company-details",
+      "skipped (ALLOW_PRE_INCORPORATION=1 — set real details after incorporation)",
+    );
   } else {
     fail(
       "legal:company-details",
-      "set NEXT_PUBLIC_COMPANY_NUMBER and NEXT_PUBLIC_COMPANY_ADDRESS before launch",
+      "set NEXT_PUBLIC_COMPANY_NUMBER and NEXT_PUBLIC_COMPANY_ADDRESS before launch (or ALLOW_PRE_INCORPORATION=1 for pilot)",
     );
   }
 

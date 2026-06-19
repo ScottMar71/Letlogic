@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LetLogic
 
-## Getting Started
+UK-focused **AI tenant screening aid** for landlords and letting agents. Paste applicant details and get an explainable risk score, summary, and recommendation — not a credit check or legal advice.
 
-First, run the development server:
+**Production:** [https://www.letlogic.app](https://www.letlogic.app)
+
+## Stack
+
+- Next.js 16 (App Router), React 19, Tailwind CSS
+- Supabase (auth, Postgres, RLS)
+- Stripe (credit packs + Pro subscription)
+- OpenAI (`gpt-4o`), Resend (transactional + inbound mail)
+- Sentry, Vercel Analytics
+
+## Local development
 
 ```bash
+npm install
+cp .env.example .env.local   # fill in values — never commit .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Supabase
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Create or link a Supabase project (`supabase link --project-ref <ref>`).
+2. Apply migrations: `npm run db:push`
+3. Generate types: `npm run db:types`
+4. Branded auth emails:
+   - `npm run generate:auth-email-templates` (local preview)
+   - `SUPABASE_ACCESS_TOKEN=... npm run configure:auth-email-templates`
+   - `SUPABASE_ACCESS_TOKEN=... RESEND_API_KEY=... npm run configure:supabase-smtp`
 
-## Learn More
+Add auth redirect URLs in Supabase → Authentication → URL configuration:
 
-To learn more about Next.js, take a look at the following resources:
+- `http://localhost:3000/auth/callback`
+- `https://www.letlogic.app/auth/callback`
+- `https://letlogic.app/auth/callback`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Stripe
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Create credit pack and Pro subscription products/prices in Stripe Dashboard.
+- Point webhook to `https://www.letlogic.app/api/webhooks/stripe` (events: `checkout.session.completed`, `invoice.paid`).
+- Set `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, and price IDs in env.
 
-## Deploy on Vercel
+## Deploy (Vercel)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Project: **letlogic** on Vercel. Domains: `www.letlogic.app`, `letlogic.app`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Connect repo and set all variables from `.env.example` in Vercel → Settings → Environment Variables.
+2. Set `NEXT_PUBLIC_SITE_URL=https://www.letlogic.app`
+3. Set `CONTACT_INBOX_EMAIL=support@letlogic.app` (not a personal inbox).
+4. Set Sentry env vars (see [Sentry setup](#sentry) below)
+5. Promote deployment to production after CI passes
+
+### Sentry
+
+Create a Next.js project at [sentry.io](https://sentry.io), then set in Vercel (Production + Preview):
+
+| Variable | Value |
+|----------|--------|
+| `SENTRY_DSN` | Project DSN (server) |
+| `NEXT_PUBLIC_SENTRY_DSN` | Same DSN (browser) |
+| `SENTRY_AUTH_TOKEN` | Auth token with `project:releases` + `org:read` — **required at build** for readable stack traces |
+| `SENTRY_ORG` | Your org slug |
+| `SENTRY_PROJECT` | Your project slug (e.g. `letlogic`) |
+
+Source maps upload automatically on `next build` when `SENTRY_AUTH_TOKEN` is set. Events are tunneled via `/monitoring` to reduce ad-blocker drops.
+
+Verify after deploy:
+
+```bash
+curl -s https://www.letlogic.app/api/sentry-example
+# Check https://sentry.io/issues/ within ~30s
+```
+
+Session Replay records **only on errors**, with all text/inputs masked (applicant data may be on screen)..
+
+### Pre-launch verification
+
+```bash
+npm run verify:production
+```
+
+For design-partner pilot before company incorporation:
+
+```bash
+ALLOW_PRE_INCORPORATION=1 npm run verify:production
+```
+
+Legal entity vars (`NEXT_PUBLIC_COMPANY_NUMBER`, `NEXT_PUBLIC_COMPANY_ADDRESS`) are required before public paid launch.
+
+## Scripts
+
+| Command | Purpose |
+|---------|---------|
+| `npm run lint` | ESLint |
+| `npm run test` | Vitest unit tests |
+| `npm run test:e2e` | Playwright (marketing smoke + optional auth tests) |
+| `npm run verify:production` | Live URL + env checks |
+| `npm run grant:pilot` | Grant comp credits: `PARTNER_EMAIL=… npm run grant:pilot` |
+| `npm run provision:e2e-user` | Grant credits to E2E test user |
+
+### E2E auth tests (optional)
+
+Set in `.env.local` or CI secrets:
+
+```env
+PLAYWRIGHT_TEST_EMAIL=test@example.com
+PLAYWRIGHT_TEST_PASSWORD=...
+```
+
+Create the user in Supabase Auth first, then `npm run provision:e2e-user`.
+
+## Design partner pilot
+
+See [docs/product/Partner-Onboarding.md](docs/product/Partner-Onboarding.md).
+
+## Linear
+
+Go-live checklist: [AGE-108](https://linear.app/agentscale/issue/AGE-108) in the LetLogic project.

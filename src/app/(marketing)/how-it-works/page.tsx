@@ -7,6 +7,7 @@ import {
 import { FaqSection } from "@/components/marketing/faq-section";
 import { JsonLd, breadcrumbJsonLd, serviceJsonLd } from "@/lib/seo/json-ld";
 import { marketingPageMetadata } from "@/lib/seo/metadata";
+import { PRO_PLAN } from "@/lib/screening/pricing";
 
 export const metadata = marketingPageMetadata({
   title: "How tenant screening works",
@@ -214,7 +215,8 @@ export default function HowItWorksPage() {
         <section className="rounded-2xl border border-brand-700 bg-brand-700 p-8 text-center text-white">
           <h2 className="text-xl font-semibold">Try it on your next applicant</h2>
           <p className="mt-1 text-brand-100">
-            Pay per screening, or go Pro for unlimited use.
+            Pay per screening, or go Pro for {PRO_PLAN.monthlyCredits} screenings
+            a month.
           </p>
           <div className="mt-4 flex flex-wrap justify-center gap-3">
             <Link href="/login?next=/screen" className="btn-onbrand">
