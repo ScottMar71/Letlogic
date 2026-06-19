@@ -7,6 +7,7 @@ import type { AppLayoutWidth } from "@/components/layout/authenticated-page";
 
 type AppHeaderShellProps = {
   creditBalance?: number;
+  isAdmin?: boolean;
   width?: AppLayoutWidth;
 };
 
@@ -18,6 +19,7 @@ const widthClass = {
 
 export function AppHeaderShell({
   creditBalance,
+  isAdmin = false,
   width = "content",
 }: AppHeaderShellProps) {
   return (
@@ -46,9 +48,10 @@ export function AppHeaderShell({
             <AppNavLink href="/screen">Screen</AppNavLink>
             <AppNavLink href="/properties">Properties</AppNavLink>
             <AppNavLink href="/settings">Settings</AppNavLink>
+            {isAdmin ? <AppNavLink href="/admin">Admin</AppNavLink> : null}
             <SignOutButton />
           </nav>
-          <AppMobileNav creditBalance={creditBalance} />
+          <AppMobileNav creditBalance={creditBalance} isAdmin={isAdmin} />
         </div>
       </div>
     </header>

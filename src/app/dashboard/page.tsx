@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Shield } from "lucide-react";
 import { redirect } from "next/navigation";
 import { AuthenticatedPage } from "@/components/layout/authenticated-page";
 import { CreditAlertBanner } from "@/components/dashboard/credit-alert-banner";
@@ -15,7 +16,7 @@ import {
   listPropertyScreeningActivity,
   listRecentAssessments,
 } from "@/lib/screening/queries";
-import { getAuthenticatedUser } from "@/lib/screening/session";
+import { getAuthenticatedUser, getCachedIsAdmin } from "@/lib/screening/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { privatePageMetadata } from "@/lib/seo/metadata";
 
@@ -29,6 +30,7 @@ export default async function DashboardPage({
   const user = await getAuthenticatedUser();
   if (!user) redirect("/login?next=/dashboard");
 
+  const isAdmin = await getCachedIsAdmin();
   const { risk, recommendation } = await searchParams;
 
   const admin = createAdminClient();
@@ -62,6 +64,12 @@ export default async function DashboardPage({
         }
         actions={
           <div className="flex flex-wrap gap-2">
+            {isAdmin ? (
+              <Link href="/admin" className="btn-secondary inline-flex items-center gap-2">
+                <Shield className="h-4 w-4" aria-hidden />
+                Admin
+              </Link>
+            ) : null}
             <Link href="/sample" className="btn-secondary">
               View sample
             </Link>

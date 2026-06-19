@@ -17,6 +17,7 @@ const LINKS = [
 
 type AppMobileNavProps = {
   creditBalance?: number;
+  isAdmin?: boolean;
 };
 
 function linkClass(active: boolean) {
@@ -33,7 +34,7 @@ function isActive(pathname: string, href: string) {
     : pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AppMobileNav({ creditBalance }: AppMobileNavProps) {
+export function AppMobileNav({ creditBalance, isAdmin = false }: AppMobileNavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [buyOpen, setBuyOpen] = useState(false);
@@ -97,6 +98,16 @@ export function AppMobileNav({ creditBalance }: AppMobileNavProps) {
             {link.label}
           </Link>
         ))}
+        {isAdmin ? (
+          <Link
+            href="/admin"
+            className={linkClass(isActive(pathname, "/admin"))}
+            aria-current={isActive(pathname, "/admin") ? "page" : undefined}
+            onClick={close}
+          >
+            Admin
+          </Link>
+        ) : null}
       </MobileNavDrawer>
 
       <BuyCreditsModal open={buyOpen} onClose={() => setBuyOpen(false)} />

@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { isAdminEmail } from "@/lib/admin/auth";
 import { getCreditBalance } from "@/lib/screening/credits";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -17,4 +18,10 @@ export const getCachedCreditBalance = cache(async (): Promise<number | undefined
   const user = await getAuthenticatedUser();
   if (!user) return undefined;
   return getCreditBalance(createAdminClient(), user.id);
+});
+
+/** Dedupes admin check when header and page both need it. */
+export const getCachedIsAdmin = cache(async (): Promise<boolean> => {
+  const user = await getAuthenticatedUser();
+  return isAdminEmail(user?.email);
 });
