@@ -63,14 +63,14 @@ export function OnboardingChecklist({
     },
     {
       id: "property",
-      label: "Add a property to track screenings",
+      label: "Add a property (optional)",
       done: hasProperties,
       href: "/properties/new",
     },
   ];
 
   const completed = steps.filter((s) => s.done).length;
-  const allDone = hasScreenings && hasProperties && hasViewedSample;
+  const allDone = hasScreenings && hasViewedSample;
 
   if (dismissed || allDone) return null;
 

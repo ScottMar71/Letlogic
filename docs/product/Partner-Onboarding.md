@@ -6,7 +6,7 @@
 ## Week 0 — Kickoff
 
 - [ ] Sign or email-confirm pilot agreement
-- [ ] Create account (magic link)
+- [ ] Create account (email + password at /signup)
 - [ ] Grant comp credits via `PARTNER_EMAIL=… npm run grant:pilot` (default 20 credits)
 - [ ] Walkthrough: `/sample` → `/screen` → add property → compare view
 - [ ] Share support email: support@letlogic.app
@@ -25,6 +25,9 @@
 | 3 | Would you buy credits when comp runs out? Why/why not? |
 
 **Track in Linear:** screenings count, properties added, comparison usage.
+
+**Live metrics:** `PARTNER_EMAIL=… npm run partner:status`  
+**Tracker doc:** `Design-Partner-1.md`
 
 ## Week 4 — Exit interview
 

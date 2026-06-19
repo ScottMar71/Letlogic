@@ -7,6 +7,8 @@ import { DashboardLists } from "@/components/dashboard/dashboard-lists";
 import { DashboardPortfolioSummary } from "@/components/dashboard/dashboard-portfolio-summary";
 import { DashboardStats } from "@/components/dashboard/dashboard-stats";
 import { QuickActions } from "@/components/dashboard/quick-actions";
+import { DashboardScreenCta } from "@/components/dashboard/dashboard-screen-cta";
+import { DashboardFunnelTracker } from "@/components/analytics/dashboard-funnel-tracker";
 import { OnboardingChecklist } from "@/components/onboarding/checklist";
 import { PageHeader } from "@/components/ui/page-header";
 import { getCreditBalance } from "@/lib/screening/credits";
@@ -53,6 +55,7 @@ export default async function DashboardPage({
 
   return (
     <AuthenticatedPage creditBalance={balance} width="content">
+      <DashboardFunnelTracker />
       <PageHeader
         title={`Welcome back, ${displayName}`}
         description={
@@ -73,14 +76,7 @@ export default async function DashboardPage({
             <Link href="/sample" className="btn-secondary">
               View sample
             </Link>
-            <Link
-              href="/screen"
-              className={`btn-primary ${balance === 0 ? "pointer-events-none opacity-50" : ""}`}
-              aria-disabled={balance === 0}
-              tabIndex={balance === 0 ? -1 : undefined}
-            >
-              New screening
-            </Link>
+            <DashboardScreenCta balance={balance} />
           </div>
         }
       />

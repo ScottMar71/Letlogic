@@ -30,7 +30,8 @@ Open [http://localhost:3000](http://localhost:3000).
 4. Branded auth emails:
    - `npm run generate:auth-email-templates` (local preview)
    - `SUPABASE_ACCESS_TOKEN=... npm run configure:auth-email-templates`
-   - `SUPABASE_ACCESS_TOKEN=... RESEND_API_KEY=... npm run configure:supabase-smtp`
+   - `SUPABASE_ACCESS_TOKEN=... RESEND_API_KEY=... TURNSTILE_SECRET_KEY=... npm run configure:supabase-smtp`
+   - `npm run verify:auth-config` — confirm email caps + CAPTCHA are active
 
 Add auth redirect URLs in Supabase → Authentication → URL configuration:
 
@@ -100,6 +101,7 @@ Legal entity vars (`NEXT_PUBLIC_COMPANY_NUMBER`, `NEXT_PUBLIC_COMPANY_ADDRESS`) 
 | `npm run test:e2e` | Playwright (marketing smoke + optional auth tests) |
 | `npm run verify:production` | Live URL + env checks |
 | `npm run grant:pilot` | Grant comp credits: `PARTNER_EMAIL=… npm run grant:pilot` |
+| `npm run partner:status` | Partner pilot progress: `PARTNER_EMAIL=… npm run partner:status` |
 | `npm run provision:e2e-user` | Grant credits to E2E test user |
 
 ### E2E auth tests (optional)

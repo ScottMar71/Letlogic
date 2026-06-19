@@ -7,6 +7,7 @@ import {
   getAuthRedirectOrigin,
   safeNextPath,
 } from "@/lib/request-origin";
+import { checkCaptchaToken } from "@/lib/auth/captcha";
 import { friendlyAuthError } from "@/lib/auth/errors";
 import { createAuthClient } from "@/lib/supabase/auth-server";
 import { createClient } from "@/lib/supabase/server";
@@ -29,10 +30,13 @@ export async function signInWithPassword(formData: FormData) {
 export async function signUpWithPassword(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const next = safeNextPath((formData.get("next") as string) || "/dashboard");
+  const next = safeNextPath((formData.get("next") as string) || "/screen");
 
   if (!email) return { error: "Email is required" };
   if (!password) return { error: "Password is required" };
+
+  const captcha = checkCaptchaToken(formData);
+  if (!captcha.ok) return { error: captcha.error };
 
   const origin = getAuthRedirectOrigin(await headers());
   const emailRedirectTo = buildAuthCallbackUrl(origin, next);
@@ -41,7 +45,10 @@ export async function signUpWithPassword(formData: FormData) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { emailRedirectTo },
+    options: {
+      emailRedirectTo,
+      ...(captcha.token ? { captchaToken: captcha.token } : {}),
+    },
   });
 
   if (error) return { error: friendlyAuthError(error.message) };
@@ -58,7 +65,7 @@ export async function signUpWithPassword(formData: FormData) {
     return { needsEmailConfirmation: true as const };
   }
 
-  redirect(next);
+  return { success: true as const, next };
 }
 
 export async function requestPasswordReset(formData: FormData) {
@@ -66,12 +73,16 @@ export async function requestPasswordReset(formData: FormData) {
 
   if (!email) return { error: "Email is required" };
 
+  const captcha = checkCaptchaToken(formData);
+  if (!captcha.ok) return { error: captcha.error };
+
   const origin = getAuthRedirectOrigin(await headers());
   const redirectTo = buildAuthCallbackUrl(origin, "/reset-password");
 
   const supabase = await createAuthClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo,
+    ...(captcha.token ? { captchaToken: captcha.token } : {}),
   });
 
   if (error) return { error: friendlyAuthError(error.message) };

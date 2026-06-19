@@ -1,18 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LogoLink } from "@/components/brand/logo";
 import { signUpWithPassword } from "@/app/actions/auth";
+import {
+  TurnstileWidget,
+  type TurnstileWidgetHandle,
+} from "@/components/auth/turnstile-widget";
+import { trackFunnel } from "@/lib/analytics/funnel";
+import { captchaRequired } from "@/lib/auth/captcha";
 import { Alert } from "@/components/ui/alert";
 
 export function SignupForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/dashboard";
+  const next = searchParams.get("next") ?? "/screen";
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmationSent, setConfirmationSent] = useState(false);
@@ -28,13 +38,21 @@ export function SignupForm() {
       return;
     }
 
+    if (captchaRequired() && !captchaToken) {
+      setLoading(false);
+      setError("Please complete the security check and try again.");
+      return;
+    }
+
     const formData = new FormData();
     formData.set("email", email);
     formData.set("password", password);
     formData.set("next", next);
+    if (captchaToken) formData.set("captchaToken", captchaToken);
 
     const result = await signUpWithPassword(formData);
     setLoading(false);
+    turnstileRef.current?.reset();
 
     if ("error" in result && result.error) {
       setError(result.error);
@@ -42,7 +60,14 @@ export function SignupForm() {
     }
 
     if ("needsEmailConfirmation" in result && result.needsEmailConfirmation) {
+      trackFunnel("signup_completed");
       setConfirmationSent(true);
+      return;
+    }
+
+    if ("success" in result && result.success) {
+      trackFunnel("signup_completed");
+      router.push(result.next);
     }
   }
 
@@ -103,6 +128,7 @@ export function SignupForm() {
             placeholder="Re-enter your password"
           />
         </label>
+        <TurnstileWidget ref={turnstileRef} onToken={setCaptchaToken} />
         <button
           type="submit"
           disabled={loading}

@@ -2,6 +2,12 @@ import { describe, expect, it } from "vitest";
 import { friendlyAuthError } from "./errors";
 
 describe("friendlyAuthError", () => {
+  it("maps captcha errors", () => {
+    expect(friendlyAuthError("captcha verification failed")).toMatch(
+      /Security check failed/,
+    );
+  });
+
   it("maps email rate limit errors", () => {
     expect(friendlyAuthError("email rate limit exceeded")).toMatch(
       /email provider limit/,

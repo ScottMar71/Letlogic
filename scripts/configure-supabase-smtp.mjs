@@ -1,11 +1,18 @@
 #!/usr/bin/env node
 /**
- * Configure hosted Supabase Auth to send via Resend SMTP and relax email rate limits.
+ * Harden Supabase Auth email + bot protection (hosted project).
+ *
+ * - Routes auth mail through Resend SMTP
+ * - Skips signup confirmation emails (mailer_autoconfirm)
+ * - Caps project-wide auth email rate and per-address resend frequency
+ * - Enables Cloudflare Turnstile when TURNSTILE_SECRET_KEY is set
+ * - Enables forwarded-IP rate limiting (required on Vercel)
  *
  * Requires:
  *   SUPABASE_ACCESS_TOKEN — https://supabase.com/dashboard/account/tokens
  *   NEXT_PUBLIC_SUPABASE_URL (or PROJECT_REF)
  *   RESEND_API_KEY — Resend API key (used as SMTP password)
+ *   TURNSTILE_SECRET_KEY — optional but strongly recommended for production
  *
  * Usage:
  *   SUPABASE_ACCESS_TOKEN=... npm run configure:supabase-smtp
@@ -34,9 +41,13 @@ function loadEnvFile(path) {
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const localEnv = loadEnvFile(join(root, ".env.local"));
 
-const token = process.env.SUPABASE_ACCESS_TOKEN?.trim();
+const token =
+  process.env.SUPABASE_ACCESS_TOKEN?.trim() ?? localEnv.SUPABASE_ACCESS_TOKEN?.trim();
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() ?? localEnv.NEXT_PUBLIC_SUPABASE_URL?.trim();
 const resendKey = process.env.RESEND_API_KEY?.trim() ?? localEnv.RESEND_API_KEY?.trim();
+const turnstileSecret =
+  process.env.TURNSTILE_SECRET_KEY?.trim() ??
+  localEnv.TURNSTILE_SECRET_KEY?.trim();
 const projectRef =
   process.env.PROJECT_REF?.trim() ?? url?.match(/https:\/\/([^.]+)\./)?.[1];
 
@@ -48,6 +59,14 @@ const smtpSenderName =
   process.env.SMTP_SENDER_NAME?.trim() ??
   localEnv.SMTP_SENDER_NAME?.trim() ??
   "LetLogic";
+
+/** Project-wide cap on auth emails per hour (signup confirm, recovery, email change). */
+const EMAIL_SENT_PER_HOUR = Number(process.env.AUTH_EMAIL_RATE_LIMIT ?? "10");
+
+/** Minimum seconds between auth emails to the same address. */
+const SMTP_MAX_FREQUENCY_SECONDS = Number(
+  process.env.AUTH_EMAIL_MIN_INTERVAL_SECONDS ?? "60",
+);
 
 if (!token || !projectRef || !resendKey) {
   console.error(
@@ -64,8 +83,20 @@ const body = {
   smtp_user: "resend",
   smtp_pass: resendKey,
   mailer_autoconfirm: true,
-  rate_limit_email_sent: 30,
+  rate_limit_email_sent: EMAIL_SENT_PER_HOUR,
+  smtp_max_frequency: SMTP_MAX_FREQUENCY_SECONDS,
+  security_sb_forwarded_for_enabled: true,
 };
+
+if (turnstileSecret) {
+  body.security_captcha_enabled = true;
+  body.security_captcha_provider = "turnstile";
+  body.security_captcha_secret = turnstileSecret;
+} else {
+  console.warn(
+    "TURNSTILE_SECRET_KEY not set — CAPTCHA will stay disabled on Supabase. Set it before production.",
+  );
+}
 
 const res = await fetch(
   `https://api.supabase.com/v1/projects/${projectRef}/config/auth`,
@@ -87,5 +118,18 @@ if (!res.ok) {
 
 const data = await res.json();
 console.log(
-  `Configured Resend SMTP for ${projectRef}. rate_limit_email_sent=${data.rate_limit_email_sent}`,
+  [
+    `Configured auth hardening for ${projectRef}.`,
+    `rate_limit_email_sent=${data.rate_limit_email_sent}`,
+    `smtp_max_frequency=${data.smtp_max_frequency}`,
+    `mailer_autoconfirm=${data.mailer_autoconfirm}`,
+    `security_captcha_enabled=${data.security_captcha_enabled}`,
+    `security_sb_forwarded_for_enabled=${data.security_sb_forwarded_for_enabled}`,
+  ].join(" "),
 );
+
+if (!turnstileSecret) {
+  console.log(
+    "Next: create a Turnstile widget, set NEXT_PUBLIC_TURNSTILE_SITE_KEY + TURNSTILE_SECRET_KEY, then re-run this script.",
+  );
+}

@@ -1,13 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { LogoLink } from "@/components/brand/logo";
 import { requestPasswordReset } from "@/app/actions/auth";
+import {
+  TurnstileWidget,
+  type TurnstileWidgetHandle,
+} from "@/components/auth/turnstile-widget";
+import { captchaRequired } from "@/lib/auth/captcha";
 import { Alert } from "@/components/ui/alert";
 
 export function ForgotPasswordForm() {
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
   const [email, setEmail] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -18,11 +25,19 @@ export function ForgotPasswordForm() {
     setError(null);
     setMessage(null);
 
+    if (captchaRequired() && !captchaToken) {
+      setLoading(false);
+      setError("Please complete the security check and try again.");
+      return;
+    }
+
     const formData = new FormData();
     formData.set("email", email);
+    if (captchaToken) formData.set("captchaToken", captchaToken);
 
     const result = await requestPasswordReset(formData);
     setLoading(false);
+    turnstileRef.current?.reset();
 
     if ("error" in result && result.error) {
       setError(result.error);
@@ -58,6 +73,7 @@ export function ForgotPasswordForm() {
             placeholder="you@example.com"
           />
         </label>
+        <TurnstileWidget ref={turnstileRef} onToken={setCaptchaToken} />
         <button
           type="submit"
           disabled={loading}

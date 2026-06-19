@@ -6,6 +6,10 @@ export function friendlyAuthError(message: string): string {
     return "We couldn't send a confirmation email. Try again in a few minutes, or contact support if the problem persists.";
   }
 
+  if (lower.includes("captcha")) {
+    return "Security check failed. Complete the challenge and try again.";
+  }
+
   if (lower.includes("rate limit") || lower.includes("rate_limit")) {
     if (lower.includes("email")) {
       return "Our email provider limit was reached (from earlier sign-in tests). Wait up to an hour, then try again — or use Sign in if you already have an account.";

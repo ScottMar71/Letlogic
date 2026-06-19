@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ClipboardPaste, ListChecks } from "lucide-react";
 import { analyseApplicant, type AnalyseResult } from "@/app/actions/screening";
+import { trackFunnel } from "@/lib/analytics/funnel";
 import { BuyCreditsModal } from "@/components/screening/buy-credits-modal";
 import { AssessmentResultPanel } from "@/components/screening/assessment-result";
 import { Alert } from "@/components/ui/alert";
@@ -18,6 +19,7 @@ type WorkspaceProps = {
   propertyId?: string;
   defaultRent?: number;
   reanalyseFrom?: ApplicationSource;
+  isFirstScreening?: boolean;
 };
 
 type Mode = "paste" | "form";
@@ -33,6 +35,7 @@ export function ScreeningWorkspace({
   propertyId,
   defaultRent,
   reanalyseFrom,
+  isFirstScreening = false,
 }: WorkspaceProps) {
   const router = useRouter();
   const resultsRef = useRef<HTMLElement>(null);
@@ -114,6 +117,9 @@ export function ScreeningWorkspace({
       setAssessment(result.assessment);
       setSavedId(result.assessment.id);
       setCollapsed(true);
+      if (isFirstScreening) {
+        trackFunnel("first_screen_complete");
+      }
       router.refresh();
       return;
     }

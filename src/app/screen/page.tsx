@@ -1,10 +1,11 @@
 import { redirect } from "next/navigation";
 import { AuthenticatedPage } from "@/components/layout/authenticated-page";
 import { ScreeningWorkspace } from "@/components/screening/screening-workspace";
+import { ScreenCreditBanner } from "@/components/screening/screen-credit-banner";
 import { PageHeader } from "@/components/ui/page-header";
 import { Alert } from "@/components/ui/alert";
 import { getCreditBalance } from "@/lib/screening/credits";
-import { getApplicationSourceForAssessment } from "@/lib/screening/queries";
+import { countAssessments, getApplicationSourceForAssessment } from "@/lib/screening/queries";
 import { getAuthenticatedUser } from "@/lib/screening/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { privatePageMetadata } from "@/lib/seo/metadata";
@@ -20,8 +21,9 @@ export default async function ScreenPage({ searchParams }: PageProps) {
   if (!user) redirect(`/login?next=/screen`);
 
   const admin = createAdminClient();
-  const [balance, reanalyseFrom] = await Promise.all([
+  const [balance, counts, reanalyseFrom] = await Promise.all([
     getCreditBalance(admin, user.id),
+    countAssessments(admin, user.id),
     from
       ? getApplicationSourceForAssessment(admin, user.id, from)
       : Promise.resolve(null),
@@ -39,11 +41,7 @@ export default async function ScreenPage({ searchParams }: PageProps) {
         }
       />
 
-      {balance === 0 && (
-        <Alert variant="warning" title="No credits remaining">
-          Buy credits or upgrade to Pro to run a new screening.
-        </Alert>
-      )}
+      {balance === 0 && <ScreenCreditBanner balance={balance} />}
 
       <Alert variant="info">
         <span className="font-medium text-text">AI-generated screening aid.</span>{" "}
@@ -56,6 +54,7 @@ export default async function ScreenPage({ searchParams }: PageProps) {
         propertyId={reanalyseFrom?.propertyId ?? undefined}
         defaultRent={reanalyseFrom?.rentAmount ?? undefined}
         reanalyseFrom={reanalyseFrom ?? undefined}
+        isFirstScreening={counts.total === 0}
       />
     </AuthenticatedPage>
   );

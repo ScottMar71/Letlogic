@@ -4,6 +4,7 @@ import { PrintReportHeader } from "@/components/screening/print-report-header";
 import { Alert } from "@/components/ui/alert";
 import { PageHeader } from "@/components/ui/page-header";
 import { SampleViewTracker } from "@/components/onboarding/sample-view-tracker";
+import { SampleStickyCta } from "@/components/onboarding/sample-sticky-cta";
 import { FunnelTracker } from "@/components/analytics/funnel-tracker";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { marketingPageMetadata } from "@/lib/seo/metadata";
@@ -74,8 +75,8 @@ export default function SamplePage() {
               <Link href="/pricing" className="btn-secondary">
                 See pricing
               </Link>
-              <Link href="/login?next=/screen" className="btn-primary">
-                Sign in to screen
+              <Link href="/signup?next=/screen" className="btn-primary">
+                Create account to screen
               </Link>
             </div>
           }
@@ -93,10 +94,11 @@ export default function SamplePage() {
 
         <AssessmentResultPanel assessment={SAMPLE} loading={false} error={null} />
 
-        <p className="text-xs text-text-subtle">
+        <p className="pb-20 text-xs text-text-subtle sm:pb-0">
           AI-generated assessment — not a credit check or legal advice.
         </p>
       </main>
+      <SampleStickyCta />
     </>
   );
 }
