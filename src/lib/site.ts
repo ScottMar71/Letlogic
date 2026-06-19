@@ -14,10 +14,18 @@ function envList(key: string): string[] {
 const PLACEHOLDER_COMPANY_NUMBER = "00000000";
 const PLACEHOLDER_ADDRESS = "[Registered office address]";
 
+/** Canonical site origin — always `https://www.letlogic.app` with no trailing slash. */
+function canonicalSiteUrl(): string {
+  return env("NEXT_PUBLIC_SITE_URL", "https://www.letlogic.app").replace(
+    /\/+$/,
+    "",
+  );
+}
+
 export const site = {
   name: "LetLogic",
   domain: "letlogic.app",
-  url: env("NEXT_PUBLIC_SITE_URL", "https://www.letlogic.app"),
+  url: canonicalSiteUrl(),
   description:
     "Paste an applicant's details and get an explainable risk score, summary, and recommendation — not a credit check, just a faster way to decide.",
   email: env("NEXT_PUBLIC_CONTACT_EMAIL", "hello@letlogic.app"),

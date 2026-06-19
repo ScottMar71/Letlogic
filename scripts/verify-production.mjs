@@ -71,6 +71,35 @@ function checkEnv(name, { required = false } = {}) {
   return false;
 }
 
+async function fetchRedirect(url, { expectStatus = [301, 302, 307, 308] } = {}) {
+  const res = await fetch(url, { redirect: "manual" });
+  const statuses = Array.isArray(expectStatus) ? expectStatus : [expectStatus];
+  if (!statuses.includes(res.status)) {
+    throw new Error(`${url} returned ${res.status}, expected redirect`);
+  }
+  return {
+    status: res.status,
+    location: res.headers.get("location") ?? "",
+  };
+}
+
+function extractCanonical(html) {
+  const match = html.match(/<link[^>]+rel="canonical"[^>]+href="([^"]+)"/i);
+  return match?.[1] ?? null;
+}
+
+function normalizeCanonicalUrl(url) {
+  const parsed = new URL(url);
+  if (parsed.pathname === "/" && !parsed.search && !parsed.hash) {
+    return `${parsed.protocol}//${parsed.host}`;
+  }
+  return url.replace(/\/+$/, "");
+}
+
+function extractSitemapLocs(xml) {
+  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+}
+
 async function main() {
   console.log(`Verifying LetLogic at ${baseUrl}\n`);
 
@@ -104,6 +133,103 @@ async function main() {
     }
   } catch (err) {
     fail("seo:login-noindex", err.message);
+  }
+
+  // SEO — canonical host/path consistency (AGE-84)
+  try {
+    const apex = await fetchRedirect("https://letlogic.app/pricing");
+    const apexTarget = new URL(apex.location, "https://letlogic.app");
+    if (
+      apexTarget.hostname !== "www.letlogic.app" ||
+      apexTarget.pathname !== "/pricing"
+    ) {
+      throw new Error(`apex redirect target was ${apexTarget.href}`);
+    }
+    pass("seo:apex-redirect", `${apex.status} → ${apexTarget.href}`);
+  } catch (err) {
+    fail("seo:apex-redirect", err.message);
+  }
+
+  try {
+    const slash = await fetchRedirect(`${baseUrl}/pricing/`);
+    const slashTarget = new URL(slash.location, baseUrl);
+    if (slashTarget.pathname !== "/pricing") {
+      throw new Error(`trailing-slash redirect target was ${slashTarget.href}`);
+    }
+    pass("seo:trailing-slash", `${slash.status} → ${slashTarget.pathname}`);
+  } catch (err) {
+    fail("seo:trailing-slash", err.message);
+  }
+
+  const samplePaths = ["/", "/pricing", "/how-it-works"];
+  let sitemapUrls = new Set();
+  try {
+    const sitemapRes = await fetch(`${baseUrl}/sitemap.xml`);
+    const sitemapXml = await sitemapRes.text();
+    if (!sitemapRes.ok || !sitemapXml.includes("<urlset")) {
+      throw new Error(`sitemap returned ${sitemapRes.status}`);
+    }
+    const sitemapLocs = extractSitemapLocs(sitemapXml);
+    if (sitemapLocs.length < 10) {
+      throw new Error(`expected at least 10 URLs, got ${sitemapLocs.length}`);
+    }
+    for (const loc of sitemapLocs) {
+      const parsed = new URL(loc);
+      if (parsed.hostname !== "www.letlogic.app") {
+        throw new Error(`non-canonical host in sitemap: ${loc}`);
+      }
+      if (loc.endsWith("/") && parsed.pathname !== "/") {
+        throw new Error(`trailing slash in sitemap: ${loc}`);
+      }
+    }
+    sitemapUrls = new Set(
+      sitemapLocs.map((loc) => normalizeCanonicalUrl(loc)),
+    );
+    pass("seo:sitemap", `${sitemapLocs.length} canonical URLs`);
+  } catch (err) {
+    fail("seo:sitemap", err.message);
+  }
+
+  for (const path of samplePaths) {
+    try {
+      const res = await fetch(`${baseUrl}${path}`);
+      const body = await res.text();
+      const canonical = extractCanonical(body);
+      const expected = path === "/" ? baseUrl : `${baseUrl}${path}`;
+      if (canonical !== expected) {
+        throw new Error(`canonical ${canonical ?? "missing"} !== ${expected}`);
+      }
+      if (sitemapUrls.size > 0 && !sitemapUrls.has(normalizeCanonicalUrl(canonical))) {
+        throw new Error(`canonical not present in sitemap: ${canonical}`);
+      }
+      pass(`seo:canonical${path}`, canonical);
+    } catch (err) {
+      fail(`seo:canonical${path}`, err.message);
+    }
+  }
+
+  // Search Console readiness (AGE-85)
+  try {
+    const res = await fetch(`${baseUrl}/`);
+    const body = await res.text();
+    if (!/google-site-verification/i.test(body)) {
+      throw new Error("missing google-site-verification meta tag");
+    }
+    pass("seo:gsc-verification-meta", "present on homepage");
+  } catch (err) {
+    fail("seo:gsc-verification-meta", err.message);
+  }
+
+  try {
+    const res = await fetch(`${baseUrl}/robots.txt`);
+    const body = await res.text();
+    const expectedSitemap = `${baseUrl}/sitemap.xml`;
+    if (!body.includes(`Sitemap: ${expectedSitemap}`)) {
+      throw new Error(`robots.txt missing ${expectedSitemap}`);
+    }
+    pass("seo:robots-sitemap", expectedSitemap);
+  } catch (err) {
+    fail("seo:robots-sitemap", err.message);
   }
 
   if (process.env.SENTRY_DSN) {
@@ -148,7 +274,7 @@ async function main() {
   const failed = checks.filter((c) => !c.ok);
   console.log(`\n${checks.length - failed.length}/${checks.length} checks passed`);
 
-  if (failed.some((c) => c.name.startsWith("page:"))) {
+  if (failed.some((c) => c.name.startsWith("page:") || c.name.startsWith("seo:"))) {
     process.exit(1);
   }
 }

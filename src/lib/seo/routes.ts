@@ -41,6 +41,16 @@ export const PUBLIC_ROUTES: {
   { path: "/cookies", changeFrequency: "yearly", priority: 0.2 },
 ];
 
+/** Normalize a public path to canonical form (leading slash, no trailing slash except `/`). */
+export function canonicalPath(path: string): string {
+  if (!path || path === "/") return "/";
+  return `/${path.replace(/^\/+|\/+$/g, "")}`;
+}
+
+/** Absolute canonical URL for sitemap, metadata, and JSON-LD. */
 export function absoluteUrl(path: string): string {
-  return new URL(path, site.url).toString();
+  const canonical = canonicalPath(path);
+  return canonical === "/"
+    ? site.url
+    : `${site.url}${canonical}`;
 }

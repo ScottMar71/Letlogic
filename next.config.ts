@@ -12,6 +12,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Canonical URLs omit trailing slashes (matches sitemap + metadata).
+  trailingSlash: false,
   async redirects() {
     return [
       {

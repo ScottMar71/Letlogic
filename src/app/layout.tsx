@@ -24,6 +24,13 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "-HiKPbZwclgkPLofewKr_5HqsBVUXyG3yVVQ4KBrOLg",
+    ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? {
+          other: {
+            "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION,
+          },
+        }
+      : {}),
   },
   openGraph: {
     siteName: site.name,
