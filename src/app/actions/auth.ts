@@ -21,8 +21,17 @@ export async function signInWithPassword(formData: FormData) {
   if (!email) return { error: "Email is required" };
   if (!password) return { error: "Password is required" };
 
+  const captcha = checkCaptchaToken(formData);
+  if (!captcha.ok) return { error: captcha.error };
+
   const supabase = await createAuthClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+    options: {
+      ...(captcha.token ? { captchaToken: captcha.token } : {}),
+    },
+  });
 
   if (error) return { error: friendlyAuthError(error.message) };
   redirect(next);

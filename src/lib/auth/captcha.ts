@@ -1,4 +1,4 @@
-/** Cloudflare Turnstile site key (public). When set, signup and password reset require a token. */
+/** Cloudflare Turnstile site key (public). When set, auth forms require a token. */
 export function turnstileSiteKey(): string | undefined {
   const key = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
   return key || undefined;

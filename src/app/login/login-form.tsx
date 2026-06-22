@@ -1,19 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LogoLink } from "@/components/brand/logo";
 import { signInWithPassword } from "@/app/actions/auth";
+import {
+  TurnstileWidget,
+  type TurnstileWidgetHandle,
+} from "@/components/auth/turnstile-widget";
+import { captchaRequired } from "@/lib/auth/captcha";
 import { Alert } from "@/components/ui/alert";
 
 export function LoginForm() {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/dashboard";
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
   const authError = searchParams.get("error") === "auth";
   const recoveryReason = searchParams.get("reason") === "recovery";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(
     authError
@@ -28,13 +35,21 @@ export function LoginForm() {
     setLoading(true);
     setError(null);
 
+    if (captchaRequired() && !captchaToken) {
+      setLoading(false);
+      setError("Please complete the security check and try again.");
+      return;
+    }
+
     const formData = new FormData();
     formData.set("email", email);
     formData.set("password", password);
     formData.set("next", next);
+    if (captchaToken) formData.set("captchaToken", captchaToken);
 
     const result = await signInWithPassword(formData);
     setLoading(false);
+    turnstileRef.current?.reset();
 
     if ("error" in result && result.error) {
       setError(result.error);
@@ -95,6 +110,7 @@ export function LoginForm() {
             placeholder="Your password"
           />
         </div>
+        <TurnstileWidget ref={turnstileRef} onToken={setCaptchaToken} />
         <button
           type="submit"
           disabled={loading}
