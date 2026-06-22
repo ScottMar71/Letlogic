@@ -26,7 +26,7 @@ export function organizationJsonLd() {
     "@type": "Organization",
     name: site.company.legalName,
     url: site.url,
-    logo: absoluteUrl("/brand/icon.svg"),
+    logo: absoluteUrl(site.icons.icon),
     email: site.email,
     address: {
       "@type": "PostalAddress",
@@ -191,7 +191,7 @@ export function articleJsonLd({
     name: site.company.legalName,
     logo: {
       "@type": "ImageObject",
-      url: absoluteUrl("/brand/icon.svg"),
+      url: absoluteUrl(site.icons.icon),
     },
   };
   return {

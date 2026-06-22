@@ -26,6 +26,10 @@ export const site = {
   name: "LetLogic",
   domain: "letlogic.app",
   url: canonicalSiteUrl(),
+  icons: {
+    icon: "/brand/icon.svg",
+    apple: "/apple-icon",
+  },
   description:
     "Paste an applicant's details and get an explainable risk score, summary, and recommendation — not a credit check, just a faster way to decide.",
   email: env("NEXT_PUBLIC_CONTACT_EMAIL", "hello@letlogic.app"),

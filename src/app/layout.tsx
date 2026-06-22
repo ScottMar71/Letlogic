@@ -19,9 +19,10 @@ export const metadata: Metadata = {
   },
   description: site.description,
   icons: {
-    icon: "/brand/icon.svg",
-    apple: "/brand/icon.svg",
+    icon: [{ url: site.icons.icon, type: "image/svg+xml" }],
+    apple: [{ url: site.icons.apple, sizes: "180x180", type: "image/png" }],
   },
+  manifest: "/manifest.webmanifest",
   verification: {
     google: "-HiKPbZwclgkPLofewKr_5HqsBVUXyG3yVVQ4KBrOLg",
     ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
