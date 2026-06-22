@@ -105,9 +105,9 @@ export function serviceJsonLd() {
 }
 
 /**
- * Product schema for the pricing page, with one Offer per credit pack plus the
- * Pro subscription. Prices are derived from the single source of truth in
- * `lib/screening/pricing` so schema never drifts from the UI.
+ * Service schema for the pricing page, with one Offer per credit pack plus the
+ * Pro subscription. Uses Service (not Product) — Product snippets require visible
+ * aggregateRating/review data we do not have. Prices match `lib/screening/pricing`.
  */
 export function pricingJsonLd() {
   const packOffers = CREDIT_PACK_LIST.map((pack) => ({
@@ -132,10 +132,20 @@ export function pricingJsonLd() {
 
   return {
     "@context": "https://schema.org",
-    "@type": "Product",
+    "@type": "Service",
     name: `${site.name} tenant screening`,
+    serviceType: "Tenant screening",
     description: site.description,
-    brand: { "@type": "Brand", name: site.name },
+    url: absoluteUrl("/pricing"),
+    provider: {
+      "@type": "Organization",
+      name: site.company.legalName,
+      url: site.url,
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "United Kingdom",
+    },
     offers: [...packOffers, proOffer],
   };
 }
