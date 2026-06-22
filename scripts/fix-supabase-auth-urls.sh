@@ -20,7 +20,7 @@ curl -sS -X PATCH "https://api.supabase.com/v1/projects/${PROJECT_REF}/config/au
   -H "Content-Type: application/json" \
   -d '{
     "site_url": "https://www.letlogic.app",
-    "uri_allow_list": "https://www.letlogic.app/auth/callback,https://letlogic.app/auth/callback,http://localhost:3000/auth/callback,http://127.0.0.1:3000/auth/callback",
+    "uri_allow_list": "https://www.letlogic.app/auth/callback,https://www.letlogic.app/auth/confirm,https://letlogic.app/auth/callback,https://letlogic.app/auth/confirm,http://localhost:3000/auth/callback,http://localhost:3000/auth/confirm,http://127.0.0.1:3000/auth/callback,http://127.0.0.1:3000/auth/confirm",
     "mailer_autoconfirm": true
   }' | python3 -m json.tool
 

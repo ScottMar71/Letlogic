@@ -160,9 +160,13 @@ site_url = "https://www.letlogic.app"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
 additional_redirect_urls = [
   "https://www.letlogic.app/auth/callback",
+  "https://www.letlogic.app/auth/confirm",
   "https://letlogic.app/auth/callback",
+  "https://letlogic.app/auth/confirm",
   "http://localhost:3000/auth/callback",
+  "http://localhost:3000/auth/confirm",
   "http://127.0.0.1:3000/auth/callback",
+  "http://127.0.0.1:3000/auth/confirm",
 ]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600

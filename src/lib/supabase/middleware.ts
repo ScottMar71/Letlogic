@@ -14,7 +14,8 @@ export async function updateSession(request: NextRequest) {
   if (
     tokenHash &&
     type &&
-    request.nextUrl.pathname !== "/auth/callback"
+    request.nextUrl.pathname !== "/auth/callback" &&
+    request.nextUrl.pathname !== "/auth/confirm"
   ) {
     const callbackUrl = request.nextUrl.clone();
     callbackUrl.pathname = "/auth/callback";

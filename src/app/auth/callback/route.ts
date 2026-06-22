@@ -66,5 +66,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/login?error=auth`);
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth`);
+  const loginUrl = new URL("/login", origin);
+  loginUrl.searchParams.set("error", "auth");
+  if (type === "recovery") {
+    loginUrl.searchParams.set("reason", "recovery");
+  }
+  return NextResponse.redirect(loginUrl);
 }

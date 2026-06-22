@@ -1,6 +1,7 @@
 import { describe, expect, it, afterEach } from "vitest";
 import {
   buildAuthCallbackUrl,
+  buildAuthConfirmUrl,
   getAuthRedirectOrigin,
   safeNextPath,
 } from "../request-origin";
@@ -65,5 +66,13 @@ describe("buildAuthCallbackUrl", () => {
     expect(
       buildAuthCallbackUrl("https://www.letlogic.app", "/dashboard"),
     ).toBe("https://www.letlogic.app/auth/callback?next=%2Fdashboard");
+  });
+});
+
+describe("buildAuthConfirmUrl", () => {
+  it("builds confirm URL with encoded next path", () => {
+    expect(
+      buildAuthConfirmUrl("https://www.letlogic.app", "/reset-password"),
+    ).toBe("https://www.letlogic.app/auth/confirm?next=%2Freset-password");
   });
 });

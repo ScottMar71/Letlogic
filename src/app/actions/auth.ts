@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import {
   buildAuthCallbackUrl,
+  buildAuthConfirmUrl,
   getAuthRedirectOrigin,
   safeNextPath,
 } from "@/lib/request-origin";
@@ -77,7 +78,7 @@ export async function requestPasswordReset(formData: FormData) {
   if (!captcha.ok) return { error: captcha.error };
 
   const origin = getAuthRedirectOrigin(await headers());
-  const redirectTo = buildAuthCallbackUrl(origin, "/reset-password");
+  const redirectTo = buildAuthConfirmUrl(origin, "/reset-password");
 
   const supabase = await createAuthClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -87,6 +88,25 @@ export async function requestPasswordReset(formData: FormData) {
 
   if (error) return { error: friendlyAuthError(error.message) };
   return { success: true };
+}
+
+export async function verifyRecoveryCode(formData: FormData) {
+  const email = (formData.get("email") as string)?.trim();
+  const token = (formData.get("token") as string)?.trim();
+  const next = safeNextPath((formData.get("next") as string) || "/reset-password");
+
+  if (!email) return { error: "Email is required" };
+  if (!token) return { error: "Enter the code from your reset email" };
+
+  const supabase = await createAuthClient();
+  const { error } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: "recovery",
+  });
+
+  if (error) return { error: friendlyAuthError(error.message) };
+  redirect(next);
 }
 
 export async function updatePassword(formData: FormData) {

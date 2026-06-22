@@ -53,6 +53,14 @@ export function buildAuthCallbackUrl(origin: string, next: string): string {
   return `${normalizeOrigin(origin)}/auth/callback?next=${encodeURIComponent(next)}`;
 }
 
+/**
+ * Interstitial URL for email OTP links. Mail scanners can prefetch GET requests;
+ * this page does not verify tokens until the user continues explicitly.
+ */
+export function buildAuthConfirmUrl(origin: string, next: string): string {
+  return `${normalizeOrigin(origin)}/auth/confirm?next=${encodeURIComponent(next)}`;
+}
+
 /** Prevent open redirects — only allow same-origin relative paths. */
 export function safeNextPath(next: string | null | undefined): string {
   if (!next || !next.startsWith("/") || next.startsWith("//")) {

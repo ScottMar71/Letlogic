@@ -17,7 +17,6 @@ const SSR_CALLBACK_TEMPLATES = [
   "confirmation.html",
   "invite.html",
   "email-change.html",
-  "recovery.html",
 ];
 
 describe("Supabase auth email templates", () => {
@@ -67,17 +66,20 @@ describe("Supabase auth email templates", () => {
     }
   });
 
-  it("includes OTP code in magic link and reauthentication templates", () => {
+  it("includes OTP code in magic link, recovery, and reauthentication templates", () => {
     const magicLink = readFileSync(join(TEMPLATE_DIR, "magic-link.html"), "utf8");
+    const recovery = readFileSync(join(TEMPLATE_DIR, "recovery.html"), "utf8");
     const reauth = readFileSync(join(TEMPLATE_DIR, "reauthentication.html"), "utf8");
     expect(magicLink).toContain("{{ .Token }}");
+    expect(recovery).toContain("{{ .Token }}");
     expect(reauth).toContain("{{ .Token }}");
   });
 
-  it("recovery template redirects to reset password", () => {
+  it("recovery template uses confirm interstitial and RedirectTo", () => {
     const template = readFileSync(join(TEMPLATE_DIR, "recovery.html"), "utf8");
+    expect(template).toContain("{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=recovery");
     expect(template).toContain("type=recovery");
-    expect(template).toContain("next=/reset-password");
+    expect(template).not.toContain("{{ .ConfirmationURL }}");
   });
 
   it("security notifications include expected template variables", () => {

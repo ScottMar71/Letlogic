@@ -125,14 +125,16 @@ export const authEmailTemplates = [
       const body = [
         heading("Reset your password"),
         paragraph(
-          "We received a request to reset your LetLogic password. Click the button below to choose a new one.",
+          "We received a request to reset your LetLogic password. Click the button below to choose a new one. You can also enter the one-time code on the reset page if your email app opened the link early.",
         ),
         emailButton(
-          `${CALLBACK}?token_hash={{ .TokenHash }}&type=recovery&next=/reset-password`,
+          "{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=recovery",
           "Reset password",
         ),
+        paragraph("Your one-time reset code:"),
+        emailOtpCode("{{ .Token }}"),
         muted(
-          "This link expires in 1 hour and can only be used once. If you did not request a password reset, you can safely ignore this email.",
+          "This link and code expire in 1 hour and can only be used once. If you did not request a password reset, you can safely ignore this email.",
         ),
       ].join("\n");
       return wrapAuthEmail({ title: this.subject, bodyHtml: body });

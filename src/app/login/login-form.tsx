@@ -11,12 +11,15 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/dashboard";
   const authError = searchParams.get("error") === "auth";
+  const recoveryReason = searchParams.get("reason") === "recovery";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(
     authError
-      ? "That sign-in link is invalid or has expired. Sign in with your email and password instead."
+      ? recoveryReason
+        ? "That password reset link has expired or was already used. Some email apps open links before you do — request a new reset email and tap Continue on the next page, or enter the code from the email there."
+        : "That sign-in link is invalid or has expired. Sign in with your email and password instead."
       : null,
   );
 
