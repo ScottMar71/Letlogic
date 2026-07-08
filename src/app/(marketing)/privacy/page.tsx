@@ -26,10 +26,8 @@ export default function PrivacyPage() {
 
       <h2>Who we are</h2>
       <p>
-        {site.company.legalName} is a company registered in{" "}
-        {site.company.registeredIn} (company number{" "}
-        {site.company.companyNumber}), with its registered office at{" "}
-        {site.company.address}. For privacy matters, contact us at{" "}
+        {site.company.legalName} is a sole trader business in the United
+        Kingdom. For privacy matters, contact us at{" "}
         <a href={`mailto:${site.privacyEmail}`}>{site.privacyEmail}</a>.
       </p>
 
@@ -111,9 +109,6 @@ export default function PrivacyPage() {
         </li>
         <li>
           <strong>Stripe</strong> — payment processing.
-        </li>
-        <li>
-          <strong>Resend</strong> — transactional and enquiry email delivery.
         </li>
         <li>
           <strong>Vercel</strong> — application hosting.

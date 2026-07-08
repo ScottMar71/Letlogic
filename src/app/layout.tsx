@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { siteIconsMetadata } from "@/lib/seo/icons";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -18,11 +19,7 @@ export const metadata: Metadata = {
     template: `%s | ${site.name}`,
   },
   description: site.description,
-  icons: {
-    icon: [{ url: site.icons.icon, type: "image/svg+xml" }],
-    apple: [{ url: site.icons.apple, sizes: "180x180", type: "image/png" }],
-  },
-  manifest: "/manifest.webmanifest",
+  ...siteIconsMetadata,
   verification: {
     google: "-HiKPbZwclgkPLofewKr_5HqsBVUXyG3yVVQ4KBrOLg",
     ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION

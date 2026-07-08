@@ -5,7 +5,7 @@
 
 ## Parties
 
-- **Provider:** LetLogic Ltd (pilot operator)
+- **Provider:** LetLogic (sole trader / pilot operator)
 - **Partner:** [Name / business]
 
 ## Term

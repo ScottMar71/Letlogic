@@ -23,7 +23,7 @@ export default function ContactPage() {
           </h1>
           <p className="max-w-2xl text-lg text-text-muted">
             Questions about screening, your account, billing, or a partnership?
-            Send us a message and we&apos;ll come back to you by email.
+            Use the form to open your email app, or write to us directly below.
           </p>
         </div>
 

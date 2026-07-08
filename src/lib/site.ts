@@ -11,8 +11,15 @@ function envList(key: string): string[] {
     .filter((value) => value.length > 0);
 }
 
-const PLACEHOLDER_COMPANY_NUMBER = "00000000";
-const PLACEHOLDER_ADDRESS = "[Registered office address]";
+const DEFAULT_LEGAL_NAME = "LetLogic";
+const PLACEHOLDER_LEGAL_NAME = "Your Business Name";
+
+type EntityType = "sole_trader" | "limited_company";
+
+function entityType(): EntityType {
+  const raw = env("NEXT_PUBLIC_COMPANY_ENTITY_TYPE", "sole_trader").toLowerCase();
+  return raw === "limited_company" ? "limited_company" : "sole_trader";
+}
 
 /** Canonical site origin — always `https://www.letlogic.app` with no trailing slash. */
 function canonicalSiteUrl(): string {
@@ -27,7 +34,10 @@ export const site = {
   domain: "letlogic.app",
   url: canonicalSiteUrl(),
   icons: {
+    /** Static brand mark — schema.org logo and direct serving from /public */
     icon: "/brand/icon.svg",
+    /** Next.js app/icon.svg — also generates /favicon.ico and /icon.png at build */
+    png: "/icon.png",
     apple: "/apple-icon",
   },
   description:
@@ -36,27 +46,28 @@ export const site = {
   supportEmail: env("NEXT_PUBLIC_SUPPORT_EMAIL", "support@letlogic.app"),
   privacyEmail: env("NEXT_PUBLIC_PRIVACY_EMAIL", "privacy@letlogic.app"),
   company: {
-    legalName: env("NEXT_PUBLIC_COMPANY_LEGAL_NAME", "LetLogic Ltd"),
+    legalName: env("NEXT_PUBLIC_COMPANY_LEGAL_NAME", DEFAULT_LEGAL_NAME),
+    /** Trading structure — sole trader by default; limited_company only if incorporated later. */
+    entityType: entityType(),
+    /** Jurisdiction for Terms (not a Companies House registration claim). */
     registeredIn: env(
       "NEXT_PUBLIC_COMPANY_REGISTERED_IN",
       "England and Wales",
     ),
-    companyNumber: env(
-      "NEXT_PUBLIC_COMPANY_NUMBER",
-      PLACEHOLDER_COMPANY_NUMBER,
-    ),
-    address: env("NEXT_PUBLIC_COMPANY_ADDRESS", PLACEHOLDER_ADDRESS),
   },
   legalUpdated: env("NEXT_PUBLIC_LEGAL_UPDATED", "17 June 2026"),
   /** Public social/profile URLs used for Organization `sameAs`. Optional. */
   socialUrls: envList("NEXT_PUBLIC_SOCIAL_URLS"),
 } as const;
 
-/** True when real registered company details are configured (not placeholders). */
+/**
+ * True when public legal identity is ready for launch.
+ * Sole trader: legal name set (not a placeholder). Address/company number are not required.
+ */
 export function isLegalConfigured(): boolean {
-  return (
-    site.company.companyNumber !== PLACEHOLDER_COMPANY_NUMBER &&
-    site.company.address !== PLACEHOLDER_ADDRESS &&
-    !site.company.address.startsWith("[")
-  );
+  const name = site.company.legalName.trim();
+  if (!name || name === PLACEHOLDER_LEGAL_NAME) return false;
+  if (site.company.entityType === "sole_trader") return true;
+  // Limited company would need further fields — not used today.
+  return name.length > 0 && name !== "LetLogic Ltd";
 }

@@ -9,7 +9,7 @@ UK-focused **AI tenant screening aid** for landlords and letting agents. Paste a
 - Next.js 16 (App Router), React 19, Tailwind CSS
 - Supabase (auth, Postgres, RLS)
 - Stripe (credit packs + Pro subscription)
-- OpenAI (`gpt-4o`), Resend (transactional + inbound mail)
+- OpenAI (`gpt-4o`)
 - Sentry, Vercel Analytics
 
 ## Local development
@@ -27,11 +27,14 @@ Open [http://localhost:3000](http://localhost:3000).
 1. Create or link a Supabase project (`supabase link --project-ref <ref>`).
 2. Apply migrations: `npm run db:push`
 3. Generate types: `npm run db:types`
-4. Branded auth emails:
+4. Auth hardening + Zoho SMTP (password reset email):
+   - Confirm Zoho SMTP host (region + `smtp` vs `smtppro`) and create an app password
+   - Set `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`, `SMTP_ADMIN_EMAIL` in `.env.local`
+   - `SUPABASE_ACCESS_TOKEN=... TURNSTILE_SECRET_KEY=... npm run configure:supabase-smtp`
+   - `npm run verify:auth-config` — confirm Turnstile + SMTP (not Resend)
+5. Branded auth emails:
    - `npm run generate:auth-email-templates` (local preview)
    - `SUPABASE_ACCESS_TOKEN=... npm run configure:auth-email-templates`
-   - `SUPABASE_ACCESS_TOKEN=... RESEND_API_KEY=... TURNSTILE_SECRET_KEY=... npm run configure:supabase-smtp`
-   - `npm run verify:auth-config` — confirm email caps + CAPTCHA are active
 
 Add auth redirect URLs in Supabase → Authentication → URL configuration:
 
@@ -51,9 +54,8 @@ Project: **letlogic** on Vercel. Domains: `www.letlogic.app`, `letlogic.app`.
 
 1. Connect repo and set all variables from `.env.example` in Vercel → Settings → Environment Variables.
 2. Set `NEXT_PUBLIC_SITE_URL=https://www.letlogic.app`
-3. Set `CONTACT_INBOX_EMAIL=support@letlogic.app` (not a personal inbox).
-4. Set Sentry env vars (see [Sentry setup](#sentry) below)
-5. Promote deployment to production after CI passes
+3. Set Sentry env vars (see [Sentry setup](#sentry) below)
+4. Promote deployment to production after CI passes
 
 ### Sentry
 
@@ -90,7 +92,7 @@ For design-partner pilot before company incorporation:
 ALLOW_PRE_INCORPORATION=1 npm run verify:production
 ```
 
-Legal entity vars (`NEXT_PUBLIC_COMPANY_NUMBER`, `NEXT_PUBLIC_COMPANY_ADDRESS`) are required before public paid launch.
+Legal identity defaults to sole trader (`NEXT_PUBLIC_COMPANY_LEGAL_NAME=LetLogic`). No company number or public address is required.
 
 ## Scripts
 

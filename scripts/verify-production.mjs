@@ -88,6 +88,12 @@ function extractCanonical(html) {
   return match?.[1] ?? null;
 }
 
+function extractIconLinks(html) {
+  return [...html.matchAll(/<link[^>]+rel="(?:icon|apple-touch-icon|shortcut icon)"[^>]*>/gi)].map(
+    (match) => match[0],
+  );
+}
+
 function normalizeCanonicalUrl(url) {
   const parsed = new URL(url);
   if (parsed.pathname === "/" && !parsed.search && !parsed.hash) {
@@ -133,6 +139,48 @@ async function main() {
     }
   } catch (err) {
     fail("seo:login-noindex", err.message);
+  }
+
+  // Favicon — every public and app route should declare brand icons
+  const faviconPaths = ["/", "/login", "/dashboard", "/pricing"];
+  for (const path of faviconPaths) {
+    try {
+      const res = await fetch(`${baseUrl}${path}`);
+      const body = await res.text();
+      const iconLinks = extractIconLinks(body);
+      if (iconLinks.length < 2) {
+        throw new Error(`expected icon links, got ${iconLinks.length}`);
+      }
+      if (!body.includes('/brand/icon.svg')) {
+        throw new Error("missing /brand/icon.svg icon link");
+      }
+      if (!body.includes('rel="apple-touch-icon"')) {
+        throw new Error("missing apple-touch-icon link");
+      }
+      pass(`favicon:${path}`, `${iconLinks.length} icon links`);
+    } catch (err) {
+      fail(`favicon:${path}`, err.message);
+    }
+  }
+
+  for (const asset of ["/favicon.ico", "/brand/icon.svg", "/icon.png", "/apple-icon"]) {
+    try {
+      const { status } = await fetchOk(asset);
+      pass(`favicon:asset${asset}`, String(status));
+    } catch (err) {
+      fail(`favicon:asset${asset}`, err.message);
+    }
+  }
+
+  try {
+    const res = await fetch(`${baseUrl}/manifest.webmanifest`);
+    const body = await res.text();
+    if (!body.includes("/brand/icon.svg") || !body.includes("/apple-icon")) {
+      throw new Error("manifest missing brand icon entries");
+    }
+    pass("favicon:manifest", "brand icons present");
+  } catch (err) {
+    fail("favicon:manifest", err.message);
   }
 
   // SEO — canonical host/path consistency (AGE-84)
@@ -245,36 +293,40 @@ async function main() {
     }
   }
 
-  // Env vars (informational when running without .env)
-  const legalVars = [
-    "NEXT_PUBLIC_COMPANY_NUMBER",
-    "NEXT_PUBLIC_COMPANY_ADDRESS",
-  ];
-  const legalOk = legalVars.every((name) => Boolean(process.env[name]?.trim()));
-  if (legalOk) {
-    pass("legal:company-details", "configured");
+  // Sole trader launch gate: legal/trading name only (no Companies House number or public address).
+  const legalName =
+    process.env.NEXT_PUBLIC_COMPANY_LEGAL_NAME?.trim() || "LetLogic";
+  const entityType = (
+    process.env.NEXT_PUBLIC_COMPANY_ENTITY_TYPE?.trim() || "sole_trader"
+  ).toLowerCase();
+  const placeholderName = legalName === "Your Business Name";
+
+  if (!placeholderName && entityType === "sole_trader") {
+    pass(
+      "legal:company-details",
+      `sole trader configured (${legalName})`,
+    );
   } else if (process.env.ALLOW_PRE_INCORPORATION === "1") {
     pass(
       "legal:company-details",
-      "skipped (ALLOW_PRE_INCORPORATION=1 — set real details after incorporation)",
+      "skipped (ALLOW_PRE_INCORPORATION=1)",
     );
   } else {
     fail(
       "legal:company-details",
-      "set NEXT_PUBLIC_COMPANY_NUMBER and NEXT_PUBLIC_COMPANY_ADDRESS before launch (or ALLOW_PRE_INCORPORATION=1 for pilot)",
+      "set NEXT_PUBLIC_COMPANY_LEGAL_NAME and NEXT_PUBLIC_COMPANY_ENTITY_TYPE=sole_trader (or ALLOW_PRE_INCORPORATION=1 for pilot)",
     );
   }
 
   checkEnv("NEXT_PUBLIC_SUPABASE_URL", { required: false });
   checkEnv("STRIPE_SECRET_KEY", { required: false });
   checkEnv("STRIPE_WEBHOOK_SECRET", { required: false });
-  checkEnv("RESEND_API_KEY", { required: false });
   checkEnv("SENTRY_DSN", { required: false });
 
   const failed = checks.filter((c) => !c.ok);
   console.log(`\n${checks.length - failed.length}/${checks.length} checks passed`);
 
-  if (failed.some((c) => c.name.startsWith("page:") || c.name.startsWith("seo:"))) {
+  if (failed.some((c) => c.name.startsWith("page:") || c.name.startsWith("seo:") || c.name.startsWith("favicon:"))) {
     process.exit(1);
   }
 }

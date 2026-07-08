@@ -19,9 +19,10 @@ export default function TermsPage() {
       <p>
         These Terms of Service (&ldquo;Terms&rdquo;) govern your use of the{" "}
         {site.name} tenant-screening service provided by{" "}
-        {site.company.legalName} (&ldquo;we&rdquo;, &ldquo;us&rdquo;). By
-        creating an account or using the service, you agree to these Terms. If
-        you do not agree, do not use the service.
+        {site.company.legalName}, a sole trader business in the United Kingdom
+        (&ldquo;we&rdquo;, &ldquo;us&rdquo;). By creating an account or using
+        the service, you agree to these Terms. If you do not agree, do not use
+        the service.
       </p>
 
       <h2>1. The service</h2>
@@ -120,8 +121,8 @@ export default function TermsPage() {
 
       <h2>12. Governing law</h2>
       <p>
-        These Terms are governed by the laws of {site.company.registeredIn}, and
-        the courts of {site.company.registeredIn} have exclusive jurisdiction.
+        These Terms are governed by the laws of England and Wales, and the
+        courts of England and Wales have exclusive jurisdiction.
       </p>
 
       <h2>13. Contact</h2>

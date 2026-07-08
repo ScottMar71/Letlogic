@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { absoluteUrl } from "@/lib/seo/routes";
 import { site } from "@/lib/site";
 
 export default function manifest(): MetadataRoute.Manifest {
@@ -12,12 +13,17 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#0F1C2E",
     icons: [
       {
-        src: site.icons.icon,
+        src: absoluteUrl(site.icons.icon),
         sizes: "any",
         type: "image/svg+xml",
       },
       {
-        src: site.icons.apple,
+        src: absoluteUrl(site.icons.png),
+        sizes: "32x32",
+        type: "image/png",
+      },
+      {
+        src: absoluteUrl(site.icons.apple),
         sizes: "180x180",
         type: "image/png",
       },

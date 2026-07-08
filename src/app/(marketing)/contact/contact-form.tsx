@@ -1,39 +1,55 @@
 "use client";
 
 import { useState } from "react";
-import { submitContact } from "@/app/actions/contact";
+import { site } from "@/lib/site";
 
-export function ContactForm() {
-  const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+function buildMailtoUrl(form: HTMLFormElement): string {
+  const data = new FormData(form);
+  const name = String(data.get("name") ?? "").trim();
+  const email = String(data.get("email") ?? "").trim();
+  const subject = String(data.get("subject") ?? "").trim();
+  const message = String(data.get("message") ?? "").trim();
+  const company = String(data.get("company") ?? "").trim();
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const formData = new FormData(e.currentTarget);
-    const result = await submitContact(formData);
-    setLoading(false);
-
-    if ("error" in result) {
-      setError(result.error);
-      return;
-    }
-    setDone(true);
+  if (company) {
+    return "";
   }
 
-  if (done) {
-    return (
-      <div className="rounded-xl border border-success-border bg-success-bg p-6">
-        <h2 className="font-semibold text-text">Thanks — message sent</h2>
-        <p className="mt-1 text-sm text-text-muted">
-          We&apos;ve received your enquiry and will get back to you by email as
-          soon as we can.
-        </p>
-      </div>
-    );
+  const mailSubject = subject
+    ? `[Contact] ${subject}`
+    : `[Contact] Enquiry from ${name || "LetLogic visitor"}`;
+
+  const body = [
+    `Name: ${name}`,
+    `Email: ${email}`,
+    subject ? `Subject: ${subject}` : null,
+    "",
+    message,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const params = new URLSearchParams({
+    subject: mailSubject,
+    body,
+  });
+
+  return `mailto:${site.supportEmail}?${params.toString()}`;
+}
+
+export function ContactForm() {
+  const [error, setError] = useState<string | null>(null);
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+
+    const mailto = buildMailtoUrl(e.currentTarget);
+    if (!mailto) {
+      return;
+    }
+
+    window.location.href = mailto;
   }
 
   return (
@@ -98,14 +114,20 @@ export function ContactForm() {
         />
       </label>
 
-      <button
-        type="submit"
-        disabled={loading}
-        aria-busy={loading}
-        className="btn-primary w-full"
-      >
-        {loading ? "Sending…" : "Send message"}
+      <button type="submit" className="btn-primary w-full">
+        Open email to send
       </button>
+
+      <p className="text-sm text-text-muted">
+        Your email app will open with this message addressed to{" "}
+        <a
+          href={`mailto:${site.supportEmail}`}
+          className="font-medium text-brand-600 underline hover:text-brand-500"
+        >
+          {site.supportEmail}
+        </a>
+        .
+      </p>
 
       {error && (
         <p className="rounded-lg border border-danger-border bg-danger-bg p-3 text-sm text-danger">

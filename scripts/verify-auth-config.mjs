@@ -2,6 +2,9 @@
 /**
  * Verify hosted Supabase Auth is hardened against email abuse.
  *
+ * With SMTP_* in env: expects custom SMTP enabled (not Resend) + email rate caps.
+ * Without SMTP_*: expects custom SMTP disabled (Supabase default mailer).
+ *
  * Usage:
  *   SUPABASE_ACCESS_TOKEN=... npm run verify:auth-config
  */
@@ -26,14 +29,22 @@ function loadEnvFile(path) {
   }
 }
 
+function env(key, localEnv) {
+  return process.env[key]?.trim() ?? localEnv[key]?.trim() ?? "";
+}
+
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const localEnv = loadEnvFile(join(root, ".env.local"));
 
-const token =
-  process.env.SUPABASE_ACCESS_TOKEN?.trim() ?? localEnv.SUPABASE_ACCESS_TOKEN?.trim();
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() ?? localEnv.NEXT_PUBLIC_SUPABASE_URL?.trim();
+const token = env("SUPABASE_ACCESS_TOKEN", localEnv);
+const url = env("NEXT_PUBLIC_SUPABASE_URL", localEnv);
 const projectRef =
-  process.env.PROJECT_REF?.trim() ?? url?.match(/https:\/\/([^.]+)\./)?.[1];
+  env("PROJECT_REF", localEnv) || url.match(/https:\/\/([^.]+)\./)?.[1] || "";
+
+const smtpHostEnv = env("SMTP_HOST", localEnv);
+const smtpUserEnv = env("SMTP_USER", localEnv);
+const smtpPassEnv = env("SMTP_PASS", localEnv);
+const expectCustomSmtp = Boolean(smtpHostEnv && smtpUserEnv && smtpPassEnv);
 
 if (!token || !projectRef) {
   console.error(
@@ -73,23 +84,60 @@ if (config.mailer_autoconfirm === true) {
   fail("mailer_autoconfirm", `expected true, got ${config.mailer_autoconfirm}`);
 }
 
-const emailLimit = Number(config.rate_limit_email_sent);
-if (Number.isFinite(emailLimit) && emailLimit > 0 && emailLimit <= 15) {
-  pass("rate_limit_email_sent", String(emailLimit));
-} else {
-  fail(
-    "rate_limit_email_sent",
-    `expected 1–15, got ${config.rate_limit_email_sent}`,
-  );
-}
+const host = (config.smtp_host ?? "").toLowerCase();
+if (host.includes("resend")) {
+  fail("custom_smtp", `Resend must not be used (got ${config.smtp_host})`);
+} else if (expectCustomSmtp) {
+  if (config.smtp_host) {
+    pass("custom_smtp", config.smtp_host);
+  } else {
+    fail(
+      "custom_smtp",
+      "SMTP_* set in env but Supabase has no custom SMTP — run npm run configure:supabase-smtp",
+    );
+  }
 
-const minInterval = Number(config.smtp_max_frequency);
-if (Number.isFinite(minInterval) && minInterval >= 60) {
-  pass("smtp_max_frequency", `${minInterval}s between emails to same address`);
+  const emailLimit = Number(config.rate_limit_email_sent);
+  if (Number.isFinite(emailLimit) && emailLimit > 0 && emailLimit <= 15) {
+    pass("rate_limit_email_sent", String(emailLimit));
+  } else {
+    fail(
+      "rate_limit_email_sent",
+      `expected 1–15, got ${config.rate_limit_email_sent}`,
+    );
+  }
+
+  const minInterval = Number(config.smtp_max_frequency);
+  if (Number.isFinite(minInterval) && minInterval >= 60) {
+    pass("smtp_max_frequency", `${minInterval}s between emails to same address`);
+  } else {
+    fail(
+      "smtp_max_frequency",
+      `expected >= 60 seconds, got ${config.smtp_max_frequency}`,
+    );
+  }
+} else if (config.smtp_host) {
+  pass(
+    "custom_smtp",
+    `${config.smtp_host} (SMTP_* not in local env — caps checked loosely)`,
+  );
+  const emailLimit = Number(config.rate_limit_email_sent);
+  if (Number.isFinite(emailLimit) && emailLimit > 0 && emailLimit <= 30) {
+    pass("rate_limit_email_sent", String(emailLimit));
+  } else {
+    fail(
+      "rate_limit_email_sent",
+      `expected positive cap, got ${config.rate_limit_email_sent}`,
+    );
+  }
 } else {
-  fail(
-    "smtp_max_frequency",
-    `expected >= 60 seconds, got ${config.smtp_max_frequency}`,
+  pass(
+    "custom_smtp",
+    "disabled — set SMTP_* for Zoho and run configure:supabase-smtp",
+  );
+  pass(
+    "auth_email_rate_limits",
+    "skipped — custom SMTP disabled (Supabase default mailer limits apply)",
   );
 }
 
@@ -115,9 +163,7 @@ if (config.security_captcha_enabled === true) {
   fail("security_captcha", "CAPTCHA disabled — bots can spam password reset");
 }
 
-const siteKey =
-  process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() ??
-  localEnv.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
+const siteKey = env("NEXT_PUBLIC_TURNSTILE_SITE_KEY", localEnv);
 if (siteKey) {
   pass("NEXT_PUBLIC_TURNSTILE_SITE_KEY", "set in env");
 } else {
@@ -128,6 +174,8 @@ const failed = checks.filter((c) => !c.ok);
 console.log(`\n${checks.length - failed.length}/${checks.length} checks passed`);
 
 if (failed.length > 0) {
-  console.log("\nFix: npm run configure:supabase-smtp (with RESEND_API_KEY + TURNSTILE_SECRET_KEY)");
+  console.log(
+    "\nFix: npm run configure:supabase-smtp (with TURNSTILE_SECRET_KEY; add SMTP_* for Zoho)",
+  );
   process.exit(1);
 }

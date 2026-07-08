@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteIconsMetadata } from "@/lib/seo/icons";
 import { site } from "@/lib/site";
 import { absoluteUrl } from "@/lib/seo/routes";
 
@@ -10,6 +11,7 @@ export const privatePageRobots: NonNullable<Metadata["robots"]> = {
 
 export function privatePageMetadata(title: string): Metadata {
   return {
+    ...siteIconsMetadata,
     title,
     robots: privatePageRobots,
   };
@@ -28,6 +30,7 @@ export function marketingPageMetadata({
 }: MarketingMetadataOptions): Metadata {
   const url = absoluteUrl(path);
   return {
+    ...siteIconsMetadata,
     title,
     description,
     alternates: { canonical: url },

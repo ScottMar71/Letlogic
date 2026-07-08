@@ -28,11 +28,6 @@ export function organizationJsonLd() {
     url: site.url,
     logo: absoluteUrl(site.icons.icon),
     email: site.email,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: site.company.address,
-      addressCountry: "GB",
-    },
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer support",
