@@ -12,6 +12,20 @@ type OgImageOptions = {
   eyebrow?: string;
 };
 
+type RouteOgConfig = OgImageOptions & {
+  alt: string;
+};
+
+/** Shared exports for route-level `opengraph-image` files. */
+export function routeOgExports({ alt, heading, eyebrow }: RouteOgConfig) {
+  return {
+    alt,
+    size: OG_SIZE,
+    contentType: OG_CONTENT_TYPE,
+    render: () => renderOgImage({ heading, eyebrow }),
+  };
+}
+
 /**
  * Renders a branded 1200x630 OG image with the LetLogic wordmark and a heading.
  * Reused by route-level `opengraph-image` files to keep social cards on-brand.
