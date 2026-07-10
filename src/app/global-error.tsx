@@ -44,6 +44,22 @@ export default function GlobalError({
         >
           Try again
         </button>
+        <a
+          href="/"
+          style={{
+            display: "inline-block",
+            marginTop: "0.75rem",
+            marginLeft: "0.5rem",
+            padding: "0.5rem 1rem",
+            borderRadius: "0.5rem",
+            border: "1px solid #ccc",
+            background: "#fff",
+            color: "inherit",
+            textDecoration: "none",
+          }}
+        >
+          Home
+        </a>
       </body>
     </html>
   );

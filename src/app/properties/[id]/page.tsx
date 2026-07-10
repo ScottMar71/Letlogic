@@ -4,6 +4,7 @@ import { AuthenticatedPage } from "@/components/layout/authenticated-page";
 import { ScreeningWorkspace } from "@/components/screening/screening-workspace";
 import { RiskChip } from "@/components/screening/risk-chip";
 import { PageHeader } from "@/components/ui/page-header";
+import { withHomeBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { listAssessmentsForProperty } from "@/lib/screening/queries";
 import { isPro } from "@/lib/screening/entitlements";
@@ -40,10 +41,10 @@ export default async function PropertyPage({ params }: PageProps) {
       <PageHeader
           title={property.address_line1}
           description={`${property.city}, ${property.postcode}${property.rent_amount ? ` · £${property.rent_amount}/mo` : ""}`}
-          breadcrumbs={[
+          breadcrumbs={withHomeBreadcrumb([
             { label: "Properties", href: "/properties" },
             { label: property.address_line1 },
-          ]}
+          ])}
           actions={
             canCompare ? (
               pro ? (

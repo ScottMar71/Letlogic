@@ -2,13 +2,13 @@ import Link from "next/link";
 import { FaqSection } from "@/components/marketing/faq-section";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { formatDateLong } from "@/lib/format-date";
+import { getGuide, guidePath } from "@/lib/guides";
 import {
   JsonLd,
   articleJsonLd,
   breadcrumbJsonLd,
   type FaqItem,
 } from "@/lib/seo/json-ld";
-import { guidePath } from "@/lib/guides";
 
 type GuideLayoutProps = {
   slug: string;
@@ -32,13 +32,25 @@ export function GuideLayout({
   faqs,
 }: GuideLayoutProps) {
   const path = guidePath(slug);
+  const guide = getGuide(slug);
+  const dateModified = guide?.dateModified;
   const published = formatDateLong(datePublished);
+  const updated =
+    dateModified && dateModified !== datePublished
+      ? formatDateLong(dateModified)
+      : null;
 
   return (
     <>
       <JsonLd
         data={[
-          articleJsonLd({ title, description, path, datePublished }),
+          articleJsonLd({
+            title,
+            description,
+            path,
+            datePublished,
+            dateModified,
+          }),
           breadcrumbJsonLd([
             { name: "Guides", path: "/guides" },
             { name: title, path },
@@ -62,7 +74,10 @@ export function GuideLayout({
             {title}
           </h1>
           <p className="mt-2 text-text-muted">{intro}</p>
-          <p className="mt-3 text-xs text-text-subtle">Published {published}</p>
+          <p className="mt-3 text-xs text-text-subtle">
+            Published {published}
+            {updated ? ` · Updated ${updated}` : ""}
+          </p>
         </header>
 
         <article className="legal mt-8">{children}</article>

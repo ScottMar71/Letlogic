@@ -27,7 +27,7 @@ export function AppHeaderShell({
       <div
         className={`mx-auto flex ${widthClass[width]} items-center justify-between gap-x-4 px-4 py-4 lg:py-5`}
       >
-        <LogoLink href="/dashboard" size="nav" />
+        <LogoLink href="/" size="nav" />
         <div className="flex items-center gap-x-3">
           {creditBalance != null && (
             <>
@@ -44,6 +44,7 @@ export function AppHeaderShell({
             </>
           )}
           <nav className="hidden items-center gap-x-4 lg:flex">
+            <AppNavLink href="/">Home</AppNavLink>
             <AppNavLink href="/dashboard">Dashboard</AppNavLink>
             <AppNavLink href="/screen">Screen</AppNavLink>
             <AppNavLink href="/properties">Properties</AppNavLink>

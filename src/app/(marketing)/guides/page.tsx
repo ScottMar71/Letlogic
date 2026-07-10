@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { JsonLd, breadcrumbJsonLd } from "@/lib/seo/json-ld";
+import {
+  JsonLd,
+  breadcrumbJsonLd,
+  itemListJsonLd,
+} from "@/lib/seo/json-ld";
 import { marketingPageMetadata } from "@/lib/seo/metadata";
 import { GUIDES, guidePath } from "@/lib/guides";
 
@@ -12,9 +16,20 @@ export const metadata = marketingPageMetadata({
 });
 
 export default function GuidesPage() {
+  const guideListItems = GUIDES.map((guide) => ({
+    name: guide.title,
+    path: guidePath(guide.slug),
+    description: guide.summary,
+  }));
+
   return (
     <>
-      <JsonLd data={breadcrumbJsonLd([{ name: "Guides", path: "/guides" }])} />
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([{ name: "Guides", path: "/guides" }]),
+          itemListJsonLd(guideListItems),
+        ]}
+      />
 
       <main
         id="main-content"

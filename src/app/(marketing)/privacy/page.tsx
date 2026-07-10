@@ -14,6 +14,7 @@ export default function PrivacyPage() {
   return (
     <LegalPage
       title="Privacy Policy"
+      path="/privacy"
       intro="How we collect, use, and protect personal data when you use LetLogic."
     >
       <p>

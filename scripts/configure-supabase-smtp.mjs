@@ -67,8 +67,8 @@ const smtpPass = env("SMTP_PASS", localEnv);
 const smtpPort = env("SMTP_PORT", localEnv) || "587";
 const smtpAdminEmail =
   env("SMTP_ADMIN_EMAIL", localEnv) ||
-  env("NEXT_PUBLIC_SUPPORT_EMAIL", localEnv) ||
-  "support@letlogic.app";
+  env("NEXT_PUBLIC_CONTACT_EMAIL", localEnv) ||
+  "hello@letlogic.app";
 const smtpSenderName = env("SMTP_SENDER_NAME", localEnv) || "LetLogic";
 
 /** Project-wide cap on auth emails per hour (recovery, email change, etc.). */

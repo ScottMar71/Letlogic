@@ -7,6 +7,20 @@ function poundsString(pence: number): string {
   return (pence / 100).toFixed(2);
 }
 
+/** Lowest per-screening pack price — used for "from £X" entry offers in schema. */
+function entryScreeningOffer() {
+  const entryPack = CREDIT_PACK_LIST.reduce((min, pack) =>
+    pack.pricePence < min.pricePence ? pack : min,
+  );
+  const price = poundsString(entryPack.pricePence);
+  return {
+    "@type": "Offer" as const,
+    price,
+    priceCurrency: "GBP",
+    description: `Pay per screening from £${price}`,
+  };
+}
+
 type JsonLdProps = {
   data: Record<string, unknown> | Record<string, unknown>[];
 };
@@ -31,7 +45,7 @@ export function organizationJsonLd() {
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer support",
-      email: site.supportEmail,
+      email: site.email,
       areaServed: "GB",
       availableLanguage: "English",
     },
@@ -60,12 +74,7 @@ export function softwareApplicationJsonLd() {
     operatingSystem: "Web",
     description: site.description,
     url: site.url,
-    offers: {
-      "@type": "Offer",
-      price: "4.99",
-      priceCurrency: "GBP",
-      description: "Pay per screening from £4.99",
-    },
+    offers: entryScreeningOffer(),
   };
 }
 
@@ -90,12 +99,7 @@ export function serviceJsonLd() {
       "@type": "Audience",
       audienceType: "UK landlords and letting agents",
     },
-    offers: {
-      "@type": "Offer",
-      price: "4.99",
-      priceCurrency: "GBP",
-      description: "Pay per screening from £4.99",
-    },
+    offers: entryScreeningOffer(),
   };
 }
 
@@ -218,6 +222,49 @@ export function faqPageJsonLd(items: FaqItem[]) {
         "@type": "Answer",
         text: item.answer,
       },
+    })),
+  };
+}
+
+type DefinedTerm = {
+  term: string;
+  definition: string;
+  url?: string;
+};
+
+/** DefinedTermSet for glossary pages. */
+export function definedTermSetJsonLd(terms: DefinedTerm[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    name: "UK lettings and tenant screening glossary",
+    inLanguage: "en-GB",
+    hasDefinedTerm: terms.map((entry) => ({
+      "@type": "DefinedTerm",
+      name: entry.term,
+      description: entry.definition,
+      ...(entry.url ? { url: entry.url } : {}),
+    })),
+  };
+}
+
+type ItemListEntry = {
+  name: string;
+  path: string;
+  description?: string;
+};
+
+/** ItemList for hub pages that link to child content. */
+export function itemListJsonLd(items: ItemListEntry[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      ...(item.description ? { description: item.description } : {}),
+      url: absoluteUrl(item.path),
     })),
   };
 }

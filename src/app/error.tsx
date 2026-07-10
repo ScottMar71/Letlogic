@@ -16,12 +16,15 @@ export default function RootError({
       <div className="max-w-md space-y-4 rounded-xl border border-border bg-surface p-8 text-center">
         <h1 className="text-h1 font-bold text-text">Something went wrong</h1>
         <p className="text-sm text-text-muted">
-          We hit an unexpected error. Please try again or return to the dashboard.
+          We hit an unexpected error. Please try again or return home.
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <button type="button" onClick={reset} className="btn-primary">
             Try again
           </button>
+          <Link href="/" className="btn-secondary">
+            Home
+          </Link>
           <Link href="/dashboard" className="btn-secondary">
             Dashboard
           </Link>

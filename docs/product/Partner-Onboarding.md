@@ -9,7 +9,7 @@
 - [ ] Create account (email + password at /signup)
 - [ ] Grant comp credits via `PARTNER_EMAIL=… npm run grant:pilot` (default 20 credits)
 - [ ] Walkthrough: `/sample` → `/screen` → add property → compare view
-- [ ] Share support email: support@letlogic.app
+- [ ] Share contact email: hello@letlogic.app
 
 **Kickoff questions:**
 1. How do applications arrive today (email, form, agent)?

@@ -36,6 +36,30 @@ Open [http://localhost:3000](http://localhost:3000).
    - `npm run generate:auth-email-templates` (local preview)
    - `SUPABASE_ACCESS_TOKEN=... npm run configure:auth-email-templates`
 
+### Email (`hello@letlogic.app` → your inbox)
+
+One public address for contact, privacy, and auth mail. DNS for `letlogic.app` is on **Vercel**; MX currently points at AWS SES inbound. Pick one inbound path:
+
+**Option A — ImprovMX** (free forwarding, works with Vercel DNS):
+
+1. Sign up at [improvmx.com](https://improvmx.com) and add domain `letlogic.app`
+2. In Vercel → **Domains** → `letlogic.app` → **DNS**, add the MX + TXT records ImprovMX provides (replace existing MX if needed)
+3. Create alias `hello@letlogic.app` → forward to `scott.maryan@icloud.com`
+4. Optional catch-all `*@letlogic.app` → `scott.maryan@icloud.com`
+5. Send a test to `hello@letlogic.app`
+
+**Option B — Zoho Mail** (mailbox + forwarding + SMTP for password-reset emails):
+
+1. Add `letlogic.app` in Zoho Mail Admin; update MX records in Vercel DNS to Zoho’s values
+2. Create mailbox `hello@letlogic.app`
+3. **Settings → Mail Accounts → Email Forwarding** → `scott.maryan@icloud.com`
+4. Create an app-specific password for SMTP
+5. Set `SMTP_HOST`, `SMTP_USER=hello@letlogic.app`, `SMTP_PASS` in `.env.local` → `npm run configure:supabase-smtp`
+
+**Option C — Cloudflare Email Routing** (only if you move DNS from Vercel to Cloudflare):
+
+1. Transfer DNS to Cloudflare → **Email Routing** → `hello@letlogic.app` → `scott.maryan@icloud.com`
+
 Add auth redirect URLs in Supabase → Authentication → URL configuration:
 
 - `http://localhost:3000/auth/callback`

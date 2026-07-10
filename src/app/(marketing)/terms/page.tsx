@@ -14,6 +14,7 @@ export default function TermsPage() {
   return (
     <LegalPage
       title="Terms of Service"
+      path="/terms"
       intro="The agreement between you and LetLogic when you use the service."
     >
       <p>

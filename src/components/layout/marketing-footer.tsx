@@ -3,6 +3,7 @@ import { LogoLink } from "@/components/brand/logo";
 import { site } from "@/lib/site";
 
 const PRODUCT_LINKS = [
+  { href: "/", label: "Home" },
   { href: "/how-it-works", label: "How it works" },
   { href: "/sample", label: "Sample report" },
   { href: "/pricing", label: "Pricing" },
@@ -22,6 +23,10 @@ const RESOURCES_LINKS = [
   { href: "/glossary", label: "Glossary" },
   { href: "/faq", label: "FAQ" },
   { href: "/tenant-screening-vs-credit-check", label: "vs credit check" },
+  {
+    href: "/letlogic-vs-tenant-referencing",
+    label: "vs tenant referencing",
+  },
 ];
 
 const COMPANY_LINKS = [

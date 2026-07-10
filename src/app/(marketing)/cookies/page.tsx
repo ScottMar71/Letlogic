@@ -14,6 +14,7 @@ export default function CookiesPage() {
   return (
     <LegalPage
       title="Cookie Policy"
+      path="/cookies"
       intro="How we use cookies and similar technologies on LetLogic."
     >
       <p>

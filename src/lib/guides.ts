@@ -8,6 +8,8 @@ export type Guide = {
   summary: string;
   /** ISO date the guide was first published. */
   datePublished: string;
+  /** ISO date the guide was last materially updated. Omit if unchanged since publish. */
+  dateModified?: string;
 };
 
 export const GUIDES: Guide[] = [

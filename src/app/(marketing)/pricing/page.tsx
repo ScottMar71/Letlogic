@@ -10,6 +10,7 @@ import {
   formatGbp,
 } from "@/lib/screening/pricing";
 import { createClient } from "@/lib/supabase/server";
+import { site } from "@/lib/site";
 
 export const metadata = marketingPageMetadata({
   title: "Pricing — pay-as-you-go & Pro plans",
@@ -122,7 +123,7 @@ export default async function PricingPage() {
             Use Pro or pay-as-you-go credits in the meantime.
           </p>
           <a
-            href="mailto:hello@letlogic.app?subject=LetLogic%20Agency%20interest"
+            href={`mailto:${site.email}?subject=${encodeURIComponent("LetLogic Agency interest")}`}
             className="mt-3 inline-block text-sm font-medium text-brand-600 underline hover:text-brand-500"
           >
             Register interest

@@ -62,7 +62,7 @@ describe("Supabase auth email templates", () => {
       expect(template).toContain('alt="LetLogic"');
       expect(template).toContain("/brand/logo-stacked.svg");
       expect(template).toContain("The LetLogic team");
-      expect(template).toContain("support@letlogic.app");
+      expect(template).toContain("hello@letlogic.app");
     }
   });
 

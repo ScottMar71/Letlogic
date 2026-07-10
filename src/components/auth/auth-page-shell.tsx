@@ -7,7 +7,9 @@ export function AuthPageShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-surface-muted">
       <div className="mx-auto grid min-h-screen max-w-5xl lg:grid-cols-2">
         <div className="hidden flex-col justify-between border-r border-border bg-brand-700 p-10 text-white lg:flex">
-          <p className="text-xl font-bold">{site.name}</p>
+          <Link href="/" className="text-xl font-bold hover:underline">
+            {site.name}
+          </Link>
           <div className="space-y-6">
             <h1 className="text-2xl font-bold">
               Screen tenant applications with confidence

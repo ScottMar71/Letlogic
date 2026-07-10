@@ -1,5 +1,6 @@
 import { AuthenticatedPage } from "@/components/layout/authenticated-page";
 import { PageHeader } from "@/components/ui/page-header";
+import { withHomeBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { ProCompareGate } from "@/components/screening/pro-compare-gate";
 
 type ProCompareGatePageProps = {
@@ -18,11 +19,11 @@ export function ProCompareGatePage({
       <PageHeader
         title="Compare applicants"
         description={`${applicantCount} screenings for ${propertyName}`}
-        breadcrumbs={[
+        breadcrumbs={withHomeBreadcrumb([
           { label: "Properties", href: "/properties" },
           { label: propertyName, href: `/properties/${propertyId}` },
           { label: "Compare" },
-        ]}
+        ])}
       />
       <ProCompareGate />
     </AuthenticatedPage>

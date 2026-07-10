@@ -1,6 +1,6 @@
 const SITE_URL = "https://www.letlogic.app";
 const LOGO_URL = `${SITE_URL}/brand/logo-stacked.svg`;
-const SUPPORT_EMAIL = "support@letlogic.app";
+const CONTACT_EMAIL = "hello@letlogic.app";
 
 const BRAND = {
   navy: "#0F1C2E",
@@ -54,7 +54,7 @@ export function wrapAuthEmail({ title, bodyHtml }) {
               <p style="margin:0 0 8px;font-weight:600;color:${BRAND.navy};">The LetLogic team</p>
               <p style="margin:0 0 4px;">LetLogic Ltd · Tenant screening for UK landlords</p>
               <p style="margin:0;">
-                <a href="mailto:${SUPPORT_EMAIL}" style="color:${BRAND.teal};text-decoration:none;">${SUPPORT_EMAIL}</a>
+                <a href="mailto:${CONTACT_EMAIL}" style="color:${BRAND.teal};text-decoration:none;">${CONTACT_EMAIL}</a>
                 · <a href="${SITE_URL}" style="color:${BRAND.teal};text-decoration:none;">www.letlogic.app</a>
               </p>
             </td>

@@ -16,7 +16,7 @@ function muted(text) {
 
 function securityAlert(actionText) {
   return muted(
-    `If you did not ${actionText}, contact us immediately at <a href="mailto:support@letlogic.app" style="color:#00C49F;text-decoration:none;">support@letlogic.app</a>.`,
+    `If you did not ${actionText}, contact us immediately at <a href="mailto:hello@letlogic.app" style="color:#00C49F;text-decoration:none;">hello@letlogic.app</a>.`,
   );
 }
 
@@ -109,7 +109,7 @@ export const authEmailTemplates = [
           "Confirm new email address",
         ),
         muted(
-          "If you did not request this change, contact us immediately at support@letlogic.app.",
+          "If you did not request this change, contact us immediately at hello@letlogic.app.",
         ),
       ].join("\n");
       return wrapAuthEmail({ title: this.subject, bodyHtml: body });
@@ -154,7 +154,7 @@ export const authEmailTemplates = [
         ),
         emailOtpCode("{{ .Token }}"),
         muted(
-          "This code expires shortly and can only be used once. If you did not request this, contact us at support@letlogic.app.",
+          "This code expires shortly and can only be used once. If you did not request this, contact us at hello@letlogic.app.",
         ),
       ].join("\n");
       return wrapAuthEmail({ title: this.subject, bodyHtml: body });

@@ -4,6 +4,7 @@ import { BestFit } from "@/components/screening/best-fit";
 import { CompareCards } from "@/components/properties/compare-cards";
 import { CompareTable } from "@/components/properties/compare-table";
 import { PageHeader } from "@/components/ui/page-header";
+import { withHomeBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { getPropertyForUser, listAssessmentsForProperty } from "@/lib/screening/queries";
 import { isPro } from "@/lib/screening/entitlements";
 import { ProCompareGatePage } from "@/components/screening/pro-compare-gate-page";
@@ -42,11 +43,11 @@ export default async function ComparePage({ params }: PageProps) {
     <AuthenticatedPage width="wide" mainClassName="space-y-6">
       <PageHeader
         title="Compare applicants"
-        breadcrumbs={[
+        breadcrumbs={withHomeBreadcrumb([
           { label: "Properties", href: "/properties" },
           { label: property.addressLine1, href: `/properties/${id}` },
           { label: "Compare" },
-        ]}
+        ])}
       />
 
       <BestFit propertyId={id} />

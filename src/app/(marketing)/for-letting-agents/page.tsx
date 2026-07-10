@@ -4,6 +4,7 @@ import { FaqSection } from "@/components/marketing/faq-section";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { marketingPageMetadata } from "@/lib/seo/metadata";
 import { PRO_PLAN } from "@/lib/screening/pricing";
+import { site } from "@/lib/site";
 
 export const metadata = marketingPageMetadata({
   title: "Tenant screening for letting agents",
@@ -80,7 +81,7 @@ export default function ForLettingAgentsPage() {
               View a sample report
             </Link>
             <a
-              href="mailto:hello@letlogic.app?subject=LetLogic%20Agency%20interest"
+              href={`mailto:${site.email}?subject=${encodeURIComponent("LetLogic Agency interest")}`}
               className="btn-secondary px-5"
             >
               Register Agency interest
@@ -115,7 +116,7 @@ export default function ForLettingAgentsPage() {
           </p>
           <div className="mt-4 flex flex-wrap justify-center gap-3">
             <a
-              href="mailto:hello@letlogic.app?subject=LetLogic%20Agency%20interest"
+              href={`mailto:${site.email}?subject=${encodeURIComponent("LetLogic Agency interest")}`}
               className="btn-onbrand"
             >
               Register interest

@@ -9,6 +9,7 @@ import { SignOutButton } from "@/components/layout/sign-out-button";
 import { MobileNavDrawer } from "@/components/layout/mobile-nav-drawer";
 
 const LINKS = [
+  { href: "/", label: "Home" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/screen", label: "Screen" },
   { href: "/properties", label: "Properties" },
@@ -29,9 +30,11 @@ function linkClass(active: boolean) {
 }
 
 function isActive(pathname: string, href: string) {
-  return href === "/dashboard"
-    ? pathname === "/dashboard"
-    : pathname === href || pathname.startsWith(`${href}/`);
+  return href === "/"
+    ? pathname === "/"
+    : href === "/dashboard"
+      ? pathname === "/dashboard"
+      : pathname === href || pathname.startsWith(`${href}/`);
 }
 
 export function AppMobileNav({ creditBalance, isAdmin = false }: AppMobileNavProps) {
@@ -57,7 +60,7 @@ export function AppMobileNav({ creditBalance, isAdmin = false }: AppMobileNavPro
         onClose={close}
         ariaLabel="App navigation"
         visibleBelow="lg"
-        logoHref="/dashboard"
+        logoHref="/"
         headerExtra={
           creditBalance != null ? (
             <div className="border-b border-border px-4 py-4">

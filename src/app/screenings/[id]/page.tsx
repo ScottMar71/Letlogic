@@ -5,6 +5,7 @@ import { AssessmentResultPanel } from "@/components/screening/assessment-result"
 import { PrintReportButton } from "@/components/screening/print-report-button";
 import { PrintReportHeader } from "@/components/screening/print-report-header";
 import { PageHeader } from "@/components/ui/page-header";
+import { withHomeBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { formatDate, formatDateTime } from "@/lib/format-date";
 import { getAssessmentDetail, listAssessmentHistoryForApplication } from "@/lib/screening/queries";
 import { isPro } from "@/lib/screening/entitlements";
@@ -32,7 +33,7 @@ export default async function ScreeningDetailPage({ params }: PageProps) {
 
   const created = formatDate(assessment.createdAt);
 
-  const breadcrumbs = [
+  const breadcrumbs = withHomeBreadcrumb([
     { label: "Dashboard", href: "/dashboard" },
     ...(assessment.propertyId && assessment.propertyAddress
       ? [
@@ -44,7 +45,7 @@ export default async function ScreeningDetailPage({ params }: PageProps) {
         ]
       : []),
     { label: assessment.applicantName },
-  ];
+  ]);
 
   return (
     <AuthenticatedPage width="narrow" mainClassName="space-y-4">

@@ -19,9 +19,11 @@ export function AppNavLink({
 }) {
   const pathname = usePathname();
   const active =
-    href === "/dashboard"
-      ? pathname === "/dashboard"
-      : pathname === href || pathname.startsWith(`${href}/`);
+    href === "/"
+      ? pathname === "/"
+      : href === "/dashboard"
+        ? pathname === "/dashboard"
+        : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <Link href={href} className={navClass(active)} aria-current={active ? "page" : undefined}>

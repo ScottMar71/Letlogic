@@ -29,6 +29,8 @@ function canonicalSiteUrl(): string {
   );
 }
 
+const contactEmail = env("NEXT_PUBLIC_CONTACT_EMAIL", "hello@letlogic.app");
+
 export const site = {
   name: "LetLogic",
   domain: "letlogic.app",
@@ -42,9 +44,10 @@ export const site = {
   },
   description:
     "Paste an applicant's details and get an explainable risk score, summary, and recommendation — not a credit check, just a faster way to decide.",
-  email: env("NEXT_PUBLIC_CONTACT_EMAIL", "hello@letlogic.app"),
-  supportEmail: env("NEXT_PUBLIC_SUPPORT_EMAIL", "support@letlogic.app"),
-  privacyEmail: env("NEXT_PUBLIC_PRIVACY_EMAIL", "privacy@letlogic.app"),
+  /** Single public inbox — forward hello@ to your personal email at the mail provider. */
+  email: contactEmail,
+  supportEmail: env("NEXT_PUBLIC_SUPPORT_EMAIL", contactEmail),
+  privacyEmail: env("NEXT_PUBLIC_PRIVACY_EMAIL", contactEmail),
   company: {
     legalName: env("NEXT_PUBLIC_COMPANY_LEGAL_NAME", DEFAULT_LEGAL_NAME),
     /** Trading structure — sole trader by default; limited_company only if incorporated later. */

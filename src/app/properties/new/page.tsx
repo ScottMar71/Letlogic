@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { AuthenticatedPage } from "@/components/layout/authenticated-page";
 import { createProperty } from "@/app/actions/properties";
 import { PageHeader } from "@/components/ui/page-header";
+import { withHomeBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { Alert } from "@/components/ui/alert";
 import { getAuthenticatedUser } from "@/lib/screening/session";
 import { privatePageMetadata } from "@/lib/seo/metadata";
@@ -20,10 +21,10 @@ export default async function NewPropertyPage({ searchParams }: PageProps) {
       <PageHeader
         title="Add a property"
         description="Track screenings by address and compare applicants for the same let."
-        breadcrumbs={[
+        breadcrumbs={withHomeBreadcrumb([
           { label: "Properties", href: "/properties" },
           { label: "Add property" },
-        ]}
+        ])}
       />
       {error && <Alert variant="error">{error}</Alert>}
       <form action={createProperty} className="space-y-4">

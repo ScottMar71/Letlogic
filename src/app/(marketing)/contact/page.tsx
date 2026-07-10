@@ -35,33 +35,11 @@ export default function ContactPage() {
               <h2 className="font-semibold text-text">Email us directly</h2>
               <ul className="mt-3 space-y-2 text-sm">
                 <li>
-                  <span className="text-text-subtle">General</span>
-                  <br />
                   <a
                     href={`mailto:${site.email}`}
                     className="font-medium text-brand-600 underline hover:text-brand-500"
                   >
                     {site.email}
-                  </a>
-                </li>
-                <li>
-                  <span className="text-text-subtle">Support</span>
-                  <br />
-                  <a
-                    href={`mailto:${site.supportEmail}`}
-                    className="font-medium text-brand-600 underline hover:text-brand-500"
-                  >
-                    {site.supportEmail}
-                  </a>
-                </li>
-                <li>
-                  <span className="text-text-subtle">Privacy &amp; data</span>
-                  <br />
-                  <a
-                    href={`mailto:${site.privacyEmail}`}
-                    className="font-medium text-brand-600 underline hover:text-brand-500"
-                  >
-                    {site.privacyEmail}
                   </a>
                 </li>
               </ul>

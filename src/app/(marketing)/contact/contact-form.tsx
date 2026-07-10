@@ -34,7 +34,7 @@ function buildMailtoUrl(form: HTMLFormElement): string {
     body,
   });
 
-  return `mailto:${site.supportEmail}?${params.toString()}`;
+  return `mailto:${site.email}?${params.toString()}`;
 }
 
 export function ContactForm() {
@@ -121,10 +121,10 @@ export function ContactForm() {
       <p className="text-sm text-text-muted">
         Your email app will open with this message addressed to{" "}
         <a
-          href={`mailto:${site.supportEmail}`}
+          href={`mailto:${site.email}`}
           className="font-medium text-brand-600 underline hover:text-brand-500"
         >
-          {site.supportEmail}
+          {site.email}
         </a>
         .
       </p>
