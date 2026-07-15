@@ -10,6 +10,7 @@ describe("siteIconsMetadata", () => {
       expect.arrayContaining([
         expect.objectContaining({ url: "/brand/icon.svg", type: "image/svg+xml" }),
         expect.objectContaining({ url: "/icon.png", type: "image/png" }),
+        expect.objectContaining({ url: "/favicon.ico" }),
       ]),
     );
     expect(icons?.shortcut).toBe("/favicon.ico");
