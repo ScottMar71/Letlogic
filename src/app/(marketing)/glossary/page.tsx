@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MarketingCtaBand } from "@/components/marketing/marketing-cta-band";
 import {
   JsonLd,
   breadcrumbJsonLd,
@@ -72,7 +73,7 @@ export default function GlossaryPage() {
 
       <main
         id="main-content"
-        className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-8 px-4 py-16"
+        className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-12 px-4 py-16"
       >
         <section className="space-y-3">
           <p className="section-label">Reference</p>
@@ -85,7 +86,7 @@ export default function GlossaryPage() {
           </p>
         </section>
 
-        <dl className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface">
+        <dl className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface [&_a]:font-medium [&_a]:text-brand-ink [&_a]:underline hover:[&_a]:text-brand-ink-hover">
           {GLOSSARY_TERMS.map(({ slug, term, definition }) => (
             <div key={slug} id={slug} className="px-5 py-4">
               <dt className="font-semibold text-text">{term}</dt>
@@ -95,6 +96,15 @@ export default function GlossaryPage() {
             </div>
           ))}
         </dl>
+
+        <MarketingCtaBand
+          title="Ready to screen an applicant?"
+          description="See a sample report, or jump straight to pricing."
+          primaryHref="/sample"
+          primaryLabel="View a sample report"
+          secondaryHref="/pricing"
+          secondaryLabel="See pricing"
+        />
       </main>
     </>
   );

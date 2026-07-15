@@ -5,12 +5,14 @@ import {
   createBillingPortal,
   createProSubscription,
 } from "@/app/actions/billing";
+import { BuyCreditsModal } from "@/components/screening/buy-credits-modal";
 import { Button } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 
 export function BillingActions({ isPro }: { isPro: boolean }) {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [buyOpen, setBuyOpen] = useState(false);
 
   async function go(
     action: typeof createBillingPortal | typeof createProSubscription,
@@ -30,15 +32,23 @@ export function BillingActions({ isPro }: { isPro: boolean }) {
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-3">
-        {!isPro && (
+        <Button
+          variant="primary"
+          disabled={loading !== null}
+          onClick={() => setBuyOpen(true)}
+        >
+          Buy credits
+        </Button>
+        {!isPro ? (
           <Button
+            variant="secondary"
             loading={loading === "pro"}
             disabled={loading !== null}
             onClick={() => go(createProSubscription, "pro")}
           >
             Upgrade to Pro
           </Button>
-        )}
+        ) : null}
         <Button
           variant="secondary"
           loading={loading === "portal"}
@@ -49,6 +59,7 @@ export function BillingActions({ isPro }: { isPro: boolean }) {
         </Button>
       </div>
       {error && <Alert variant="error">{error}</Alert>}
+      <BuyCreditsModal open={buyOpen} onClose={() => setBuyOpen(false)} />
     </div>
   );
 }

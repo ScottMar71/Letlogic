@@ -120,7 +120,7 @@ export async function verifyRecoveryCode(formData: FormData) {
 
 export async function updatePassword(formData: FormData) {
   const password = formData.get("password") as string;
-  const next = safeNextPath((formData.get("next") as string) || "/");
+  const next = safeNextPath((formData.get("next") as string) || "/dashboard");
 
   if (!password) return { error: "Password is required" };
 

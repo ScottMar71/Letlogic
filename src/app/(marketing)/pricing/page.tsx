@@ -72,72 +72,74 @@ export default async function PricingPage() {
         ]}
       />
 
-      <main id="main-content" className="mx-auto max-w-[var(--container-content)] flex-1 space-y-10 px-4 py-12">
+      <main id="main-content" className="mx-auto max-w-[var(--container-content)] flex-1 space-y-16 px-4 py-16">
         <FunnelTracker event="pricing_viewed" />
         <div className="text-center">
-          <h1 className="text-h1 font-bold text-text">Simple, honest pricing</h1>
-          <p className="mt-2 text-text-muted">
-            Pay per screening, or go Pro for {PRO_PLAN.monthlyCredits} screenings
-            a month. No free checks — but
-            you can{" "}
-            <Link href="/sample" className="text-brand-600 underline hover:text-brand-500">
-              view a sample report
+          <h1 className="text-display font-bold tracking-tight text-text">
+            Simple, honest pricing
+          </h1>
+          <p className="mt-3 text-lg text-text-muted">
+            Pay per screening, or go Pro for {PRO_PLAN.monthlyCredits}{" "}
+            screenings a month. Credits never expire.{" "}
+            <Link
+              href="/sample"
+              className="text-brand-ink underline hover:text-brand-ink-hover"
+            >
+              View a sample report
             </Link>{" "}
-            first.
+            before you buy.
           </p>
         </div>
 
-        <section className="grid gap-4 sm:grid-cols-3">
+        <section className="grid gap-4 sm:grid-cols-3 sm:items-start">
           {CREDIT_PACK_LIST.map((pack) => (
             <PricingPackCard
               key={pack.slug}
               pack={pack}
               isAuthenticated={!!user}
+              featured={pack.slug === "pack5"}
             />
           ))}
         </section>
 
         <section className="rounded-2xl border border-brand-700 bg-brand-700 p-8 text-white">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0 text-left">
               <p className="text-lg font-semibold">{PRO_PLAN.name}</p>
-              <p className="text-brand-100">
-                {PRO_PLAN.monthlyCredits} screenings/month · comparison view · PDF
-                export · buy extra credit packs when your allowance runs out
+              <p className="mt-1 text-brand-100">
+                {PRO_PLAN.monthlyCredits} screenings/month · comparison view ·
+                PDF export · buy extra packs when you need them
               </p>
             </div>
-            <div className="text-right">
+            <div className="shrink-0 sm:text-right">
               <p className="text-3xl font-bold">
                 {formatGbp(PRO_PLAN.pricePence)}
                 <span className="text-base font-normal text-brand-100">/mo</span>
               </p>
               <Link
                 href={user ? "/settings" : "/login?next=/settings"}
-                className="btn-onbrand mt-2"
+                className="btn-onbrand mt-3 inline-flex"
               >
-                Get started
+                {user ? "Upgrade to Pro" : "Get Pro"}
               </Link>
             </div>
           </div>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6 text-center">
-          <p className="inline-flex items-center gap-2 font-semibold text-text">
-            Agency
-            <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-text-muted">
-              Coming soon
+        <section className="text-center">
+          <p className="text-sm text-text-muted">
+            <span className="font-medium text-text">Agency</span>
+            <span className="mx-2 text-text-subtle" aria-hidden>
+              ·
             </span>
+            Team seats, API, and white-label reports coming soon.{" "}
+            <a
+              href={`mailto:${site.email}?subject=${encodeURIComponent("LetLogic Agency interest")}`}
+              className="font-medium text-brand-ink underline hover:text-brand-ink-hover"
+            >
+              Register interest
+            </a>
           </p>
-          <p className="mt-1 text-sm text-text-muted">
-            Team seats, API access, and white-label reports for letting agents.
-            Use Pro or pay-as-you-go credits in the meantime.
-          </p>
-          <a
-            href={`mailto:${site.email}?subject=${encodeURIComponent("LetLogic Agency interest")}`}
-            className="mt-3 inline-block text-sm font-medium text-brand-600 underline hover:text-brand-500"
-          >
-            Register interest
-          </a>
         </section>
 
         <FaqSection

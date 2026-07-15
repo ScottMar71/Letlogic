@@ -74,27 +74,39 @@ export default function ForLandlordsPage() {
             <Link href="/sample" className="btn-primary px-5">
               View a sample report
             </Link>
-            <Link href="/tenant-screening" className="btn-secondary px-5">
-              Read the screening guide
+            <Link href="/pricing" className="btn-secondary px-5">
+              See pricing
             </Link>
           </div>
+          <p className="text-sm text-text-muted">
+            New to screening?{" "}
+            <Link
+              href="/tenant-screening"
+              className="font-medium text-brand-ink underline hover:text-brand-ink-hover"
+            >
+              Read the screening guide
+            </Link>
+          </p>
         </section>
 
-        <section className="grid gap-4 sm:grid-cols-3">
-          {BENEFITS.map((benefit) => (
-            <div key={benefit.title} className="card">
-              <div
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
-                aria-hidden
-              >
-                <benefit.icon className="h-5 w-5 text-brand-600" />
+        <section className="space-y-6">
+          <h2 className="text-h2 font-bold text-text">Built for independent landlords</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {BENEFITS.map((benefit) => (
+              <div key={benefit.title} className="card">
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
+                  aria-hidden
+                >
+                  <benefit.icon className="h-5 w-5 text-brand-ink" />
+                </div>
+                <h3 className="mt-3 font-semibold text-text">{benefit.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-text-muted">
+                  {benefit.body}
+                </p>
               </div>
-              <h2 className="mt-3 font-semibold text-text">{benefit.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-text-muted">
-                {benefit.body}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </section>
 
         <FaqSection items={FAQS} />

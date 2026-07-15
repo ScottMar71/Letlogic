@@ -11,6 +11,7 @@ import {
 } from "@/components/auth/turnstile-widget";
 import { captchaRequired } from "@/lib/auth/captcha";
 import { Alert } from "@/components/ui/alert";
+import { Field } from "@/components/ui/field";
 
 export function LoginForm() {
   const searchParams = useSearchParams();
@@ -65,15 +66,16 @@ export function LoginForm() {
     <div className="w-full max-w-md space-y-6 rounded-xl border border-border bg-surface p-8 shadow-sm">
       <div>
         <LogoLink size="lg" />
-        <h1 className="mt-4 text-2xl font-semibold text-text">Sign in</h1>
+        <h1 className="mt-4 text-h1 font-semibold text-text">Sign in</h1>
         <p className="mt-1 text-sm text-text-muted">
           Enter your email and password to access your account.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <label htmlFor="login-email" className="block space-y-1">
-          <span className="field-label">Email</span>
+        {error ? <Alert variant="error">{error}</Alert> : null}
+
+        <Field label="Email" htmlFor="login-email">
           <input
             id="login-email"
             type="email"
@@ -85,21 +87,22 @@ export function LoginForm() {
             className="input"
             placeholder="you@example.com"
           />
-        </label>
+        </Field>
+
         <div className="space-y-1">
           <div className="flex items-center justify-between gap-2">
-            <label htmlFor="password" className="field-label">
+            <label htmlFor="login-password" className="field-label">
               Password
             </label>
             <Link
               href="/forgot-password"
-              className="text-xs font-medium text-brand-600 hover:underline"
+              className="text-xs font-medium text-brand-ink hover:underline"
             >
               Forgot password?
             </Link>
           </div>
           <input
-            id="password"
+            id="login-password"
             type="password"
             name="password"
             required
@@ -107,9 +110,10 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="input"
-            placeholder="Your password"
+            aria-invalid={error ? true : undefined}
           />
         </div>
+
         <TurnstileWidget ref={turnstileRef} onToken={setCaptchaToken} />
         <button
           type="submit"
@@ -123,12 +127,13 @@ export function LoginForm() {
 
       <p className="text-center text-sm text-text-muted">
         Don&apos;t have an account?{" "}
-        <Link href={signupHref} className="font-medium text-brand-600 hover:underline">
+        <Link
+          href={signupHref}
+          className="font-medium text-brand-ink hover:underline"
+        >
           Create one
         </Link>
       </p>
-
-      {error && <Alert variant="error">{error}</Alert>}
     </div>
   );
 }

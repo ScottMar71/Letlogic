@@ -58,8 +58,11 @@ export function CreditAlertBanner({ balance }: CreditAlertBannerProps) {
           >
             Buy credits
           </button>
-          <Link href="/settings" className="btn-secondary min-h-9 px-3 py-1.5 text-sm">
-            Billing
+          <Link
+            href="/settings"
+            className="inline-flex min-h-9 items-center px-2 text-sm font-medium text-text-muted underline hover:text-text"
+          >
+            Manage billing
           </Link>
         </div>
       </div>

@@ -62,6 +62,9 @@ export default async function DashboardPage({
     properties.map((p) => [p.id, p.addressLine1]),
   );
 
+  const isFirstTime = counts.total === 0;
+  const showQuickActions = isFirstTime || balance <= 2;
+
   return (
     <AuthenticatedPage creditBalance={balance} width="content">
       <DashboardFunnelTracker />
@@ -69,28 +72,42 @@ export default async function DashboardPage({
         title={`Welcome back, ${displayName}`}
         description={
           balance === 0
-            ? "Top up credits below to run your next screening."
-            : counts.total === 0
-              ? "Get started by screening an applicant or viewing a sample report."
-              : "Here’s what’s happening with your screenings and properties."
+            ? "Buy credits to screen your next applicant."
+            : isFirstTime
+              ? "Start with a sample report, or screen your first applicant."
+              : "Your screenings, properties, and next steps."
         }
         actions={
           <div className="flex flex-wrap gap-2">
             {isAdmin ? (
-              <Link href="/admin" className="btn-secondary inline-flex items-center gap-2">
+              <Link
+                href="/admin"
+                className="btn-secondary inline-flex items-center gap-2"
+              >
                 <Shield className="h-4 w-4" aria-hidden />
                 Admin
               </Link>
             ) : null}
-            <Link href="/sample" className="btn-secondary">
-              View sample
-            </Link>
+            {isFirstTime ? (
+              <Link href="/sample" className="btn-secondary">
+                View sample
+              </Link>
+            ) : null}
             <DashboardScreenCta balance={balance} />
           </div>
         }
       />
 
       <CreditAlertBanner balance={balance} />
+
+      <OnboardingChecklist
+        hasScreenings={counts.total > 0}
+        hasProperties={properties.length > 0}
+      />
+
+      {activeIntakeLinks.length > 0 ? (
+        <IntakeLinksCard links={activeIntakeLinks} />
+      ) : null}
 
       <DashboardStats
         balance={balance}
@@ -99,10 +116,8 @@ export default async function DashboardPage({
         screeningsThisMonth={counts.thisMonth}
       />
 
-      <QuickActions balance={balance} hasScreenings={counts.total > 0} />
-
-      {activeIntakeLinks.length > 0 ? (
-        <IntakeLinksCard links={activeIntakeLinks} />
+      {showQuickActions ? (
+        <QuickActions balance={balance} hasScreenings={counts.total > 0} />
       ) : null}
 
       {counts.total > 0 ? (
@@ -113,11 +128,6 @@ export default async function DashboardPage({
           totalScreenings={counts.total}
         />
       ) : null}
-
-      <OnboardingChecklist
-        hasScreenings={counts.total > 0}
-        hasProperties={properties.length > 0}
-      />
 
       <DashboardLists
         screenings={recent}

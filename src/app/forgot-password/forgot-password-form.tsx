@@ -10,6 +10,7 @@ import {
 } from "@/components/auth/turnstile-widget";
 import { captchaRequired } from "@/lib/auth/captcha";
 import { Alert } from "@/components/ui/alert";
+import { Field } from "@/components/ui/field";
 
 export function ForgotPasswordForm() {
   const turnstileRef = useRef<TurnstileWidgetHandle>(null);
@@ -52,17 +53,19 @@ export function ForgotPasswordForm() {
     <div className="w-full max-w-md space-y-6 rounded-xl border border-border bg-surface p-8 shadow-sm">
       <div>
         <LogoLink size="lg" />
-        <h1 className="mt-4 text-2xl font-semibold text-text">Forgot password</h1>
+        <h1 className="mt-4 text-h1 font-semibold text-text">Forgot password</h1>
         <p className="mt-1 text-sm text-text-muted">
-          Enter your email and we&apos;ll send you a link to choose a new
-          password.
+          Enter your email and we&apos;ll send a link to choose a new password.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="block space-y-1">
-          <span className="field-label">Email</span>
+        {error ? <Alert variant="error">{error}</Alert> : null}
+        {message ? <Alert variant="success">{message}</Alert> : null}
+
+        <Field label="Email" htmlFor="forgot-email">
           <input
+            id="forgot-email"
             type="email"
             name="email"
             required
@@ -72,11 +75,12 @@ export function ForgotPasswordForm() {
             className="input"
             placeholder="you@example.com"
           />
-        </label>
+        </Field>
+
         <TurnstileWidget ref={turnstileRef} onToken={setCaptchaToken} />
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !!message}
           aria-busy={loading}
           className="btn-primary w-full"
         >
@@ -86,13 +90,13 @@ export function ForgotPasswordForm() {
 
       <p className="text-center text-sm text-text-muted">
         Remember your password?{" "}
-        <Link href="/login" className="font-medium text-brand-600 hover:underline">
+        <Link
+          href="/login"
+          className="font-medium text-brand-ink hover:underline"
+        >
           Back to sign in
         </Link>
       </p>
-
-      {message && <Alert variant="success">{message}</Alert>}
-      {error && <Alert variant="error">{error}</Alert>}
     </div>
   );
 }

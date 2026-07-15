@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { FaqSection } from "@/components/marketing/faq-section";
+import { FaqSection, type FaqSectionItem } from "@/components/marketing/faq-section";
+import { MarketingCtaBand } from "@/components/marketing/marketing-cta-band";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { formatDateLong } from "@/lib/format-date";
 import { getGuide, guidePath } from "@/lib/guides";
@@ -7,7 +7,6 @@ import {
   JsonLd,
   articleJsonLd,
   breadcrumbJsonLd,
-  type FaqItem,
 } from "@/lib/seo/json-ld";
 
 type GuideLayoutProps = {
@@ -17,9 +16,11 @@ type GuideLayoutProps = {
   datePublished: string;
   /** One-line summary shown under the H1. */
   intro: string;
+  /** Optional in-article table of contents. */
+  toc?: { id: string; label: string }[];
   /** Prose body — rendered inside a `.legal` container. */
   children: React.ReactNode;
-  faqs?: FaqItem[];
+  faqs?: FaqSectionItem[];
 };
 
 export function GuideLayout({
@@ -28,6 +29,7 @@ export function GuideLayout({
   description,
   datePublished,
   intro,
+  toc,
   children,
   faqs,
 }: GuideLayoutProps) {
@@ -64,21 +66,45 @@ export function GuideLayout({
       >
         <Breadcrumbs
           items={[
+            { label: "Home", href: "/" },
             { label: "Guides", href: "/guides" },
             { label: title },
           ]}
         />
 
         <header className="mt-4 border-b border-border pb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-text">
+          <h1 className="text-display font-bold tracking-tight text-text">
             {title}
           </h1>
-          <p className="mt-2 text-text-muted">{intro}</p>
+          <p className="mt-2 text-lg text-text-muted">{intro}</p>
           <p className="mt-3 text-xs text-text-subtle">
             Published {published}
             {updated ? ` · Updated ${updated}` : ""}
           </p>
         </header>
+
+        {toc && toc.length > 0 ? (
+          <nav
+            aria-label="On this page"
+            className="mt-6 rounded-xl border border-border bg-surface p-4"
+          >
+            <p className="text-xs font-medium uppercase tracking-wide text-text-subtle">
+              On this page
+            </p>
+            <ol className="mt-2 space-y-1.5">
+              {toc.map((item) => (
+                <li key={item.id}>
+                  <a
+                    href={`#${item.id}`}
+                    className="text-sm font-medium text-brand-ink underline hover:text-brand-ink-hover"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        ) : null}
 
         <article className="legal mt-8">{children}</article>
 
@@ -88,20 +114,15 @@ export function GuideLayout({
           </div>
         )}
 
-        <section className="mt-12 rounded-2xl border border-brand-700 bg-brand-700 p-6 text-center text-white">
-          <h2 className="text-lg font-semibold">Screen with confidence</h2>
-          <p className="mt-1 text-sm text-brand-100">
-            See an explainable risk score in seconds.
-          </p>
-          <div className="mt-4 flex flex-wrap justify-center gap-3">
-            <Link href="/sample" className="btn-onbrand">
-              View a sample report
-            </Link>
-            <Link href="/tenant-screening" className="btn-onbrand-secondary px-5">
-              Screening guide
-            </Link>
-          </div>
-        </section>
+        <MarketingCtaBand
+          className="mt-12"
+          title="Screen with confidence"
+          description="See an explainable risk score in seconds."
+          primaryHref="/sample"
+          primaryLabel="View a sample report"
+          secondaryHref="/pricing"
+          secondaryLabel="See pricing"
+        />
       </main>
     </>
   );

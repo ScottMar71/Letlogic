@@ -14,7 +14,7 @@ export default async function ResetPasswordPage() {
 
   return (
     <AuthPageShell>
-      <Suspense>
+      <Suspense fallback={null}>
         <ResetPasswordForm hasSession={!!user} />
       </Suspense>
     </AuthPageShell>

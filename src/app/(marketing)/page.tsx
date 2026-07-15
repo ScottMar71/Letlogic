@@ -15,6 +15,7 @@ import {
   webSiteJsonLd,
 } from "@/lib/seo/json-ld";
 import { marketingPageMetadata } from "@/lib/seo/metadata";
+import { PRO_PLAN } from "@/lib/screening/pricing";
 import { site } from "@/lib/site";
 
 export const metadata = marketingPageMetadata({
@@ -63,16 +64,16 @@ const CASE_STUDY = {
   context: "Independent landlord · 2-bed flat · Bristol",
   headline: "Fourteen applicants in 48 hours — without paying for fourteen references",
   problem:
-    "A listing went live on a Thursday. By Saturday there were fourteen enquiries — emails, Rightmove messages, and a letting agent forwarding CV-style applications. Full tenant referencing runs £25–£40 per applicant. Running everyone through would have cost hundreds before anyone even viewed the flat.",
+    "A listing went live on Thursday; by Saturday there were fourteen enquiries. Full referencing runs £25–£40 per applicant — checking everyone would have cost hundreds before a single viewing.",
   approach:
-    "Instead of referencing the whole pile, the landlord pasted each application into LetLogic. In a few minutes per applicant they had an explainable risk score, income multiple, and a plain-English summary — enough to spot weak affordability and unstable employment history early.",
+    "The landlord pasted each application into LetLogic and had an explainable risk score, income multiple, and plain-English summary for every applicant within minutes — enough to spot weak affordability early.",
   outcome: [
     { label: "Applicants screened", value: "14" },
     { label: "Shortlisted for viewings", value: "3" },
     { label: "Full credit checks run", value: "3" },
   ],
   result:
-    "LetLogic acted as a first filter — not a credit check, not a substitute for referencing — but a fast way to decide who was worth the time and cost of a full check. The landlord picked a tenant from the shortlist the following week.",
+    "LetLogic acted as a first filter: only the three shortlisted applicants went through full referencing, and a tenant was signed the following week.",
 };
 
 export default function Home() {
@@ -88,10 +89,9 @@ export default function Home() {
             Rent smarter. Trust faster.
           </h1>
           <p className="max-w-2xl text-lg text-text-muted">
-            LetLogic helps UK landlords make sense of a tenant application fast.
-            Paste an applicant&apos;s details and get an explainable risk score,
-            summary, and recommendation — not a credit check, just a faster way
-            to decide.
+            LetLogic turns a tenant application into an explainable risk score,
+            summary, and recommendation in seconds — so UK landlords can decide
+            who&apos;s worth a full reference.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/sample" className="btn-primary px-5">
@@ -112,19 +112,22 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="grid gap-4 sm:grid-cols-3">
-          {STEPS.map((step) => (
-            <div key={step.title} className="card">
-              <div
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
-                aria-hidden
-              >
-                <step.icon className="h-5 w-5 text-brand-600" />
+        <section className="space-y-6">
+          <h2 className="text-h2 font-bold text-text">How it works</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {STEPS.map((step) => (
+              <div key={step.title} className="card">
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
+                  aria-hidden
+                >
+                  <step.icon className="h-5 w-5 text-brand-ink" />
+                </div>
+                <h3 className="mt-3 font-semibold text-text">{step.title}</h3>
+                <p className="mt-2 text-sm text-text-muted">{step.body}</p>
               </div>
-              <h2 className="mt-3 font-semibold text-text">{step.title}</h2>
-              <p className="mt-2 text-sm text-text-muted">{step.body}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </section>
 
         <section className="space-y-6">
@@ -132,7 +135,7 @@ export default function Home() {
           <div className="grid gap-4 sm:grid-cols-3">
             {TRUST_ITEMS.map((item) => (
               <div key={item.title} className="card">
-                <item.icon className="h-6 w-6 text-brand-600" aria-hidden />
+                <item.icon className="h-6 w-6 text-brand-ink" aria-hidden />
                 <h3 className="mt-3 font-semibold text-text">{item.title}</h3>
                 <p className="mt-2 text-sm text-text-muted">{item.body}</p>
               </div>
@@ -156,7 +159,7 @@ export default function Home() {
                   className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50"
                   aria-hidden
                 >
-                  <Users className="h-5 w-5 text-brand-600" />
+                  <Users className="h-5 w-5 text-brand-ink" />
                 </div>
                 <p className="text-sm font-medium text-text">
                   The problem: too many applicants, too little time
@@ -197,31 +200,26 @@ export default function Home() {
               <p className="max-w-3xl text-sm leading-relaxed text-text-muted">
                 {CASE_STUDY.result}
               </p>
-
-              <Link
-                href="/sample"
-                className="inline-block text-sm font-medium text-brand-600 underline hover:text-brand-500"
-              >
-                See what a screening report looks like
-              </Link>
             </div>
           </article>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-8 text-center">
-          <h2 className="text-xl font-semibold text-text">
-            Pay per screening, or go Pro
+        <section className="rounded-2xl border border-brand-700 bg-brand-700 p-8 text-center text-white">
+          <h2 className="text-xl font-semibold">
+            Screen your next applicant in minutes
           </h2>
-          <p className="mt-1 text-sm text-text-muted">
-            From £4.99 per screening. Unlimited screenings and applicant
-            comparison on Pro.
+          <p className="mt-1 text-brand-100">
+            From £4.99 per screening, or go Pro for {PRO_PLAN.monthlyCredits}{" "}
+            screenings a month.
           </p>
-          <Link
-            href="/pricing"
-            className="mt-4 inline-block text-sm font-medium text-brand-600 underline hover:text-brand-500"
-          >
-            See pricing
-          </Link>
+          <div className="mt-4 flex flex-wrap justify-center gap-3">
+            <Link href="/login?next=/screen" className="btn-onbrand">
+              Sign in to screen
+            </Link>
+            <Link href="/pricing" className="btn-onbrand-secondary px-5">
+              See pricing
+            </Link>
+          </div>
         </section>
       </main>
     </>

@@ -41,7 +41,7 @@ export function PricingCta({ pack, isAuthenticated }: PricingCtaProps) {
   return (
     <div className="mt-4">
       <Button
-        variant="secondary"
+        variant="primary"
         className="w-full"
         loading={loading}
         onClick={buy}
@@ -60,18 +60,32 @@ export function PricingCta({ pack, isAuthenticated }: PricingCtaProps) {
 export function PricingPackCard({
   pack,
   isAuthenticated,
+  featured = false,
 }: {
   pack: CreditPack;
   isAuthenticated: boolean;
+  featured?: boolean;
 }) {
   const features = [
     "Full AI screening report",
     "Applicant intake link — they fill in the form",
     ...(pack.includesPdfExport ? ["PDF export included"] : []),
+    "Credits never expire",
   ];
 
   return (
-    <div className="rounded-2xl border border-border bg-surface p-6 text-center">
+    <div
+      className={`relative rounded-2xl border bg-surface p-6 text-center ${
+        featured
+          ? "border-brand-600 ring-1 ring-brand-600"
+          : "border-border"
+      }`}
+    >
+      {featured ? (
+        <p className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-3 py-0.5 text-xs font-semibold text-text-on-teal">
+          Most popular
+        </p>
+      ) : null}
       <p className="font-semibold text-text">{pack.name}</p>
       <p className="mt-2 text-3xl font-bold text-text">
         {formatGbp(pack.pricePence)}

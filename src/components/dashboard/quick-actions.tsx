@@ -49,7 +49,7 @@ export function QuickActions(props: QuickActionsProps) {
           <Link
             key={action.key}
             href={action.href}
-            className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-medium text-text-muted transition-colors hover:border-brand-600 hover:text-brand-600"
+            className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-medium text-text-muted transition-colors hover:border-brand-600 hover:text-brand-ink"
           >
             <Icon className="h-4 w-4" aria-hidden />
             {action.label}

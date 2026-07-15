@@ -37,7 +37,7 @@ export default function ContactPage() {
                 <li>
                   <a
                     href={`mailto:${site.email}`}
-                    className="font-medium text-brand-600 underline hover:text-brand-500"
+                    className="font-medium text-brand-ink underline hover:text-brand-ink-hover"
                   >
                     {site.email}
                   </a>

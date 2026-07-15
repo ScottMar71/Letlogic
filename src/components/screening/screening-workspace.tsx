@@ -23,6 +23,7 @@ type WorkspaceProps = {
   reanalyseFrom?: ApplicationSource;
   intakeFrom?: IntakeSource;
   isFirstScreening?: boolean;
+  creditBalance?: number;
 };
 
 type Mode = "paste" | "form" | "link";
@@ -40,6 +41,7 @@ export function ScreeningWorkspace({
   reanalyseFrom,
   intakeFrom,
   isFirstScreening = false,
+  creditBalance = 1,
 }: WorkspaceProps) {
   const router = useRouter();
   const resultsRef = useRef<HTMLElement>(null);
@@ -117,6 +119,12 @@ export function ScreeningWorkspace({
   }
 
   async function analyse() {
+    if (creditBalance <= 0) {
+      setShowBuy(true);
+      return;
+    }
+    if (!canAnalyse) return;
+
     setLoading(true);
     setError(null);
     setAssessment(null);
@@ -147,7 +155,30 @@ export function ScreeningWorkspace({
     }
   }, [savedId]);
 
-  const canAnalyse = applicantName.trim().length >= 2 && Number(rent) > 0;
+  const hasPasteContent = rawText.trim().length >= 40;
+  const filledFormFields = Object.values(form).filter((v) => v.trim().length > 0)
+    .length;
+  const hasFormContent = Number(income) > 0 || filledFormFields >= 2;
+  const hasApplicationContent =
+    mode === "paste" ? hasPasteContent : hasFormContent;
+  const canAnalyse =
+    applicantName.trim().length >= 2 &&
+    Number(rent) > 0 &&
+    hasApplicationContent;
+  const outOfCredits = creditBalance <= 0;
+
+  let analyseHint = "Enter an applicant name and a monthly rent to analyse.";
+  if (outOfCredits) {
+    analyseHint = "Buy at least one credit before analysing an applicant.";
+  } else if (applicantName.trim().length < 2 || !(Number(rent) > 0)) {
+    analyseHint = "Enter an applicant name and a monthly rent to analyse.";
+  } else if (mode === "paste" && !hasPasteContent) {
+    analyseHint =
+      "Paste enough application detail (about a short paragraph) so the screening has something to analyse.";
+  } else if (mode === "form" && !hasFormContent) {
+    analyseHint =
+      "Add monthly income or at least two applicant detail fields before analysing.";
+  }
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
@@ -156,7 +187,7 @@ export function ScreeningWorkspace({
           <button
             type="button"
             onClick={() => setCollapsed(false)}
-            className="text-sm font-medium text-brand-600 underline hover:text-brand-500 lg:hidden"
+            className="text-sm font-medium text-brand-ink underline hover:text-brand-ink-hover lg:hidden"
           >
             Edit applicant details
           </button>
@@ -171,18 +202,19 @@ export function ScreeningWorkspace({
                 label: "Paste application",
                 icon: ClipboardPaste,
                 description: "Email, PDF text, or notes",
+                badge: isFirstScreening && !intakeFrom ? "Recommended" : undefined,
               },
               {
                 value: "form",
                 label: "Structured form",
                 icon: ListChecks,
-                description: "Fill in fields step by step",
+                description: "Fill in fields yourself",
               },
               {
                 value: "link",
-                label: "Send form to applicant",
+                label: "Send to applicant",
                 icon: Send,
-                description: "They fill it in themselves",
+                description: "They complete a form",
               },
             ]}
             value={mode}
@@ -267,9 +299,11 @@ export function ScreeningWorkspace({
               />
               <Field
                 label="Application text"
+                htmlFor="application-text"
                 hint="Paste an email, online form, or your notes."
               >
                 <textarea
+                  id="application-text"
                   value={rawText}
                   onChange={(e) => setRawText(e.target.value)}
                   rows={12}
@@ -286,7 +320,7 @@ export function ScreeningWorkspace({
                 </ul>
                 <Link
                   href="/sample"
-                  className="mt-2 inline-block text-xs font-medium text-brand-600 underline"
+                  className="mt-2 inline-block text-xs font-medium text-brand-ink underline"
                 >
                   View a sample report
                 </Link>
@@ -325,16 +359,20 @@ export function ScreeningWorkspace({
           <button
             type="button"
             onClick={analyse}
-            disabled={!canAnalyse || loading}
+            disabled={(!canAnalyse && !outOfCredits) || loading}
             aria-busy={loading}
-            aria-describedby={!canAnalyse ? "analyse-hint" : undefined}
+            aria-describedby={!canAnalyse || outOfCredits ? "analyse-hint" : undefined}
             className="btn-primary sticky bottom-4 z-10 mt-4 w-full py-3 shadow-lg lg:static lg:shadow-none"
           >
-            {loading ? "Analysing…" : "Analyse applicant · uses 1 credit"}
+            {loading
+              ? "Analysing…"
+              : outOfCredits
+                ? "Buy credits to analyse"
+                : "Analyse applicant · uses 1 credit"}
           </button>
-          {!canAnalyse && (
+          {(!canAnalyse || outOfCredits) && (
             <p id="analyse-hint" className="text-xs text-text-subtle">
-              Enter an applicant name and a monthly rent to analyse.
+              {analyseHint}
             </p>
           )}
             </>

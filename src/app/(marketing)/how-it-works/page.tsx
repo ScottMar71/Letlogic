@@ -104,26 +104,26 @@ export default function HowItWorksPage() {
       <main id="main-content" className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-16 px-4 py-16">
         <section className="space-y-5">
           <p className="section-label">Overview</p>
-          <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-text">
+          <h1 className="max-w-3xl text-display font-bold tracking-tight text-text">
             From application to confident decision in seconds
           </h1>
           <p className="max-w-2xl text-lg text-text-muted">
-            LetLogic helps UK landlords make sense of a tenant application fast.
-            Paste what you have and get an explainable risk score, a summary,
-            and the questions worth asking — so you can decide with confidence.
+            Paste a tenant application and get an explainable risk score,
+            summary, and the questions worth asking — so you can decide with
+            confidence.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/sample" className="btn-primary px-5">
               View a sample report
             </Link>
-            <Link href="/login?next=/screen" className="btn-secondary px-5">
-              Sign in to screen
+            <Link href="/pricing" className="btn-secondary px-5">
+              See pricing
             </Link>
           </div>
         </section>
 
         <section className="space-y-6">
-          <h2 className="text-2xl font-bold text-text">Three simple steps</h2>
+          <h2 className="text-h2 font-bold text-text">Three simple steps</h2>
           <div className="grid gap-4 sm:grid-cols-3">
             {STEPS.map((step) => (
               <div key={step.title} className="card">
@@ -131,7 +131,7 @@ export default function HowItWorksPage() {
                   className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
                   aria-hidden
                 >
-                  <step.icon className="h-5 w-5 text-brand-600" />
+                  <step.icon className="h-5 w-5 text-brand-ink" />
                 </div>
                 <h3 className="mt-3 font-semibold text-text">{step.title}</h3>
                 <p className="mt-2 text-sm text-text-muted">{step.body}</p>
@@ -141,9 +141,7 @@ export default function HowItWorksPage() {
         </section>
 
         <section className="space-y-6">
-          <h2 className="text-2xl font-bold text-text">
-            What we look at
-          </h2>
+          <h2 className="text-h2 font-bold text-text">What we look at</h2>
           <p className="max-w-2xl text-text-muted">
             Every result is explainable. Instead of an opaque pass/fail, you see
             the signals behind the score so you can apply your own judgement.
@@ -200,7 +198,7 @@ export default function HowItWorksPage() {
             protected characteristics. It is an aid to your judgement, never an
             automated decision. You remain the data controller and the
             decision-maker for every tenancy. Read more in our{" "}
-            <Link href="/privacy" className="text-brand-600 underline hover:text-brand-500">
+            <Link href="/privacy" className="text-brand-ink underline hover:text-brand-ink-hover">
               Privacy Policy
             </Link>
             .

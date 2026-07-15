@@ -52,7 +52,7 @@ export function IntakeLinksCard({ links }: IntakeLinksCardProps) {
         <h2 className="section-label">Applicant forms</h2>
         <Link
           href="/screen"
-          className="text-sm font-medium text-brand-600 underline hover:text-brand-500"
+          className="text-sm font-medium text-brand-ink underline hover:text-brand-ink-hover"
         >
           Send a new form
         </Link>

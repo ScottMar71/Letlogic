@@ -2,7 +2,6 @@ import Link from "next/link";
 import { AssessmentResultPanel } from "@/components/screening/assessment-result";
 import { PrintReportHeader } from "@/components/screening/print-report-header";
 import { Alert } from "@/components/ui/alert";
-import { PageHeader } from "@/components/ui/page-header";
 import { SampleViewTracker } from "@/components/onboarding/sample-view-tracker";
 import { SampleStickyCta } from "@/components/onboarding/sample-sticky-cta";
 import { FunnelTracker } from "@/components/analytics/funnel-tracker";
@@ -65,26 +64,31 @@ export default function SamplePage() {
 
       <main
         id="main-content"
-        className="mx-auto w-full max-w-[var(--container-narrow)] flex-1 space-y-8 px-4 py-8"
+        className="mx-auto w-full max-w-[var(--container-narrow)] flex-1 space-y-8 px-4 py-12"
       >
-        <PageHeader
-          title={SAMPLE.applicantName}
-          description={`Sample report · Screened ${SAMPLE_SCREENED} · 14 High Street, Bristol`}
-          actions={
-            <div className="flex flex-wrap gap-2">
-              <Link href="/pricing" className="btn-secondary">
-                See pricing
-              </Link>
-              <Link href="/signup?next=/screen" className="btn-primary">
-                Create account to screen
-              </Link>
-            </div>
-          }
-        />
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0 space-y-2">
+            <p className="section-label">Sample report</p>
+            <h1 className="text-display font-bold tracking-tight text-text">
+              What a LetLogic screening looks like
+            </h1>
+            <p className="text-sm text-text-muted">
+              Example applicant: {SAMPLE.applicantName} · Screened{" "}
+              {SAMPLE_SCREENED} · 14 High Street, Bristol
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-wrap gap-2">
+            <Link href="/pricing" className="btn-secondary">
+              See pricing
+            </Link>
+            <Link href="/signup?next=/screen" className="btn-primary">
+              Create account to screen
+            </Link>
+          </div>
+        </div>
 
-        <Alert variant="warning">
-          This is an example report. Sign in and buy a credit to screen a real
-          applicant.
+        <Alert variant="warning" title="This is an example report">
+          Create an account and buy a credit to screen a real applicant.
         </Alert>
 
         <PrintReportHeader
@@ -94,7 +98,7 @@ export default function SamplePage() {
 
         <AssessmentResultPanel assessment={SAMPLE} loading={false} error={null} />
 
-        <p className="pb-20 text-xs text-text-subtle sm:pb-0">
+        <p className="pb-24 text-xs text-text-subtle sm:pb-0">
           AI-generated assessment — not a credit check or legal advice.
         </p>
       </main>

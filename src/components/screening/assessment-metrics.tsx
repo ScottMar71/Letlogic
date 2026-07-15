@@ -36,7 +36,7 @@ const metricConfig = [
     key: "tenancy",
     label: "Tenancy stability",
     icon: Home,
-    accent: "bg-brand-50 text-brand-600",
+    accent: "bg-brand-50 text-brand-ink",
     getValue: (m: AssessmentMetricsProps) =>
       m.tenancyStabilityScore != null ? `${m.tenancyStabilityScore}/10` : "—",
     getHint: (m: AssessmentMetricsProps) =>

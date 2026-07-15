@@ -1,4 +1,7 @@
-import { EmptyState } from "@/components/ui/empty-state";
+"use client";
+
+import { useState } from "react";
+import { BuyCreditsModal } from "@/components/screening/buy-credits-modal";
 import { StatusBadge, PURCHASE_STATUS_LABELS } from "@/components/ui/status-badge";
 import { formatDate } from "@/lib/format-date";
 import { formatGbp } from "@/lib/screening/pricing";
@@ -12,12 +15,26 @@ type Purchase = {
 };
 
 export function PurchaseHistory({ purchases }: { purchases: Purchase[] }) {
+  const [buyOpen, setBuyOpen] = useState(false);
+
   if (purchases.length === 0) {
     return (
-      <EmptyState
-        title="No purchases yet"
-        description="Your credit pack and subscription purchases will appear here."
-      />
+      <>
+        <div className="rounded-xl border border-dashed border-border-strong bg-surface p-8 text-center">
+          <p className="font-medium text-text">No purchases yet</p>
+          <p className="mt-1 text-sm text-text-subtle">
+            Your credit pack and subscription purchases will appear here.
+          </p>
+          <button
+            type="button"
+            onClick={() => setBuyOpen(true)}
+            className="btn-primary mt-4"
+          >
+            Buy credits
+          </button>
+        </div>
+        <BuyCreditsModal open={buyOpen} onClose={() => setBuyOpen(false)} />
+      </>
     );
   }
 

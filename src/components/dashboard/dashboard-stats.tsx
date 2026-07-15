@@ -19,7 +19,7 @@ const statConfig = [
     key: "credits",
     label: "Credits",
     icon: Coins,
-    accent: "bg-brand-50 text-brand-600",
+    accent: "bg-brand-50 text-brand-ink",
     getValue: (p: DashboardStatsProps) => String(p.balance),
     getHint: (p: DashboardStatsProps) =>
       p.balance === 0
@@ -51,7 +51,7 @@ const statConfig = [
       p.screeningCount === 0
         ? "Run your first screening"
         : "All-time assessments",
-    getHref: () => "/screen",
+    getHref: () => "#recent-screenings",
   },
   {
     key: "month",
@@ -63,7 +63,7 @@ const statConfig = [
       p.screeningsThisMonth === 0
         ? "No screenings yet this month"
         : "Screenings this calendar month",
-    getHref: () => "/screen",
+    getHref: () => "#recent-screenings",
   },
 ] as const;
 
@@ -105,7 +105,7 @@ export function DashboardStats(props: DashboardStatsProps) {
               <p className="mt-0.5 text-2xl font-bold tracking-tight text-text">
                 {value}
               </p>
-              <p className="mt-1 text-xs text-text-muted group-hover:text-brand-600">
+              <p className="mt-1 text-xs text-text-muted group-hover:text-brand-ink">
                 {hint}
               </p>
             </Card>

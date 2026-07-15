@@ -69,7 +69,7 @@ export default async function ApplyPage({ params }: PageProps) {
       <footer className="border-t border-border pt-4 text-xs text-text-subtle">
         <p>
           Powered by{" "}
-          <Link href="/" className="font-medium text-brand-600 underline">
+          <Link href="/" className="font-medium text-brand-ink underline">
             {site.name}
           </Link>{" "}
           — AI-assisted tenant screening for UK landlords. Your answers are

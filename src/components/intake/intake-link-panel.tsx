@@ -80,7 +80,7 @@ export function IntakeLinkPanel({ propertyId }: IntakeLinkPanelProps) {
           <p className="text-sm text-text-muted">
             Send this link to your applicant by email, text, or WhatsApp.
             You'll see their submission on your{" "}
-            <Link href="/dashboard" className="font-medium text-brand-600 underline">
+            <Link href="/dashboard" className="font-medium text-brand-ink underline">
               dashboard
             </Link>{" "}
             under &ldquo;Applicant forms&rdquo;.

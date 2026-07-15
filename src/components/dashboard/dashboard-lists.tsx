@@ -89,7 +89,10 @@ export function DashboardLists({
 
   return (
     <div className="grid gap-8 lg:grid-cols-5">
-      <section className="space-y-4 lg:col-span-3">
+      <section
+        id="recent-screenings"
+        className="scroll-mt-24 space-y-4 lg:col-span-3"
+      >
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-h3 font-semibold text-text">Recent screenings</h2>
@@ -264,7 +267,7 @@ export function DashboardLists({
                     className="group flex items-start gap-3 rounded-xl border border-border bg-surface p-4 transition-all hover:border-brand-600 hover:bg-brand-50/30"
                   >
                     <span
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-muted text-text-muted transition-colors group-hover:bg-brand-50 group-hover:text-brand-600"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-muted text-text-muted transition-colors group-hover:bg-brand-50 group-hover:text-brand-ink"
                       aria-hidden
                     >
                       <Building2 className="h-4 w-4" />

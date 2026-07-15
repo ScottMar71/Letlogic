@@ -22,12 +22,12 @@ const BENEFITS = [
   {
     icon: Users,
     title: "Works for small teams today",
-    body: "Use Pro for comparison view on up to 15 screenings a month, or pay-as-you-go multi-credit packs when volume is lower — PDF export is included with 5+ packs and Pro (not a single screening).",
+    body: `Use Pro for comparison view on up to ${PRO_PLAN.monthlyCredits} screenings a month, or pay-as-you-go packs when volume is lower — PDF export is included with 5+ packs and Pro.`,
   },
   {
     icon: Layers,
-    title: "Agency plan coming soon",
-    body: "Team seats, API access, and white-label reports are on the roadmap. Register interest and we'll notify you when Agency launches.",
+    title: "Shareable PDF reports",
+    body: "Export branded screening PDFs to share with landlords after you triage — without waiting for a full Agency plan.",
   },
 ];
 
@@ -68,10 +68,9 @@ export default function ForLettingAgentsPage() {
             Screen applicants consistently, at portfolio speed
           </h1>
           <p className="max-w-2xl text-lg text-text-muted">
-            LetLogic gives letting agents an explainable, repeatable way to
-            triage tenant applications across many properties. Start with Pro (
-            {PRO_PLAN.monthlyCredits} screenings/month) or pay-as-you-go credits
-            — Agency features are coming soon.
+            An explainable, repeatable way to triage tenant applications across
+            many properties. Start with Pro ({PRO_PLAN.monthlyCredits}{" "}
+            screenings/month) or pay-as-you-go credits today.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/pricing" className="btn-primary px-5">
@@ -80,49 +79,52 @@ export default function ForLettingAgentsPage() {
             <Link href="/sample" className="btn-secondary px-5">
               View a sample report
             </Link>
+          </div>
+          <p className="text-sm text-text-muted">
+            Agency (team seats, API, white-label) is coming soon.{" "}
             <a
               href={`mailto:${site.email}?subject=${encodeURIComponent("LetLogic Agency interest")}`}
-              className="btn-secondary px-5"
+              className="font-medium text-brand-ink underline hover:text-brand-ink-hover"
             >
-              Register Agency interest
+              Register interest
             </a>
-          </div>
+          </p>
         </section>
 
-        <section className="grid gap-4 sm:grid-cols-3">
-          {BENEFITS.map((benefit) => (
-            <div key={benefit.title} className="card">
-              <div
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
-                aria-hidden
-              >
-                <benefit.icon className="h-5 w-5 text-brand-600" />
+        <section className="space-y-6">
+          <h2 className="text-h2 font-bold text-text">Why agents use LetLogic</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {BENEFITS.map((benefit) => (
+              <div key={benefit.title} className="card">
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
+                  aria-hidden
+                >
+                  <benefit.icon className="h-5 w-5 text-brand-ink" />
+                </div>
+                <h3 className="mt-3 font-semibold text-text">{benefit.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-text-muted">
+                  {benefit.body}
+                </p>
               </div>
-              <h2 className="mt-3 font-semibold text-text">{benefit.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-text-muted">
-                {benefit.body}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </section>
 
         <FaqSection items={FAQS} />
 
         <section className="rounded-2xl border border-brand-700 bg-brand-700 p-8 text-center text-white">
-          <h2 className="text-xl font-semibold">Agency plan — coming soon</h2>
+          <h2 className="text-xl font-semibold">Start screening with Pro today</h2>
           <p className="mt-1 text-brand-100">
-            Team seats, API access, and white-label reports for higher volumes.
-            Use Pro or credits while we build it.
+            Use Pro or pay-as-you-go credits now. Agency features are on the
+            way.
           </p>
           <div className="mt-4 flex flex-wrap justify-center gap-3">
-            <a
-              href={`mailto:${site.email}?subject=${encodeURIComponent("LetLogic Agency interest")}`}
-              className="btn-onbrand"
-            >
-              Register interest
-            </a>
-            <Link href="/login?next=/screen" className="btn-onbrand-secondary px-5">
+            <Link href="/login?next=/screen" className="btn-onbrand">
               Sign in to screen
+            </Link>
+            <Link href="/pricing" className="btn-onbrand-secondary px-5">
+              See pricing
             </Link>
           </div>
         </section>

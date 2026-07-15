@@ -11,6 +11,10 @@
   --color-brand-600: #00c49f;
   --color-brand-700: #0f1c2e;
   --color-brand-800: #0a1522;
+  /* Accessible teal for text, links, strokes & focus on light surfaces
+     (#00806b = 4.9:1 on white; brand teal #00c49f is fill-only) */
+  --color-brand-ink: #00806b;
+  --color-brand-ink-hover: #005c4d;
 
   /* Surfaces & borders */
   --color-surface: #ffffff;
@@ -54,8 +58,8 @@
   --color-info-bg: #eff6ff;
   --color-info-border: #bfdbfe;
 
-  /* Focus */
-  --color-focus: #00c49f;
+  /* Focus (must meet 3:1 non-text contrast on white) */
+  --color-focus: #00806b;
 
   /* Container widths */
   --container-narrow: 48rem;
@@ -113,7 +117,7 @@ body {
     @apply btn bg-brand-600 font-semibold text-text-on-teal hover:brightness-95 disabled:opacity-50;
   }
   .btn-secondary {
-    @apply btn border border-border-strong bg-surface text-text hover:border-brand-600 hover:text-brand-600 disabled:opacity-60;
+    @apply btn border border-border-strong bg-surface text-text hover:border-brand-600 hover:text-brand-ink disabled:opacity-60;
   }
   .btn-onbrand {
     @apply btn bg-white font-semibold text-brand-700 hover:bg-brand-50 disabled:opacity-60;
@@ -143,7 +147,7 @@ body {
 
   .input,
   .textarea {
-    @apply w-full rounded-lg border border-border-strong bg-surface px-3 py-2.5 text-sm text-text placeholder:text-text-subtle focus:border-brand-600 focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-brand-600;
+    @apply w-full rounded-lg border border-border-strong bg-surface px-3 py-2.5 text-sm text-text placeholder:text-text-subtle focus:border-brand-ink focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-brand-ink;
   }
 
   .field-label {
@@ -169,7 +173,7 @@ body {
   }
 
   .nav-link {
-    @apply inline-flex min-h-11 items-center text-sm text-text-muted transition-colors hover:text-brand-600;
+    @apply inline-flex min-h-11 items-center text-sm text-text-muted transition-colors hover:text-brand-ink;
   }
 
   /* Long-form prose for legal & content pages */
@@ -180,7 +184,7 @@ body {
     @apply mt-4;
   }
   .legal h2 {
-    @apply mt-10 text-xl font-semibold text-text;
+    @apply mt-10 scroll-mt-24 text-xl font-semibold text-text;
   }
   .legal h3 {
     @apply mt-6 text-base font-semibold text-text;
@@ -196,7 +200,7 @@ body {
     @apply ml-5 list-decimal space-y-1.5;
   }
   .legal a {
-    @apply font-medium text-brand-600 underline hover:text-brand-500;
+    @apply font-medium text-brand-ink underline hover:text-brand-ink-hover;
   }
   .legal strong {
     @apply font-semibold text-text;

@@ -115,6 +115,8 @@ export function DashboardPortfolioSummary({
       ? `Last ${screeningCount} of ${totalScreenings} screenings`
       : `${screeningCount} screening${screeningCount === 1 ? "" : "s"}`;
 
+  const showDistributionCharts = screeningCount >= 5;
+
   return (
     <section className="space-y-4" aria-labelledby="portfolio-summary-heading">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -133,6 +135,55 @@ export function DashboardPortfolioSummary({
         </p>
       </div>
 
+      {insights.actions.length > 0 ? (
+        <Card padding="sm">
+          <p className="text-sm font-semibold text-text">Needs attention</p>
+          <p className="mt-0.5 text-xs text-text-muted">
+            Suggested next steps based on your portfolio
+          </p>
+          <ul className="mt-3 space-y-2">
+            {insights.actions.map((action) => {
+              const Icon = actionIcon(action);
+              const isUrgent =
+                action.kind === "review_do_not_proceed" ||
+                action.kind === "high_risk_this_week";
+
+              return (
+                <li key={`${action.kind}-${"propertyId" in action ? action.propertyId : action.href}`}>
+                  <Link
+                    href={action.href}
+                    className={`group flex items-center gap-3 rounded-lg border px-3 py-2.5 text-sm transition-colors hover:border-brand-600 hover:bg-brand-50/30 ${
+                      isUrgent
+                        ? "border-warning-border bg-warning-bg/30"
+                        : "border-border bg-surface"
+                    }`}
+                  >
+                    <span
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                        isUrgent
+                          ? "bg-warning-bg text-warning"
+                          : "bg-surface-muted text-text-muted"
+                      }`}
+                      aria-hidden
+                    >
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <span className="min-w-0 flex-1 text-text-muted group-hover:text-text">
+                      {actionMessage(action)}
+                    </span>
+                    <ArrowRight
+                      className="h-4 w-4 shrink-0 text-text-subtle opacity-0 transition-opacity group-hover:opacity-100"
+                      aria-hidden
+                    />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </Card>
+      ) : null}
+
+      {showDistributionCharts ? (
       <div className="grid gap-4 lg:grid-cols-2">
         <Card padding="sm">
           <p className="text-sm font-semibold text-text">Risk distribution</p>
@@ -222,6 +273,7 @@ export function DashboardPortfolioSummary({
           </ul>
         </Card>
       </div>
+      ) : null}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <MetricTile
@@ -246,7 +298,7 @@ export function DashboardPortfolioSummary({
           label="Job stability"
           value={
             insights.avgJobStability != null
-              ? `${insights.avgJobStability}/100`
+              ? `${insights.avgJobStability}/10`
               : "—"
           }
           hint="Employment consistency"
@@ -255,60 +307,12 @@ export function DashboardPortfolioSummary({
           label="Tenancy stability"
           value={
             insights.avgTenancyStability != null
-              ? `${insights.avgTenancyStability}/100`
+              ? `${insights.avgTenancyStability}/10`
               : "—"
           }
           hint="Rental history strength"
         />
       </div>
-
-      {insights.actions.length > 0 ? (
-        <Card padding="sm">
-          <p className="text-sm font-semibold text-text">Needs attention</p>
-          <p className="mt-0.5 text-xs text-text-muted">
-            Suggested next steps based on your portfolio
-          </p>
-          <ul className="mt-3 space-y-2">
-            {insights.actions.map((action) => {
-              const Icon = actionIcon(action);
-              const isUrgent =
-                action.kind === "review_do_not_proceed" ||
-                action.kind === "high_risk_this_week";
-
-              return (
-                <li key={`${action.kind}-${"propertyId" in action ? action.propertyId : action.href}`}>
-                  <Link
-                    href={action.href}
-                    className={`group flex items-center gap-3 rounded-lg border px-3 py-2.5 text-sm transition-colors hover:border-brand-600 hover:bg-brand-50/30 ${
-                      isUrgent
-                        ? "border-warning-border bg-warning-bg/30"
-                        : "border-border bg-surface"
-                    }`}
-                  >
-                    <span
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-                        isUrgent
-                          ? "bg-warning-bg text-warning"
-                          : "bg-surface-muted text-text-muted"
-                      }`}
-                      aria-hidden
-                    >
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <span className="min-w-0 flex-1 text-text-muted group-hover:text-text">
-                      {actionMessage(action)}
-                    </span>
-                    <ArrowRight
-                      className="h-4 w-4 shrink-0 text-text-subtle opacity-0 transition-opacity group-hover:opacity-100"
-                      aria-hidden
-                    />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </Card>
-      ) : null}
     </section>
   );
 }

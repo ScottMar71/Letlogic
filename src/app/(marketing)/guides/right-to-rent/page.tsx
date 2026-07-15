@@ -79,6 +79,15 @@ export default function RightToRentGuide() {
         also be appropriate. See how screening compares to a{" "}
         <Link href="/tenant-screening-vs-credit-check">credit check</Link>.
       </p>
+
+      <h2>Where LetLogic fits</h2>
+      <p>
+        LetLogic does <strong>not</strong> perform Right to Rent checks. Use it
+        afterwards (or alongside) to triage affordability and stability once
+        you&apos;ve confirmed someone can legally rent.{" "}
+        <Link href="/sample">View a sample screening report</Link> to see what
+        that looks like.
+      </p>
     </GuideLayout>
   );
 }

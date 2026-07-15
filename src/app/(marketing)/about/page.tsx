@@ -106,7 +106,7 @@ export default function AboutPage() {
             </div>
             <div className="mt-6 flex items-start gap-3 rounded-lg border border-brand-200 bg-brand-50 px-4 py-3">
               <MapPin
-                className="mt-0.5 h-5 w-5 shrink-0 text-brand-600"
+                className="mt-0.5 h-5 w-5 shrink-0 text-brand-ink"
                 aria-hidden
               />
               <p className="text-sm text-text-muted">
@@ -133,7 +133,7 @@ export default function AboutPage() {
                   className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
                   aria-hidden
                 >
-                  <value.icon className="h-5 w-5 text-brand-600" />
+                  <value.icon className="h-5 w-5 text-brand-ink" />
                 </div>
                 <h3 className="mt-3 font-semibold text-text">{value.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-text-muted">

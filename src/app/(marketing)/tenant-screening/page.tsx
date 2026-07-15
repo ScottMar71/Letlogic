@@ -108,7 +108,7 @@ export default function TenantScreeningPage() {
                   className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
                   aria-hidden
                 >
-                  <check.icon className="h-5 w-5 text-brand-600" />
+                  <check.icon className="h-5 w-5 text-brand-ink" />
                 </div>
                 <h3 className="mt-3 font-semibold text-text">{check.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-text-muted">
@@ -127,14 +127,14 @@ export default function TenantScreeningPage() {
             These three are often confused. A{" "}
             <Link
               href="/tenant-screening-vs-credit-check"
-              className="text-brand-600 underline hover:text-brand-500"
+              className="text-brand-ink underline hover:text-brand-ink-hover"
             >
               credit check
             </Link>{" "}
             looks at credit history; formal{" "}
             <Link
               href="/letlogic-vs-tenant-referencing"
-              className="text-brand-600 underline hover:text-brand-500"
+              className="text-brand-ink underline hover:text-brand-ink-hover"
             >
               tenant referencing
             </Link>{" "}

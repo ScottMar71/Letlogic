@@ -7,6 +7,7 @@ type Option<T extends string> = {
   label: string;
   icon?: LucideIcon;
   description?: string;
+  badge?: string;
 };
 
 type SegmentedControlProps<T extends string> = {
@@ -22,9 +23,14 @@ export function SegmentedControl<T extends string>({
   onChange,
   "aria-label": ariaLabel,
 }: SegmentedControlProps<T>) {
+  const columns =
+    options.length === 3
+      ? "grid-cols-1 sm:grid-cols-3"
+      : "grid-cols-1 sm:grid-cols-2";
+
   return (
     <div
-      className="grid grid-cols-1 gap-2 sm:grid-cols-2"
+      className={`grid gap-2 ${columns}`}
       role="tablist"
       aria-label={ariaLabel}
     >
@@ -39,18 +45,23 @@ export function SegmentedControl<T extends string>({
             role="tab"
             aria-selected={selected}
             onClick={() => onChange(opt.value)}
-            className={`group flex min-h-11 items-start gap-3 rounded-xl border p-3 text-left transition-all ${
+            className={`group relative flex min-h-11 items-start gap-3 rounded-xl border p-3 text-left transition-all ${
               selected
-                ? "border-brand-600 bg-brand-50/50 shadow-sm ring-1 ring-brand-600/15"
+                ? "border-brand-ink bg-brand-50/50 shadow-sm ring-1 ring-brand-ink/15"
                 : "border-border-strong bg-surface hover:border-brand-600 hover:bg-brand-50/30"
             }`}
           >
+            {opt.badge ? (
+              <span className="absolute -top-2 right-2 rounded-full bg-brand-600 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-text-on-teal">
+                {opt.badge}
+              </span>
+            ) : null}
             {Icon && (
               <span
                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors ${
                   selected
                     ? "bg-brand-600 text-text-on-teal"
-                    : "bg-surface-muted text-text-muted group-hover:bg-brand-50 group-hover:text-brand-600"
+                    : "bg-surface-muted text-text-muted group-hover:bg-brand-50 group-hover:text-brand-ink"
                 }`}
                 aria-hidden
               >

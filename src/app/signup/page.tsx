@@ -7,8 +7,8 @@ export const metadata = privatePageMetadata("Create account");
 
 export default function SignupPage() {
   return (
-    <AuthPageShell>
-      <Suspense>
+    <AuthPageShell mode="sign-up">
+      <Suspense fallback={null}>
         <SignupForm />
       </Suspense>
     </AuthPageShell>

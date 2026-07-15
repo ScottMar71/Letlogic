@@ -26,6 +26,18 @@ const FAQS = [
     question: "Does LetLogic replace formal tenant referencing?",
     answer:
       "No. LetLogic complements referencing by giving you an instant, explainable read on affordability and stability from the information you provide. Formal referencing independently verifies employment, income, and landlord references with third parties. See our comparison of LetLogic vs tenant referencing for more detail.",
+    answerContent: (
+      <p>
+        No. LetLogic complements referencing by giving you an instant,
+        explainable read on affordability and stability from the information you
+        provide. Formal referencing independently verifies employment, income,
+        and landlord references with third parties. See{" "}
+        <Link href="/letlogic-vs-tenant-referencing">
+          LetLogic vs tenant referencing
+        </Link>{" "}
+        for more detail.
+      </p>
+    ),
   },
   {
     question: "Why is tenant vetting more important since Section 21 was abolished?",
@@ -42,29 +54,27 @@ export default function TenantVettingGuide() {
       description={guide.description}
       datePublished={guide.datePublished}
       intro="What tenant vetting involves, the legal framework you must follow, and where screening tools fit in."
+      toc={[
+        { id: "what-it-covers", label: "What tenant vetting covers" },
+        { id: "legal-constraints", label: "Legal constraints" },
+        { id: "where-letlogic-fits", label: "Where LetLogic fits" },
+      ]}
       faqs={FAQS}
     >
       <p>
-        Tenant vetting, also called tenant referencing, is the process a landlord
-        undertakes before granting a tenancy to assess whether a prospective
-        tenant is suitable, financially capable, and legally entitled to rent in
-        the UK. It typically combines identity and immigration checks,
-        affordability assessments, reference checks, and a mandatory Right to
-        Rent check. Where a tenant cannot meet affordability requirements
-        independently, a guarantor may be used as additional security.
+        Tenant vetting (also called referencing) is how landlords assess whether
+        an applicant is suitable, affordable, and legally entitled to rent
+        before granting a tenancy. It usually covers identity, Right to Rent,
+        affordability, references, and — where needed — a guarantor.
       </p>
       <p>
-        Effective tenant vetting helps protect landlords from rent arrears and
-        anti-social behaviour by selecting tenants who are likely to sustain the
-        tenancy over the long term. Since the abolition of Section 21 on 1 May
-        2026, this has become increasingly important, as removing a non-paying
-        or disruptive tenant now depends entirely on establishing grounds under
-        Section 8, a process that can take several months. Thorough vetting at
-        the outset is therefore one of the most cost-effective forms of risk
-        management available to landlords.
+        Thorough vetting matters more since Section 21 was abolished on 1 May
+        2026: removing a non-paying or disruptive tenant now depends on Section
+        8 grounds, which can take months. A careful first pass is one of the
+        most cost-effective risk controls available.
       </p>
 
-      <h2>What tenant vetting covers</h2>
+      <h2 id="what-it-covers">What tenant vetting covers</h2>
       <p>
         A comprehensive vetting process typically includes the following. Each
         step serves a different purpose — and together they give you a rounded
@@ -165,7 +175,7 @@ export default function TenantVettingGuide() {
         guide.
       </p>
 
-      <h2>Legal constraints landlords must follow</h2>
+      <h2 id="legal-constraints">Legal constraints landlords must follow</h2>
       <p>
         Tenant vetting must be conducted within a clear legal framework. Several
         key regulations apply.
@@ -241,7 +251,7 @@ export default function TenantVettingGuide() {
         also export screening reports as PDFs for their records.
       </p>
 
-      <h2>Where LetLogic fits in your vetting process</h2>
+      <h2 id="where-letlogic-fits">Where LetLogic fits in your vetting process</h2>
       <p>
         A practical vetting workflow often looks like this:
       </p>

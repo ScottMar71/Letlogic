@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FaqSection } from "@/components/marketing/faq-section";
+import { MarketingCtaBand } from "@/components/marketing/marketing-cta-band";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { marketingPageMetadata } from "@/lib/seo/metadata";
 
@@ -24,7 +25,15 @@ const FAQS = [
   {
     question: "How much does it cost?",
     answer:
-      "Screenings start from £4.99 on pay-as-you-go credit packs, or you can subscribe to Pro for a monthly allowance plus a reduced per-screening rate. See the pricing page for current packs and the Pro plan.",
+      "Screenings start from £4.99 on pay-as-you-go credit packs, or you can subscribe to Pro for a monthly allowance. See the pricing page for current packs and the Pro plan.",
+    answerContent: (
+      <p>
+        Screenings start from £4.99 on pay-as-you-go credit packs, or you can
+        subscribe to Pro for a monthly allowance. See the{" "}
+        <Link href="/pricing">pricing page</Link> for current packs and the Pro
+        plan.
+      </p>
+    ),
   },
   {
     question: "Is it fair and Equality Act aware?",
@@ -35,11 +44,28 @@ const FAQS = [
     question: "How is applicant data handled?",
     answer:
       "We collect the minimum needed, are transparent about sub-processors, and put you in control of applicant data. See the Privacy Policy for full detail on UK GDPR roles and retention.",
+    answerContent: (
+      <p>
+        We collect the minimum needed, are transparent about sub-processors, and
+        put you in control of applicant data. See the{" "}
+        <Link href="/privacy">Privacy Policy</Link> for full detail on UK GDPR
+        roles and retention.
+      </p>
+    ),
   },
   {
     question: "Does it work for letting agents and HMOs?",
     answer:
-      "Yes. There are tailored options for letting agents (team seats, API access, white-label reports) and HMO landlords (comparing multiple applicants for the same room).",
+      "Yes. Letting agents can use Pro or pay-as-you-go today (Agency features coming soon). HMO landlords can screen and compare multiple applicants for the same room.",
+    answerContent: (
+      <p>
+        Yes.{" "}
+        <Link href="/for-letting-agents">Letting agents</Link> can use Pro or
+        pay-as-you-go today (Agency features coming soon).{" "}
+        <Link href="/for-hmo-landlords">HMO landlords</Link> can screen and
+        compare multiple applicants for the same room.
+      </p>
+    ),
   },
   {
     question: "Do I need to install anything?",
@@ -55,7 +81,7 @@ export default function FaqPage() {
 
       <main
         id="main-content"
-        className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-10 px-4 py-16"
+        className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-12 px-4 py-16"
       >
         <section className="space-y-3">
           <p className="section-label">Help</p>
@@ -66,14 +92,14 @@ export default function FaqPage() {
             The essentials about LetLogic. For more depth, see{" "}
             <Link
               href="/how-it-works"
-              className="text-brand-600 underline hover:text-brand-500"
+              className="text-brand-ink underline hover:text-brand-ink-hover"
             >
               how it works
             </Link>{" "}
             or our{" "}
             <Link
               href="/guides"
-              className="text-brand-600 underline hover:text-brand-500"
+              className="text-brand-ink underline hover:text-brand-ink-hover"
             >
               guides
             </Link>
@@ -81,9 +107,17 @@ export default function FaqPage() {
           </p>
         </section>
 
-        <FaqSection items={FAQS} title="Common questions" />
-      </main>
+        <FaqSection items={FAQS} title="" />
 
+        <MarketingCtaBand
+          title="Ready to try a screening?"
+          description="View a sample report, or see transparent pricing."
+          primaryHref="/sample"
+          primaryLabel="View a sample report"
+          secondaryHref="/pricing"
+          secondaryLabel="See pricing"
+        />
+      </main>
     </>
   );
 }

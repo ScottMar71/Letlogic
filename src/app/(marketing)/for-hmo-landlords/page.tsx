@@ -80,21 +80,24 @@ export default function ForHmoLandlordsPage() {
           </div>
         </section>
 
-        <section className="grid gap-4 sm:grid-cols-3">
-          {BENEFITS.map((benefit) => (
-            <div key={benefit.title} className="card">
-              <div
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
-                aria-hidden
-              >
-                <benefit.icon className="h-5 w-5 text-brand-600" />
+        <section className="space-y-6">
+          <h2 className="text-h2 font-bold text-text">Built for room-by-room lettings</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {BENEFITS.map((benefit) => (
+              <div key={benefit.title} className="card">
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50"
+                  aria-hidden
+                >
+                  <benefit.icon className="h-5 w-5 text-brand-ink" />
+                </div>
+                <h3 className="mt-3 font-semibold text-text">{benefit.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-text-muted">
+                  {benefit.body}
+                </p>
               </div>
-              <h2 className="mt-3 font-semibold text-text">{benefit.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-text-muted">
-                {benefit.body}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </section>
 
         <FaqSection items={FAQS} />
@@ -108,8 +111,8 @@ export default function ForHmoLandlordsPage() {
             <Link href="/login?next=/screen" className="btn-onbrand">
               Sign in to screen
             </Link>
-            <Link href="/tenant-screening" className="btn-onbrand-secondary px-5">
-              Screening guide
+            <Link href="/pricing" className="btn-onbrand-secondary px-5">
+              See pricing
             </Link>
           </div>
         </section>

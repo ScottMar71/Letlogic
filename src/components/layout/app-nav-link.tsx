@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 const navClass = (active: boolean) =>
   `inline-flex min-h-11 items-center text-sm transition-colors ${
     active
-      ? "font-medium text-brand-600"
-      : "text-text-muted hover:text-brand-600"
+      ? "font-medium text-brand-ink"
+      : "text-text-muted hover:text-brand-ink"
   }`;
 
 export function AppNavLink({

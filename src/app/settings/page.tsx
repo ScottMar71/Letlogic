@@ -34,7 +34,7 @@ export default async function SettingsPage() {
     <AuthenticatedPage creditBalance={balance} width="narrow">
       <PageHeader
         title="Settings"
-        description="Manage your account, plan, and billing."
+        description="Plan, credits, and billing for your account."
       />
 
       <section className="space-y-3">
@@ -57,7 +57,7 @@ export default async function SettingsPage() {
         <Card>
           <div className="flex items-center justify-between border-b border-border pb-3">
             <span className="text-sm text-text-muted">Credit balance</span>
-            <CreditBalance balance={balance} />
+            <CreditBalance balance={balance} showBuy={false} />
           </div>
           <div className="pt-3">
             <BillingActions isPro={pro} />

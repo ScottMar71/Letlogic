@@ -7,8 +7,8 @@ export const metadata = privatePageMetadata("Sign in");
 
 export default function LoginPage() {
   return (
-    <AuthPageShell>
-      <Suspense>
+    <AuthPageShell mode="sign-in">
+      <Suspense fallback={null}>
         <LoginForm />
       </Suspense>
     </AuthPageShell>

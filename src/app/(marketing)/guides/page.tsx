@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { MarketingCtaBand } from "@/components/marketing/marketing-cta-band";
 import {
   JsonLd,
   breadcrumbJsonLd,
@@ -33,7 +34,7 @@ export default function GuidesPage() {
 
       <main
         id="main-content"
-        className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-10 px-4 py-16"
+        className="mx-auto w-full max-w-[var(--container-content)] flex-1 space-y-12 px-4 py-16"
       >
         <section className="space-y-3">
           <p className="section-label">Resources</p>
@@ -42,8 +43,7 @@ export default function GuidesPage() {
           </h1>
           <p className="max-w-2xl text-lg text-text-muted">
             Clear, practical guidance on assessing tenants — from vetting and
-            affordability to Right to Rent and reading an application well. No
-            jargon, no fluff.
+            affordability to Right to Rent and reading an application well.
           </p>
         </section>
 
@@ -60,7 +60,7 @@ export default function GuidesPage() {
                   {guide.summary}
                 </p>
               </div>
-              <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand-600">
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand-ink">
                 Read guide
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </span>
@@ -68,20 +68,15 @@ export default function GuidesPage() {
           ))}
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6 text-center">
-          <p className="text-sm text-text-muted">
-            Looking for the bigger picture? Start with our{" "}
-            <Link
-              href="/tenant-screening"
-              className="text-brand-600 underline hover:text-brand-500"
-            >
-              tenant screening guide
-            </Link>
-            .
-          </p>
-        </section>
+        <MarketingCtaBand
+          title="See what a screening looks like"
+          description="Read a sample report, then check pricing when you’re ready."
+          primaryHref="/sample"
+          primaryLabel="View a sample report"
+          secondaryHref="/pricing"
+          secondaryLabel="See pricing"
+        />
       </main>
-
     </>
   );
 }

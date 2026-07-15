@@ -71,7 +71,7 @@ export function AuthConfirmForm() {
           Request reset email
         </Link>
         <p className="text-center text-sm text-text-muted">
-          <Link href="/login" className="font-medium text-brand-600 hover:underline">
+          <Link href="/login" className="font-medium text-brand-ink hover:underline">
             Back to sign in
           </Link>
         </p>
@@ -144,7 +144,7 @@ export function AuthConfirmForm() {
       {error && <Alert variant="error">{error}</Alert>}
 
       <p className="text-center text-sm text-text-muted">
-        <Link href="/login" className="font-medium text-brand-600 hover:underline">
+        <Link href="/login" className="font-medium text-brand-ink hover:underline">
           Back to sign in
         </Link>
       </p>
