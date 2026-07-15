@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { X } from "lucide-react";
 import {
   createCreditCheckout,
   createProSubscription,
@@ -13,14 +14,23 @@ import {
   type CreditPack,
 } from "@/lib/screening/pricing";
 import { trackFunnel } from "@/lib/analytics/funnel";
+import { Alert } from "@/components/ui/alert";
 import { useDialogFocus } from "@/hooks/use-dialog-focus";
 
-type BuyCreditsModalProps = {
+const PDF_PACKS = CREDIT_PACK_LIST.filter((pack) => pack.includesPdfExport);
+
+type UnlockPdfModalProps = {
   open: boolean;
   onClose: () => void;
+  /** Return to this report after checkout (e.g. `/screenings/{id}`). */
+  returnPath?: string;
 };
 
-export function BuyCreditsModal({ open, onClose }: BuyCreditsModalProps) {
+export function UnlockPdfModal({
+  open,
+  onClose,
+  returnPath,
+}: UnlockPdfModalProps) {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -31,26 +41,26 @@ export function BuyCreditsModal({ open, onClose }: BuyCreditsModalProps) {
   async function buyPack(pack: CreditPack) {
     setLoading(pack.slug);
     setError(null);
-    const result = await createCreditCheckout(pack.slug);
+    const result = await createCreditCheckout(pack.slug, { returnPath });
     if (!result.ok) {
       setError(result.error);
       setLoading(null);
       return;
     }
-    trackFunnel("checkout_started");
+    trackFunnel("pdf_unlock_checkout_started");
     window.location.assign(result.url);
   }
 
   async function goPro() {
     setLoading("pro");
     setError(null);
-    const result = await createProSubscription();
+    const result = await createProSubscription({ returnPath });
     if (!result.ok) {
       setError(result.error);
       setLoading(null);
       return;
     }
-    trackFunnel("checkout_started");
+    trackFunnel("pdf_unlock_checkout_started");
     window.location.assign(result.url);
   }
 
@@ -63,31 +73,33 @@ export function BuyCreditsModal({ open, onClose }: BuyCreditsModalProps) {
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="buy-credits-title"
+        aria-labelledby="unlock-pdf-title"
         className="w-full max-w-lg space-y-5 rounded-2xl bg-surface p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 id="buy-credits-title" className="text-lg font-semibold text-text">
-              Buy screening credits
+            <h2 id="unlock-pdf-title" className="text-lg font-semibold text-text">
+              Unlock PDF export
             </h2>
             <p className="text-sm text-text-muted">
-              Each screening uses one credit. No subscription required.
+              Included with multi-credit packs (5+) — buy once and PDF export
+              stays unlocked on your account. Also included with Pro. Not
+              included with a single screening.
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-text-subtle hover:bg-surface-muted hover:text-text"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-text-subtle hover:bg-surface-muted"
           >
-            ✕
+            <X className="h-4 w-4" aria-hidden />
           </button>
         </div>
 
         <div className="space-y-3">
-          {CREDIT_PACK_LIST.map((pack) => (
+          {PDF_PACKS.map((pack) => (
             <button
               key={pack.slug}
               type="button"
@@ -98,8 +110,8 @@ export function BuyCreditsModal({ open, onClose }: BuyCreditsModalProps) {
               <div>
                 <p className="font-medium text-text">{pack.name}</p>
                 <p className="text-sm text-text-subtle">
-                  {formatGbp(unitPricePence(pack))} per screening
-                  {pack.includesPdfExport ? " · PDF export included" : ""}
+                  {formatGbp(unitPricePence(pack))} per screening · PDF export
+                  included
                 </p>
               </div>
               <span className="font-semibold text-text">
@@ -128,11 +140,7 @@ export function BuyCreditsModal({ open, onClose }: BuyCreditsModalProps) {
           </div>
         </div>
 
-        {error && (
-          <p className="rounded-lg border border-danger-border bg-danger-bg p-3 text-sm text-danger">
-            {error}
-          </p>
-        )}
+        {error && <Alert variant="error">{error}</Alert>}
       </div>
     </div>
   );

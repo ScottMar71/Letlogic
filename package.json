@@ -11,6 +11,7 @@
     "test:e2e": "playwright test",
     "verify:production": "node scripts/verify-production.mjs",
     "verify:stripe": "node scripts/verify-stripe.mjs",
+    "verify:ses": "node scripts/verify-ses.mjs",
     "provision:e2e-user": "node scripts/provision-e2e-user.mjs",
     "grant:pilot": "node scripts/grant-pilot-credits.mjs",
     "partner:status": "node scripts/partner-status.mjs",
@@ -26,6 +27,7 @@
     "db:types": "supabase gen types typescript --linked > src/lib/supabase/database.types.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.1084.0",
     "@sentry/nextjs": "^10.58.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",

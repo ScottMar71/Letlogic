@@ -3,15 +3,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ClipboardPaste, ListChecks } from "lucide-react";
+import { ClipboardPaste, ListChecks, Send } from "lucide-react";
 import { analyseApplicant, type AnalyseResult } from "@/app/actions/screening";
 import { trackFunnel } from "@/lib/analytics/funnel";
 import { BuyCreditsModal } from "@/components/screening/buy-credits-modal";
 import { AssessmentResultPanel } from "@/components/screening/assessment-result";
+import { IntakeLinkPanel } from "@/components/intake/intake-link-panel";
 import { Alert } from "@/components/ui/alert";
 import { Field } from "@/components/ui/field";
 import { PdfUploadButton } from "@/components/screening/pdf-upload-button";
 import { SegmentedControl } from "@/components/ui/segmented-control";
+import type { IntakeSource } from "@/lib/screening/intake";
 import type { ApplicationSource } from "@/lib/screening/queries";
 import type { AssessmentRecord } from "@/lib/screening/types";
 
@@ -19,10 +21,11 @@ type WorkspaceProps = {
   propertyId?: string;
   defaultRent?: number;
   reanalyseFrom?: ApplicationSource;
+  intakeFrom?: IntakeSource;
   isFirstScreening?: boolean;
 };
 
-type Mode = "paste" | "form";
+type Mode = "paste" | "form" | "link";
 
 const PASTE_HINTS = [
   "Employment and income details",
@@ -35,29 +38,36 @@ export function ScreeningWorkspace({
   propertyId,
   defaultRent,
   reanalyseFrom,
+  intakeFrom,
   isFirstScreening = false,
 }: WorkspaceProps) {
   const router = useRouter();
   const resultsRef = useRef<HTMLElement>(null);
-  const [mode, setMode] = useState<Mode>(reanalyseFrom?.inputMode ?? "paste");
+  const [mode, setMode] = useState<Mode>(
+    intakeFrom ? "form" : (reanalyseFrom?.inputMode ?? "paste"),
+  );
   const [applicantName, setApplicantName] = useState(
-    reanalyseFrom?.applicantName ?? "",
+    intakeFrom?.applicantName ?? reanalyseFrom?.applicantName ?? "",
   );
   const [rent, setRent] = useState(
     reanalyseFrom?.rentAmount != null
       ? String(reanalyseFrom.rentAmount)
-      : defaultRent
-        ? String(defaultRent)
-        : "",
+      : intakeFrom?.rentAmount != null
+        ? String(intakeFrom.rentAmount)
+        : defaultRent
+          ? String(defaultRent)
+          : "",
   );
   const [income, setIncome] = useState(
     reanalyseFrom?.monthlyIncome != null
       ? String(reanalyseFrom.monthlyIncome)
-      : "",
+      : intakeFrom?.monthlyIncome != null
+        ? String(intakeFrom.monthlyIncome)
+        : "",
   );
   const [rawText, setRawText] = useState(reanalyseFrom?.rawText ?? "");
   const [form, setForm] = useState<Record<string, string>>(
-    reanalyseFrom?.structuredData ?? {},
+    intakeFrom?.structuredData ?? reanalyseFrom?.structuredData ?? {},
   );
 
   const [loading, setLoading] = useState(false);
@@ -83,8 +93,9 @@ export function ScreeningWorkspace({
   function buildInput() {
     const base = {
       applicantName,
-      propertyId,
+      propertyId: propertyId ?? intakeFrom?.propertyId ?? undefined,
       existingApplicationId: reanalyseFrom?.applicationId,
+      intakeLinkId: intakeFrom?.intakeLinkId,
       rentAmount: rent,
       applicantMonthlyIncome: income || undefined,
     };
@@ -167,11 +178,21 @@ export function ScreeningWorkspace({
                 icon: ListChecks,
                 description: "Fill in fields step by step",
               },
+              {
+                value: "link",
+                label: "Send form to applicant",
+                icon: Send,
+                description: "They fill it in themselves",
+              },
             ]}
             value={mode}
             onChange={setMode}
           />
 
+          {mode === "link" ? (
+            <IntakeLinkPanel propertyId={propertyId} />
+          ) : (
+            <>
           <div className="mt-4 space-y-3">
             <p className="section-label">Property context</p>
             <div className="rounded-xl border border-border bg-surface-muted p-3">
@@ -285,6 +306,19 @@ export function ScreeningWorkspace({
                 <FormInput label="Disclosed CCJ/bankruptcy" k="adverseCredit" form={form} set={setField} />
                 <FormInput label="Current address" k="currentAddress" form={form} set={setField} />
               </div>
+              <Field
+                label="Previous landlord reference"
+                htmlFor="field-previousLandlordReference"
+                hint="What the applicant said about their previous landlord."
+              >
+                <textarea
+                  id="field-previousLandlordReference"
+                  value={form.previousLandlordReference ?? ""}
+                  onChange={(e) => setField("previousLandlordReference", e.target.value)}
+                  rows={3}
+                  className="textarea"
+                />
+              </Field>
             </div>
           )}
 
@@ -302,6 +336,8 @@ export function ScreeningWorkspace({
             <p id="analyse-hint" className="text-xs text-text-subtle">
               Enter an applicant name and a monthly rent to analyse.
             </p>
+          )}
+            </>
           )}
         </div>
       </section>

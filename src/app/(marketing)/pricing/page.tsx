@@ -23,7 +23,12 @@ const FAQS = [
   {
     question: "How much does a tenant screening cost?",
     answer:
-      `Screenings start from £4.99 on pay-as-you-go credit packs, with the per-screening price dropping as you buy larger packs. Pro includes ${PRO_PLAN.monthlyCredits} screenings each month; buy extra credit packs when your allowance runs out.`,
+      `Screenings start from £4.99 on pay-as-you-go credit packs, with the per-screening price dropping as you buy larger packs. The 5 and 20 screening packs also include PDF export. Pro includes ${PRO_PLAN.monthlyCredits} screenings each month; buy extra credit packs when your allowance runs out.`,
+  },
+  {
+    question: "What is the applicant intake link?",
+    answer:
+      "Every plan includes shareable applicant forms. Instead of retyping an application, send your applicant a secure link — they fill in the structured form on their phone (no account needed), and you review their answers before running the screening. No credit is used until you run the screening.",
   },
   {
     question: "Is there a free trial or free screening?",
@@ -34,6 +39,11 @@ const FAQS = [
     question: "What's included in the Pro plan?",
     answer:
       `Pro includes ${PRO_PLAN.monthlyCredits} screenings per month, the side-by-side applicant comparison view, and PDF export. When you've used your monthly allowance, buy additional credit packs at pay-as-you-go rates. Best for landlords screening applicants regularly.`,
+  },
+  {
+    question: "Is PDF export included?",
+    answer:
+      "PDF export is included with the 5 and 20 screening packs and with Pro — buy a multi-credit pack once and it stays unlocked on your account. Single screenings include the full report in your dashboard.",
   },
   {
     question: "Do credits expire?",

@@ -64,6 +64,12 @@ export function PricingPackCard({
   pack: CreditPack;
   isAuthenticated: boolean;
 }) {
+  const features = [
+    "Full AI screening report",
+    "Applicant intake link — they fill in the form",
+    ...(pack.includesPdfExport ? ["PDF export included"] : []),
+  ];
+
   return (
     <div className="rounded-2xl border border-border bg-surface p-6 text-center">
       <p className="font-semibold text-text">{pack.name}</p>
@@ -73,6 +79,16 @@ export function PricingPackCard({
       <p className="mt-1 text-sm text-text-subtle">
         {formatGbp(unitPricePence(pack))} per screening
       </p>
+      <ul className="mt-4 space-y-1.5 text-left text-sm text-text-muted">
+        {features.map((feature) => (
+          <li key={feature} className="flex gap-2">
+            <span className="text-success" aria-hidden>
+              ✓
+            </span>
+            {feature}
+          </li>
+        ))}
+      </ul>
       <PricingCta pack={pack} isAuthenticated={isAuthenticated} />
     </div>
   );

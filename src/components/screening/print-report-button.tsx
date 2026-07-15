@@ -3,27 +3,38 @@
 import { useState } from "react";
 import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { UpgradeProModal } from "@/components/screening/upgrade-pro-modal";
+import { UnlockPdfModal } from "@/components/screening/unlock-pdf-modal";
 
 type PrintReportButtonProps = {
-  isPro: boolean;
+  /** PDF export is included with any multi-credit pack (5+) or Pro. */
+  canExport: boolean;
+  /** When unlocking from a report, return here after checkout. */
+  assessmentId?: string;
 };
 
-export function PrintReportButton({ isPro }: PrintReportButtonProps) {
-  const [showUpgrade, setShowUpgrade] = useState(false);
+export function PrintReportButton({
+  canExport,
+  assessmentId,
+}: PrintReportButtonProps) {
+  const [showUnlock, setShowUnlock] = useState(false);
+  const returnPath = assessmentId ? `/screenings/${assessmentId}` : undefined;
 
-  if (!isPro) {
+  if (!canExport) {
     return (
       <>
         <Button
           variant="secondary"
           className="no-print"
-          onClick={() => setShowUpgrade(true)}
+          onClick={() => setShowUnlock(true)}
         >
           <Printer className="h-4 w-4" aria-hidden />
-          Export PDF (Pro)
+          Export PDF
         </Button>
-        <UpgradeProModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
+        <UnlockPdfModal
+          open={showUnlock}
+          onClose={() => setShowUnlock(false)}
+          returnPath={returnPath}
+        />
       </>
     );
   }

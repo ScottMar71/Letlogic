@@ -22,7 +22,7 @@ const BENEFITS = [
   {
     icon: Users,
     title: "Works for small teams today",
-    body: "Use Pro for comparison view and PDF export on up to 15 screenings a month, or pay-as-you-go credits when volume is lower.",
+    body: "Use Pro for comparison view on up to 15 screenings a month, or pay-as-you-go multi-credit packs when volume is lower — PDF export is included with 5+ packs and Pro (not a single screening).",
   },
   {
     icon: Layers,

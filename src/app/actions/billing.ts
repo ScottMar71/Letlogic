@@ -4,6 +4,7 @@ import { getCreditPack, PRO_PLAN } from "@/lib/screening/pricing";
 import { getStripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { safeNextPath } from "@/lib/request-origin";
 import { site } from "@/lib/site";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type Stripe from "stripe";
@@ -39,6 +40,7 @@ async function getOrCreateCustomer(
 
 export async function createCreditCheckout(
   packSlug: string,
+  options?: { returnPath?: string },
 ): Promise<CheckoutResult> {
   const pack = getCreditPack(packSlug);
   if (!pack) return { ok: false, error: "Unknown credit pack." };
@@ -52,6 +54,15 @@ export async function createCreditCheckout(
   const admin = createAdminClient();
   const stripe = getStripe();
   const customerId = await getOrCreateCustomer(stripe, admin, user.id, user.email);
+
+  const successPath = options?.returnPath
+    ? safeNextPath(options.returnPath)
+    : "/dashboard";
+  const successSeparator = successPath.includes("?") ? "&" : "?";
+  const success_url = `${site.url}${successPath}${successSeparator}credits=success`;
+  const cancel_url = options?.returnPath
+    ? `${site.url}${successPath}${successSeparator}cancelled=1`
+    : `${site.url}/pricing?cancelled=1`;
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
@@ -75,8 +86,8 @@ export async function createCreditCheckout(
       pack_slug: pack.slug,
       credits: String(pack.credits),
     },
-    success_url: `${site.url}/dashboard?credits=success`,
-    cancel_url: `${site.url}/pricing?cancelled=1`,
+    success_url,
+    cancel_url,
   });
 
   if (!session.url) return { ok: false, error: "Could not start checkout." };
@@ -120,7 +131,9 @@ export async function createBillingPortal(): Promise<CheckoutResult> {
   return { ok: true, url: session.url };
 }
 
-export async function createProSubscription(): Promise<CheckoutResult> {
+export async function createProSubscription(
+  options?: { returnPath?: string },
+): Promise<CheckoutResult> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -130,6 +143,15 @@ export async function createProSubscription(): Promise<CheckoutResult> {
   const admin = createAdminClient();
   const stripe = getStripe();
   const customerId = await getOrCreateCustomer(stripe, admin, user.id, user.email);
+
+  const successPath = options?.returnPath
+    ? safeNextPath(options.returnPath)
+    : "/settings";
+  const successSeparator = successPath.includes("?") ? "&" : "?";
+  const success_url = `${site.url}${successPath}${successSeparator}pro=success`;
+  const cancel_url = options?.returnPath
+    ? `${site.url}${successPath}${successSeparator}cancelled=1`
+    : `${site.url}/pricing?cancelled=1`;
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
@@ -153,8 +175,8 @@ export async function createProSubscription(): Promise<CheckoutResult> {
       purchase_type: "subscription",
       monthly_credits: String(PRO_PLAN.monthlyCredits),
     },
-    success_url: `${site.url}/settings?pro=success`,
-    cancel_url: `${site.url}/pricing?cancelled=1`,
+    success_url,
+    cancel_url,
   });
 
   if (!session.url) return { ok: false, error: "Could not start checkout." };

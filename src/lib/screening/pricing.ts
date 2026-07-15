@@ -13,6 +13,8 @@ export type CreditPack = {
   credits: number;
   /** Stripe purchase type recorded on the purchases row. */
   purchaseType: "single_doc" | "pack";
+  /** PDF export unlocks with any multi-credit pack (and stays unlocked). */
+  includesPdfExport: boolean;
 };
 
 export const CREDIT_PACKS: Record<CreditPackSlug, CreditPack> = {
@@ -22,6 +24,7 @@ export const CREDIT_PACKS: Record<CreditPackSlug, CreditPack> = {
     pricePence: 499,
     credits: 1,
     purchaseType: "single_doc",
+    includesPdfExport: false,
   },
   pack5: {
     slug: "pack5",
@@ -29,6 +32,7 @@ export const CREDIT_PACKS: Record<CreditPackSlug, CreditPack> = {
     pricePence: 1999,
     credits: 5,
     purchaseType: "pack",
+    includesPdfExport: true,
   },
   pack20: {
     slug: "pack20",
@@ -36,6 +40,7 @@ export const CREDIT_PACKS: Record<CreditPackSlug, CreditPack> = {
     pricePence: 5999,
     credits: 20,
     purchaseType: "pack",
+    includesPdfExport: true,
   },
 };
 

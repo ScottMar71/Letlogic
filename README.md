@@ -60,6 +60,17 @@ One public address for contact, privacy, and auth mail. DNS for `letlogic.app` i
 
 1. Transfer DNS to Cloudflare → **Email Routing** → `hello@letlogic.app` → `scott.maryan@icloud.com`
 
+### Outbound app email (Amazon SES)
+
+Product emails (e.g. “applicant form received”) are sent via **Amazon SES**, separate from Supabase auth mail (Zoho SMTP).
+
+1. In **AWS SES** (region `eu-west-1` or `eu-central-1`), verify domain `letlogic.app` or address `hello@letlogic.app` (DKIM records in Vercel DNS).
+2. Create an IAM user with `ses:SendEmail` (and `ses:SendRawEmail` if you add attachments later).
+3. Set in `.env.local` / Vercel: `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `SES_FROM_EMAIL=hello@letlogic.app`.
+4. While SES is in **sandbox**, verify recipient addresses you test with, or request production access.
+5. Submit a test intake form — the landlord account email should receive “Applicant form received”.
+6. Or run `SES_TEST_TO=you@example.com npm run verify:ses` (env-only: `npm run verify:ses -- --dry-run`).
+
 Add auth redirect URLs in Supabase → Authentication → URL configuration:
 
 - `http://localhost:3000/auth/callback`

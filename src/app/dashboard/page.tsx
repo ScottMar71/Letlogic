@@ -9,9 +9,11 @@ import { DashboardStats } from "@/components/dashboard/dashboard-stats";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { DashboardScreenCta } from "@/components/dashboard/dashboard-screen-cta";
 import { DashboardFunnelTracker } from "@/components/analytics/dashboard-funnel-tracker";
+import { IntakeLinksCard } from "@/components/dashboard/intake-links-card";
 import { OnboardingChecklist } from "@/components/onboarding/checklist";
 import { PageHeader } from "@/components/ui/page-header";
 import { getCreditBalance } from "@/lib/screening/credits";
+import { listIntakeLinks } from "@/lib/screening/intake";
 import {
   countAssessments,
   listProperties,
@@ -36,13 +38,20 @@ export default async function DashboardPage({
   const { risk, recommendation } = await searchParams;
 
   const admin = createAdminClient();
-  const [balance, recent, properties, counts, propertyActivity] = await Promise.all([
-    getCreditBalance(admin, user.id),
-    listRecentAssessments(admin, user.id, 50),
-    listProperties(admin, user.id),
-    countAssessments(admin, user.id),
-    listPropertyScreeningActivity(admin, user.id),
-  ]);
+  const [balance, recent, properties, counts, propertyActivity, intakeLinks] =
+    await Promise.all([
+      getCreditBalance(admin, user.id),
+      listRecentAssessments(admin, user.id, 50),
+      listProperties(admin, user.id),
+      countAssessments(admin, user.id),
+      listPropertyScreeningActivity(admin, user.id),
+      listIntakeLinks(admin, user.id),
+    ]);
+
+  // Screened links live on as normal screenings; only surface actionable ones.
+  const activeIntakeLinks = intakeLinks.filter(
+    (link) => link.status === "pending" || link.status === "submitted",
+  );
 
   const displayName =
     user.user_metadata?.full_name?.split(" ")[0] ??
@@ -91,6 +100,10 @@ export default async function DashboardPage({
       />
 
       <QuickActions balance={balance} hasScreenings={counts.total > 0} />
+
+      {activeIntakeLinks.length > 0 ? (
+        <IntakeLinksCard links={activeIntakeLinks} />
+      ) : null}
 
       {counts.total > 0 ? (
         <DashboardPortfolioSummary

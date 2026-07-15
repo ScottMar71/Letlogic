@@ -97,6 +97,33 @@ export async function analyseApplicant(
     }
   }
 
+  // Verify intake link ownership + submitted status before spending the credit.
+  if (input.intakeLinkId) {
+    const { data: intakeLink } = await admin
+      .from("intake_links")
+      .select("id, status")
+      .eq("id", input.intakeLinkId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (!intakeLink) {
+      return {
+        ok: false,
+        code: "INVALID",
+        error: "That applicant form was not found on your account.",
+      };
+    }
+    if (intakeLink.status !== "submitted") {
+      return {
+        ok: false,
+        code: "INVALID",
+        error:
+          intakeLink.status === "screened"
+            ? "This applicant form has already been screened."
+            : "This applicant form isn't ready to screen yet.",
+      };
+    }
+  }
+
   // Debit one credit up front; bail if the balance is empty.
   const ledgerId = await spendCredit(admin, user.id);
   if (!ledgerId) {
@@ -188,6 +215,15 @@ export async function analyseApplicant(
   if (assessError || !assessment) {
     await refundCredit(admin, user.id);
     return { ok: false, code: "FAILED", error: "Could not save the assessment." };
+  }
+
+  // Close the loop on an applicant-submitted intake form.
+  if (input.intakeLinkId) {
+    await admin
+      .from("intake_links")
+      .update({ status: "screened", application_id: application.id })
+      .eq("id", input.intakeLinkId)
+      .eq("user_id", user.id);
   }
 
   return {

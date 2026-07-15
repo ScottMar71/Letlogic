@@ -5,20 +5,32 @@ import { AssessmentResultPanel } from "@/components/screening/assessment-result"
 import { PrintReportButton } from "@/components/screening/print-report-button";
 import { PrintReportHeader } from "@/components/screening/print-report-header";
 import { PageHeader } from "@/components/ui/page-header";
+import { Alert } from "@/components/ui/alert";
 import { withHomeBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { formatDate, formatDateTime } from "@/lib/format-date";
 import { getAssessmentDetail, listAssessmentHistoryForApplication } from "@/lib/screening/queries";
-import { isPro } from "@/lib/screening/entitlements";
+import { canExportPdf } from "@/lib/screening/entitlements";
 import { getAuthenticatedUser } from "@/lib/screening/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { privatePageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = privatePageMetadata("Screening report");
 
-type PageProps = { params: Promise<{ id: string }> };
+type PageProps = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{
+    credits?: string;
+    pro?: string;
+    cancelled?: string;
+  }>;
+};
 
-export default async function ScreeningDetailPage({ params }: PageProps) {
+export default async function ScreeningDetailPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { id } = await params;
+  const { credits, pro, cancelled } = await searchParams;
   const user = await getAuthenticatedUser();
   if (!user) redirect(`/login?next=/screenings/${id}`);
 
@@ -26,12 +38,14 @@ export default async function ScreeningDetailPage({ params }: PageProps) {
   const assessment = await getAssessmentDetail(admin, user.id, id);
   if (!assessment) notFound();
 
-  const [pro, history] = await Promise.all([
-    isPro(admin, user.id),
+  const [canExport, history] = await Promise.all([
+    canExportPdf(admin, user.id),
     listAssessmentHistoryForApplication(admin, user.id, assessment.applicationId),
   ]);
 
   const created = formatDate(assessment.createdAt);
+  const unlockedJustNow =
+    canExport && (credits === "success" || pro === "success");
 
   const breadcrumbs = withHomeBreadcrumb([
     { label: "Dashboard", href: "/dashboard" },
@@ -58,15 +72,33 @@ export default async function ScreeningDetailPage({ params }: PageProps) {
             <Link href={`/screen?from=${id}`} className="btn-secondary">
               Re-analyse
             </Link>
-            <PrintReportButton isPro={pro} />
+            <PrintReportButton canExport={canExport} assessmentId={id} />
           </div>
         }
       />
 
+      {unlockedJustNow && (
+        <Alert variant="success" className="no-print">
+          PDF export is unlocked on your account. Use{" "}
+          <span className="font-medium">Print / Save PDF</span> when you are ready.
+        </Alert>
+      )}
+      {(credits === "success" || pro === "success") && !canExport && (
+        <Alert variant="info" className="no-print">
+          Payment received — PDF unlock can take a few seconds. Refresh this page
+          if Print / Save PDF is still locked.
+        </Alert>
+      )}
+      {cancelled === "1" && (
+        <Alert variant="info" className="no-print">
+          Checkout cancelled. You can unlock PDF export anytime from this report.
+        </Alert>
+      )}
+
       <PrintReportHeader
         applicantName={assessment.applicantName}
         screenedAt={created}
-        showBranding={pro}
+        showBranding={canExport}
       />
 
       <AssessmentResultPanel assessment={assessment} loading={false} error={null} />
