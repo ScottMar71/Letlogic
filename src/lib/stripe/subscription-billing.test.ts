@@ -17,7 +17,7 @@ describe("invoiceSubscriptionId", () => {
   });
 
   it("reads legacy invoice.subscription", () => {
-    const invoice = { subscription: "sub_legacy_456" } as Stripe.Invoice;
+    const invoice = { subscription: "sub_legacy_456" } as unknown as Stripe.Invoice;
     expect(invoiceSubscriptionId(invoice)).toBe("sub_legacy_456");
   });
 

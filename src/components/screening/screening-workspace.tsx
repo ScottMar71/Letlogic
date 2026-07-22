@@ -9,9 +9,10 @@ import { trackFunnel } from "@/lib/analytics/funnel";
 import { BuyCreditsModal } from "@/components/screening/buy-credits-modal";
 import { AssessmentResultPanel } from "@/components/screening/assessment-result";
 import { IntakeLinkPanel } from "@/components/intake/intake-link-panel";
+import { ScreeningPastePanel } from "@/components/screening/screening-paste-panel";
+import { ScreeningPropertyContext } from "@/components/screening/screening-property-context";
+import { ScreeningStructuredPanel } from "@/components/screening/screening-structured-panel";
 import { Alert } from "@/components/ui/alert";
-import { Field } from "@/components/ui/field";
-import { PdfUploadButton } from "@/components/screening/pdf-upload-button";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import type { IntakeSource } from "@/lib/screening/intake";
 import type { ApplicationSource } from "@/lib/screening/queries";
@@ -27,13 +28,6 @@ type WorkspaceProps = {
 };
 
 type Mode = "paste" | "form" | "link";
-
-const PASTE_HINTS = [
-  "Employment and income details",
-  "Current address and rental history",
-  "Any disclosed debts or adverse credit",
-  "References or guarantor information",
-];
 
 export function ScreeningWorkspace({
   propertyId,
@@ -225,156 +219,51 @@ export function ScreeningWorkspace({
             <IntakeLinkPanel propertyId={propertyId} />
           ) : (
             <>
-          <div className="mt-4 space-y-3">
-            <p className="section-label">Property context</p>
-            <div className="rounded-xl border border-border bg-surface-muted p-3">
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <Field
-                  label="Applicant name"
-                  htmlFor="applicant-name"
-                  hint="Who you're screening."
-                >
-                  <input
-                    id="applicant-name"
-                    value={applicantName}
-                    onChange={(e) => setApplicantName(e.target.value)}
-                    className="input"
-                    placeholder="Jane Doe"
-                  />
-                </Field>
-                <Field
-                  label="Monthly rent (£)"
-                  htmlFor="monthly-rent"
-                  hint="The rent for this tenancy."
-                >
-                  <input
-                    id="monthly-rent"
-                    type="number"
-                    min="0"
-                    value={rent}
-                    onChange={(e) => setRent(e.target.value)}
-                    className="input"
-                    placeholder="1200"
-                  />
-                </Field>
-                <Field
-                  label="Applicant monthly income (£)"
-                  htmlFor="applicant-income"
-                  hint="Net take-home pay per month."
-                >
-                  <input
-                    id="applicant-income"
-                    type="number"
-                    min="0"
-                    value={income}
-                    onChange={(e) => setIncome(e.target.value)}
-                    className="input"
-                    placeholder="3600"
-                  />
-                </Field>
-              </div>
-              {incomeMultiple != null && (
-                <p className="mt-3 border-t border-border pt-3 text-sm text-text-muted">
-                  Income multiple:{" "}
-                  <span className="font-medium text-text">
-                    {incomeMultiple}×
-                  </span>
-                  <span className="text-text-subtle">
-                    {" "}
-                    — income is {incomeMultiple}× the monthly rent
-                  </span>
+              <ScreeningPropertyContext
+                applicantName={applicantName}
+                rent={rent}
+                income={income}
+                incomeMultiple={incomeMultiple}
+                onApplicantNameChange={setApplicantName}
+                onRentChange={setRent}
+                onIncomeChange={setIncome}
+              />
+
+              {mode === "paste" ? (
+                <ScreeningPastePanel
+                  rawText={rawText}
+                  loading={loading}
+                  onRawTextChange={setRawText}
+                  onExtracted={(text) => {
+                    setRawText(text);
+                    setMode("paste");
+                  }}
+                />
+              ) : (
+                <ScreeningStructuredPanel form={form} onFieldChange={setField} />
+              )}
+
+              <button
+                type="button"
+                onClick={analyse}
+                disabled={(!canAnalyse && !outOfCredits) || loading}
+                aria-busy={loading}
+                aria-describedby={
+                  !canAnalyse || outOfCredits ? "analyse-hint" : undefined
+                }
+                className="btn-primary sticky bottom-4 z-10 mt-4 w-full py-3 shadow-lg lg:static lg:shadow-none"
+              >
+                {loading
+                  ? "Analysing…"
+                  : outOfCredits
+                    ? "Buy credits to analyse"
+                    : "Analyse applicant · uses 1 credit"}
+              </button>
+              {(!canAnalyse || outOfCredits) && (
+                <p id="analyse-hint" className="text-xs text-text-subtle">
+                  {analyseHint}
                 </p>
               )}
-            </div>
-          </div>
-
-          {mode === "paste" ? (
-            <div className="mt-4 space-y-2">
-              <PdfUploadButton
-                disabled={loading}
-                onExtracted={(text) => {
-                  setRawText(text);
-                  setMode("paste");
-                }}
-              />
-              <Field
-                label="Application text"
-                htmlFor="application-text"
-                hint="Paste an email, online form, or your notes."
-              >
-                <textarea
-                  id="application-text"
-                  value={rawText}
-                  onChange={(e) => setRawText(e.target.value)}
-                  rows={12}
-                  className="textarea"
-                  placeholder="Paste the tenant's application, email, or notes here…"
-                />
-              </Field>
-              <div className="rounded-lg border border-info-border bg-info-bg p-3">
-                <p className="text-xs font-medium text-info">What to include</p>
-                <ul className="mt-1 space-y-0.5 text-xs text-text-muted">
-                  {PASTE_HINTS.map((h) => (
-                    <li key={h}>· {h}</li>
-                  ))}
-                </ul>
-                <Link
-                  href="/sample"
-                  className="mt-2 inline-block text-xs font-medium text-brand-ink underline"
-                >
-                  View a sample report
-                </Link>
-              </div>
-            </div>
-          ) : (
-            <div className="mt-4 space-y-3">
-              <p className="section-label">Applicant details</p>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <FormInput label="Employment status" k="employmentStatus" form={form} set={setField} />
-                <FormInput label="Job title" k="jobTitle" form={form} set={setField} />
-                <FormInput label="Employer" k="employer" form={form} set={setField} />
-                <FormInput label="Months in current job" k="monthsInJob" form={form} set={setField} type="number" />
-                <FormInput label="Household size" k="householdSize" form={form} set={setField} type="number" />
-                <FormInput label="Declared debts (£)" k="declaredDebts" form={form} set={setField} type="number" />
-                <FormInput label="Months at current address" k="monthsAtCurrentAddress" form={form} set={setField} type="number" />
-                <FormInput label="Disclosed CCJ/bankruptcy" k="adverseCredit" form={form} set={setField} />
-                <FormInput label="Current address" k="currentAddress" form={form} set={setField} />
-              </div>
-              <Field
-                label="Previous landlord reference"
-                htmlFor="field-previousLandlordReference"
-                hint="What the applicant said about their previous landlord."
-              >
-                <textarea
-                  id="field-previousLandlordReference"
-                  value={form.previousLandlordReference ?? ""}
-                  onChange={(e) => setField("previousLandlordReference", e.target.value)}
-                  rows={3}
-                  className="textarea"
-                />
-              </Field>
-            </div>
-          )}
-
-          <button
-            type="button"
-            onClick={analyse}
-            disabled={(!canAnalyse && !outOfCredits) || loading}
-            aria-busy={loading}
-            aria-describedby={!canAnalyse || outOfCredits ? "analyse-hint" : undefined}
-            className="btn-primary sticky bottom-4 z-10 mt-4 w-full py-3 shadow-lg lg:static lg:shadow-none"
-          >
-            {loading
-              ? "Analysing…"
-              : outOfCredits
-                ? "Buy credits to analyse"
-                : "Analyse applicant · uses 1 credit"}
-          </button>
-          {(!canAnalyse || outOfCredits) && (
-            <p id="analyse-hint" className="text-xs text-text-subtle">
-              {analyseHint}
-            </p>
-          )}
             </>
           )}
         </div>
@@ -401,32 +290,5 @@ export function ScreeningWorkspace({
 
       <BuyCreditsModal open={showBuy} onClose={() => setShowBuy(false)} />
     </div>
-  );
-}
-
-function FormInput({
-  label,
-  k,
-  form,
-  set,
-  type = "text",
-}: {
-  label: string;
-  k: string;
-  form: Record<string, string>;
-  set: (k: string, v: string) => void;
-  type?: string;
-}) {
-  const id = `field-${k}`;
-  return (
-    <Field label={label} htmlFor={id}>
-      <input
-        id={id}
-        type={type}
-        value={form[k] ?? ""}
-        onChange={(e) => set(k, e.target.value)}
-        className="input"
-      />
-    </Field>
   );
 }

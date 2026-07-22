@@ -58,7 +58,7 @@ export function IntakeLinkPanel({ propertyId }: IntakeLinkPanelProps) {
       {url ? (
         <div className="space-y-3">
           <Alert variant="success">
-            Link created — it's valid for 14 days.
+            Link created — it&apos;s valid for 14 days.
           </Alert>
           <div className="flex items-center gap-2">
             <input
@@ -79,7 +79,7 @@ export function IntakeLinkPanel({ propertyId }: IntakeLinkPanelProps) {
           </div>
           <p className="text-sm text-text-muted">
             Send this link to your applicant by email, text, or WhatsApp.
-            You'll see their submission on your{" "}
+            You&apos;ll see their submission on your{" "}
             <Link href="/dashboard" className="font-medium text-brand-ink underline">
               dashboard
             </Link>{" "}

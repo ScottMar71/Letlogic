@@ -62,7 +62,7 @@ export function ApplicantIntakeForm({
           Application submitted
         </h2>
         <p className="mt-1 text-sm text-text-muted">
-          Thanks — your answers have been shared with {landlordLabel}. They'll
+          Thanks — your answers have been shared with {landlordLabel}. They&apos;ll
           be in touch about the next steps.
         </p>
       </div>
@@ -255,7 +255,7 @@ export function ApplicantIntakeForm({
         </p>
       )}
       <p className="text-xs text-text-subtle">
-        Only fill in what you're comfortable sharing — all fields except your
+        Only fill in what you&apos;re comfortable sharing — all fields except your
         name are optional. Your answers are sent to {landlordLabel} and are not
         used for a credit check.
       </p>
