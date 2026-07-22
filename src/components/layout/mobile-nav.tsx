@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
-import { LogoLink } from "@/components/brand/logo";
 import { MobileNavDrawer } from "@/components/layout/mobile-nav-drawer";
 
 const LINKS = [

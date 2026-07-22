@@ -10,7 +10,7 @@ describe("friendlyAuthError", () => {
 
   it("maps email rate limit errors", () => {
     expect(friendlyAuthError("email rate limit exceeded")).toMatch(
-      /email provider limit/,
+      /email sending limit/,
     );
   });
 

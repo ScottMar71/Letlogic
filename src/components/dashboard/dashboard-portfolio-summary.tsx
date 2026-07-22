@@ -9,10 +9,9 @@ import {
 import { Card } from "@/components/ui/card";
 import {
   computeDashboardInsights,
-  RECOMMENDATIONS,
-  RISK_LEVELS,
   type DashboardAction,
 } from "@/lib/dashboard/insights";
+import { RECOMMENDATIONS, RISK_LEVELS } from "@/lib/screening/schema";
 import { RECOMMENDATION_LABELS } from "@/lib/screening/types";
 import type {
   AssessmentSummary,

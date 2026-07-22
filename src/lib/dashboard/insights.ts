@@ -3,16 +3,11 @@ import type {
   PropertyRow,
   PropertyScreeningActivity,
 } from "@/lib/screening/queries";
-import type { Recommendation } from "@/lib/screening/types";
-
-const RISK_LEVELS = ["low", "medium", "high"] as const;
-const RECOMMENDATIONS = [
-  "proceed",
-  "proceed_with_conditions",
-  "do_not_proceed",
-] as const satisfies readonly Recommendation[];
-
-export type RiskLevel = (typeof RISK_LEVELS)[number];
+import {
+  RISK_LEVELS,
+  type Recommendation,
+  type RiskLevel,
+} from "@/lib/screening/schema";
 
 export type DashboardAction =
   | {
@@ -93,23 +88,10 @@ export function computeDashboardInsights(
   let doNotProceedCount = 0;
 
   for (const screening of screenings) {
-    if (
-      screening.riskLevel === "low" ||
-      screening.riskLevel === "medium" ||
-      screening.riskLevel === "high"
-    ) {
-      riskCounts[screening.riskLevel]++;
-    }
-
-    if (
-      screening.recommendation === "proceed" ||
-      screening.recommendation === "proceed_with_conditions" ||
-      screening.recommendation === "do_not_proceed"
-    ) {
-      recommendationCounts[screening.recommendation]++;
-      if (screening.recommendation === "do_not_proceed") {
-        doNotProceedCount++;
-      }
+    riskCounts[screening.riskLevel]++;
+    recommendationCounts[screening.recommendation]++;
+    if (screening.recommendation === "do_not_proceed") {
+      doNotProceedCount++;
     }
 
     if (screening.incomeMultiple != null) {
@@ -213,5 +195,3 @@ function actionPriority(action: DashboardAction): number {
       return 4;
   }
 }
-
-export { RISK_LEVELS, RECOMMENDATIONS };

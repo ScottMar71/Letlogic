@@ -43,11 +43,6 @@ export function getAuthRedirectOrigin(headersList: RequestHeaders): string {
   return "http://localhost:3000";
 }
 
-/** Origin for the current request (e.g. http://localhost:3000 in dev). */
-export function getRequestOrigin(headersList: RequestHeaders): string {
-  return getAuthRedirectOrigin(headersList);
-}
-
 /** Build the Supabase email redirect URL for auth callbacks. */
 export function buildAuthCallbackUrl(origin: string, next: string): string {
   return `${normalizeOrigin(origin)}/auth/callback?next=${encodeURIComponent(next)}`;

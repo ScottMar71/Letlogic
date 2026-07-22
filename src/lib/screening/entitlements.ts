@@ -15,7 +15,7 @@ export async function isPro(
 }
 
 /** True when the user has ever completed a multi-credit pack purchase. */
-export async function hasPackPurchase(
+async function hasPackPurchase(
   admin: SupabaseClient,
   userId: string,
 ): Promise<boolean> {

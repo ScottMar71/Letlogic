@@ -4,7 +4,7 @@ import {
   type AssessmentOutput,
 } from "@/lib/screening/schema";
 
-export const ASSESSMENT_MODEL = "gpt-4o";
+const ASSESSMENT_MODEL = "gpt-4o";
 
 const SYSTEM = "You assess UK tenant applications for landlords. Output valid JSON only, matching the requested schema. Never use protected characteristics. Never invent facts.";
 

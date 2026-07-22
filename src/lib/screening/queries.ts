@@ -1,14 +1,18 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Metrics } from "@/lib/screening/metrics";
-import type { AssessmentRecord } from "@/lib/screening/types";
+import type {
+  AssessmentRecord,
+  Recommendation,
+  RiskLevel,
+} from "@/lib/screening/types";
 
 export type AssessmentSummary = {
   id: string;
   applicantName: string;
   propertyId: string | null;
   riskScore: number;
-  riskLevel: string;
-  recommendation: string;
+  riskLevel: RiskLevel;
+  recommendation: Recommendation;
   summary: string | null;
   incomeMultiple: number | null;
   jobStabilityScore: number | null;
@@ -34,8 +38,8 @@ function toSummary(row: Record<string, unknown>): AssessmentSummary {
     applicantName: app.applicant_name ?? "Applicant",
     propertyId: app.property_id ?? null,
     riskScore: row.risk_score as number,
-    riskLevel: row.risk_level as string,
-    recommendation: row.recommendation as string,
+    riskLevel: row.risk_level as RiskLevel,
+    recommendation: row.recommendation as Recommendation,
     summary: (row.summary as string | null) ?? null,
     incomeMultiple: app.income_multiple ?? null,
     jobStabilityScore: app.job_stability_score ?? null,

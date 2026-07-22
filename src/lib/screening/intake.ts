@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { IntakeSubmission } from "@/lib/screening/schema";
 
-export type IntakeLinkStatus = "pending" | "submitted" | "screened" | "cancelled";
+type IntakeLinkStatus = "pending" | "submitted" | "screened" | "cancelled";
 
 export type IntakeLinkSummary = {
   id: string;
@@ -234,13 +234,4 @@ export async function resolveIntakeForReview(
   }
 
   return { ok: true, source: mapSubmittedIntake(row) };
-}
-
-export async function getSubmittedIntakeForUser(
-  admin: SupabaseClient,
-  userId: string,
-  intakeLinkId: string,
-): Promise<IntakeSource | null> {
-  const result = await resolveIntakeForReview(admin, userId, intakeLinkId);
-  return result.ok ? result.source : null;
 }

@@ -1,3 +1,3 @@
 import "server-only";
 
-export { adminEmails, isAdminEmail } from "./emails";
+export { isAdminEmail } from "./emails";

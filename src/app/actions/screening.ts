@@ -4,7 +4,6 @@ import { generateAssessment } from "@/lib/ai/generate-assessment";
 import { computeMetrics } from "@/lib/screening/metrics";
 import { buildScreeningPrompt, SCREENING_PROMPT_VERSION } from "@/lib/screening/prompt";
 import {
-  getCreditBalance,
   refundCredit,
   spendCredit,
 } from "@/lib/screening/credits";
