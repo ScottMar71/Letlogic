@@ -6,7 +6,10 @@ import { PageHeader } from "@/components/ui/page-header";
 import { withHomeBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getCreditBalance } from "@/lib/screening/credits";
-import { listAssessmentsForProperty } from "@/lib/screening/queries";
+import {
+  getPropertyForUser,
+  listAssessmentsForProperty,
+} from "@/lib/screening/queries";
 import { isPro } from "@/lib/screening/entitlements";
 import { getAuthenticatedUser } from "@/lib/screening/session";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -22,14 +25,8 @@ export default async function PropertyPage({ params }: PageProps) {
   if (!user) redirect(`/login?next=/properties/${id}`);
 
   const admin = createAdminClient();
-  const [{ data: property }, balance] = await Promise.all([
-    admin
-      .from("properties")
-      .select("id, address_line1, city, postcode, rent_amount")
-      .eq("id", id)
-      .eq("user_id", user.id)
-      .is("deleted_at", null)
-      .single(),
+  const [property, balance] = await Promise.all([
+    getPropertyForUser(admin, user.id, id),
     getCreditBalance(admin, user.id),
   ]);
 
@@ -43,11 +40,11 @@ export default async function PropertyPage({ params }: PageProps) {
   return (
     <AuthenticatedPage creditBalance={balance} width="content">
       <PageHeader
-        title={property.address_line1}
-        description={`${property.city}, ${property.postcode}${property.rent_amount ? ` · £${property.rent_amount}/mo` : ""}`}
+        title={property.addressLine1}
+        description={`${property.city}, ${property.postcode}${property.rentAmount ? ` · £${property.rentAmount}/mo` : ""}`}
         breadcrumbs={withHomeBreadcrumb([
           { label: "Properties", href: "/properties" },
-          { label: property.address_line1 },
+          { label: property.addressLine1 },
         ])}
         actions={
           <div className="flex flex-wrap gap-2">

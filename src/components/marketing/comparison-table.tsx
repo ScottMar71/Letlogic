@@ -1,8 +1,8 @@
 import { Check, Minus, X } from "lucide-react";
 
-export type ComparisonValue = boolean | "partial" | string;
+type ComparisonValue = boolean | "partial" | string;
 
-export type ComparisonRow = {
+type ComparisonRow = {
   /** Feature / attribute being compared. */
   label: string;
   /** One value per column, in the same order as `columns`. */

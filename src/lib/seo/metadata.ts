@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 import { absoluteUrl } from "@/lib/seo/routes";
 
 /** App and auth routes — never index. */
-export const privatePageRobots: NonNullable<Metadata["robots"]> = {
+const privatePageRobots: NonNullable<Metadata["robots"]> = {
   index: false,
   follow: false,
 };

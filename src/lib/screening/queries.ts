@@ -78,6 +78,30 @@ export async function listAssessmentsForProperty(
   return (data ?? []).map((r) => toSummary(r as Record<string, unknown>));
 }
 
+export type PropertyRow = {
+  id: string;
+  addressLine1: string;
+  city: string;
+  postcode: string;
+  rentAmount: number | null;
+};
+
+function toPropertyRow(data: {
+  id: string;
+  address_line1: string;
+  city: string;
+  postcode: string;
+  rent_amount: number | null;
+}): PropertyRow {
+  return {
+    id: data.id,
+    addressLine1: data.address_line1,
+    city: data.city,
+    postcode: data.postcode,
+    rentAmount: data.rent_amount ?? null,
+  };
+}
+
 export async function getPropertyForUser(
   admin: SupabaseClient,
   userId: string,
@@ -91,13 +115,13 @@ export async function getPropertyForUser(
     .is("deleted_at", null)
     .single();
   if (!data) return null;
-  return {
-    id: data.id as string,
-    addressLine1: data.address_line1 as string,
-    city: data.city as string,
-    postcode: data.postcode as string,
-    rentAmount: (data.rent_amount as number | null) ?? null,
-  };
+  return toPropertyRow(data as {
+    id: string;
+    address_line1: string;
+    city: string;
+    postcode: string;
+    rent_amount: number | null;
+  });
 }
 
 export async function listAssessmentHistoryForApplication(
@@ -190,14 +214,6 @@ export async function countAssessments(
     thisMonth: monthRes.count ?? 0,
   };
 }
-
-export type PropertyRow = {
-  id: string;
-  addressLine1: string;
-  city: string;
-  postcode: string;
-  rentAmount: number | null;
-};
 
 export type PropertyScreeningActivity = {
   screeningCount: number;
@@ -302,11 +318,13 @@ export async function listProperties(
     .eq("user_id", userId)
     .is("deleted_at", null)
     .order("created_at", { ascending: false });
-  return (data ?? []).map((p) => ({
-    id: p.id as string,
-    addressLine1: p.address_line1 as string,
-    city: p.city as string,
-    postcode: p.postcode as string,
-    rentAmount: (p.rent_amount as number | null) ?? null,
-  }));
+  return (data ?? []).map((p) =>
+    toPropertyRow(p as {
+      id: string;
+      address_line1: string;
+      city: string;
+      postcode: string;
+      rent_amount: number | null;
+    }),
+  );
 }

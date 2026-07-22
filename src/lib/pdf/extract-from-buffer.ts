@@ -2,7 +2,7 @@ const MAX_BYTES = 5 * 1024 * 1024;
 
 export const PDF_MAX_BYTES = MAX_BYTES;
 
-export function validatePdfBytes(data: Uint8Array, fileName?: string): void {
+function validatePdfBytes(data: Uint8Array, fileName?: string): void {
   if (data.byteLength > MAX_BYTES) {
     throw new Error("PDF must be 5 MB or smaller.");
   }

@@ -5,7 +5,7 @@ import { getStripe } from "@/lib/stripe";
 
 const ACTIVE_SUBSCRIPTION_STATUSES = ["active", "trialing", "past_due"] as const;
 
-export async function cancelActiveSubscriptions(
+async function cancelActiveSubscriptions(
   admin: SupabaseClient,
   userId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
