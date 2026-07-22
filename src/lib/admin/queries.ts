@@ -2,7 +2,7 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export type AdminUserRow = {
+type AdminUserRow = {
   id: string;
   email: string | null;
   fullName: string | null;
@@ -15,7 +15,7 @@ export type AdminUserRow = {
   subscriptionStatus: string | null;
 };
 
-export type AdminOrderRow = {
+type AdminOrderRow = {
   id: string;
   userId: string;
   userEmail: string | null;

@@ -2,11 +2,10 @@ import type {
   AssessmentOutput,
   Recommendation,
   RiskLevel,
-  ScreeningInput,
 } from "@/lib/screening/schema";
 import type { Metrics } from "@/lib/screening/metrics";
 
-export type { AssessmentOutput, Recommendation, RiskLevel, ScreeningInput };
+export type { Recommendation, RiskLevel };
 
 // An assessment as surfaced to the UI: the model output plus stored metadata.
 export type AssessmentRecord = AssessmentOutput & {

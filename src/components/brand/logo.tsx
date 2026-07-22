@@ -36,7 +36,7 @@ type LogoProps = {
   className?: string;
 };
 
-export function Logo({
+function Logo({
   variant = "horizontal",
   size = "md",
   className,

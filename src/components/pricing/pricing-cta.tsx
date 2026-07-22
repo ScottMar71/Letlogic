@@ -11,7 +11,7 @@ type PricingCtaProps = {
   isAuthenticated: boolean;
 };
 
-export function PricingCta({ pack, isAuthenticated }: PricingCtaProps) {
+function PricingCta({ pack, isAuthenticated }: PricingCtaProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
